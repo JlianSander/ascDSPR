@@ -1,0 +1,65 @@
+ ________________________________________________________________________________________________________________________________________________________________
+||										Reducto										||
+||______________________________________________________________________________________________________________________________________________________________||
+||									   Version: 2.121									||
+||______________________________________________________________________________________________________________________________________________________________||
+||									   created by										||
+||					Lars Bengel	 	University of Hagen 		<lars.bengel@fernuni-hagen.de>					||
+||					Julian Sander	 	University of Hagen 		<julian.sander@fernuni-hagen.de>				||
+||					Matthias Thimm	 	University of Hagen 		<matthias.thimm@fernuni-hagen.de>				||
+||______________________________________________________________________________________________________________________________________________________________||
+||						Supported problems: [DC-ST,DC,PR,DS-ST,DS-PR, SE-ST, SE-PR]							||
+||______________________________________________________________________________________________________________________________________________________________||
+||								Supported file-formats : [.i23, .tgf]								||
+||______________________________________________________________________________________________________________________________________________________________||
+
+
+
+##################################### Changes to v.2.12 ##########################################
+
+- improved effiency when to call for completion of PR extension
+
+
+
+
+
+
+
+##################################################################################################
+
+Description:
+- SAT clauses basically taken from 
+		Bengel, Lars, and Matthias Thimm. "Towards parallelising extension construction for serialisable semantics in abstract argumentation." Proceedings of the 20th International Conference on Principles of Knowledge Representation and Reasoning. 2023.
+- added clause in encoding to enforce the calculation of only complete sets of arguments as shown in Cerutti, F., Giacomin, M. and Vallati, M., 2019. How we designed winning algorithms for abstract argumentation and which insight we attained. Artificial Intelligence, 276, pp.1-40.
+- no minimalization clauses
+
+- completion of extensions is disabled, therefor the solver returns only an admissible but not a preferred extension to proof the rejection of an argument
+- checks for self attacking arguments if empty IS found or only 1 argument left in reduct
+- checks if query argument is in extention, if no IS is found in a reduct  (no IS in reduct -> extension is maximal -> if maximal extension does not include query then not sceptically accepted
+- sat solver used: CaDiCal
+- added lean method to add short clauses with up to 2 arguments
+- improved parsing using stringstream
+- uses a c++ data model
+- only active arguments implemented as 2 vectors, one for iterating and the other for O(1) queries of existance
+- attackers / victims only implemented as simple Vector, existance queries are answered using the unordered_set of attacks
+- uses new class structure, which better structures the code
+- formulates complement clause, to prevent subset from being recalculated, but enables calculation of superset of found solutions
+- only calculate adm. set which do not include the query argument
+- no limitation of iterations per reduct
+- no parallel code (no OMP)
+- implements IPASIR interface
+- complete PR extension if query is skeptical rejected and not attacked by certificate in COI
+- check if found CO set rejects query
+- check if 2nd found CO set rejects query
+- break GR calculation if argument in GR extension attacks query
+- for check if found set is PR do not create new instance of solver, but by use assumptions that arguments of calculated set are true
+- extend complement clause if 2nd CO set contains query
+- SE-PR: only conceptual reduct, by adding IN variables of Arguments of found CO sets
+
+- preprocessing:
+	- check self attack of query -> if true rejects query
+	- check existance of attackers of query -> if no attackers accept query
+	- check if query is in grounded extension, if yes accept
+	- check if query gets attacked by argument of grounded extension, if yes reject
+	- reduce active arguments by grounded extension before calculation  (optimized check for unattacked arguments)
+	- set only cone of influence of query as active arguments
