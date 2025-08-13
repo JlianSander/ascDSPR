@@ -4,7 +4,6 @@ Solver::Solver(){
 	_framework = AF();
 	_query_argument = 0;
 	_semantics = admissible;
-	_solution = list<uint32_t>();
 	_int_to_arg = std::vector<uint32_t>();
 	_arg_to_int = std::unordered_map<uint32_t, uint32_t>();
 	_is_initialized = false;
@@ -89,7 +88,6 @@ int32_t Solver::solve(bool credulous_mode) {
 		_framework.finish_initilization();
 	}
 
-	_solution = list<uint32_t>();
 	bool isAccepted = false;
 	if(credulous_mode) {
 		cerr << _semantics << ": Unsupported problem\n";
@@ -98,7 +96,7 @@ int32_t Solver::solve(bool credulous_mode) {
 	else {
 		switch (_semantics) {
 		case preferred:
-			isAccepted = Solver_DS_PR::solve(_query_argument, _framework, _solution);
+			isAccepted = Solver_DS_PR::solve(_framework, _query_argument);
 			break;
 		default:
 			cerr << _semantics << ": Unsupported semantics\n";
@@ -111,17 +109,5 @@ int32_t Solver::solve(bool credulous_mode) {
 	}
 	else {
 		return 20;
-	}
-}
-
-/*===========================================================================================================================================================*/
-/*===========================================================================================================================================================*/
-
-int32_t Solver::val(uint32_t arg) {
-	if (tools::Tools_List::contains(_solution, _arg_to_int[arg])) {
-		return arg;
-	}
-	else {
-		return -1 * arg;
 	}
 }

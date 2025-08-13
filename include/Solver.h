@@ -22,13 +22,11 @@ public:
 	void delete_argument(uint32_t arg);
 	void delete_attack(uint32_t attacker, uint32_t victim);
 	int32_t solve(bool credulous_mode);
-	int32_t val(uint32_t arg);
 
 private:
 	AF _framework;
 	uint32_t _query_argument;
 	semantics _semantics;
-	list<uint32_t> _solution;
 
 	std::vector<uint32_t> _int_to_arg;
 	std::unordered_map<uint32_t, uint32_t> _arg_to_int;
@@ -51,7 +49,7 @@ extern "C" {
 	void ipafair_assume(void *s, int32_t a) { import(s)->set_query(a); }
 	int32_t ipafair_solve_cred(void *s) { return import(s)->solve(true); }
 	int32_t ipafair_solve_skept(void *s) { return import(s)->solve(false); }
-	int32_t ipafair_val(void *s, int32_t a) { return import(s)->val(a); }
+	int32_t ipafair_val(void *s, int32_t a) { cout << "Not Supported."; return -1; }
 };
 
 

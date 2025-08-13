@@ -49,21 +49,6 @@ void static print_problems()
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-void static print_proof(std::__cxx11::list<uint32_t> &proof_extension)
-{
-	cout << "w ";
-
-	if (!proof_extension.empty()) {
-		for (list<uint32_t>::iterator mIter = proof_extension.begin(); mIter != proof_extension.end(); ++mIter) {
-			cout << *mIter << " ";
-		}
-		cout << endl;
-	}
-}
-
-/*===========================================================================================================================================================*/
-/*===========================================================================================================================================================*/
-
 int static execute(int argc, char **argv)
 {
 	// read command arguments
@@ -169,16 +154,10 @@ int static execute(int argc, char **argv)
 		return 1;
 	}
 
-	list<uint32_t> proof_extension;
-	bool skept_accepted = Solver_DS_PR::solve(query_argument, framework, proof_extension);
+	bool skept_accepted = Solver_DS_PR::solve(framework, query_argument);
 	// print result
 	cout << (skept_accepted ? "YES" : "NO") << endl;
-	if (!skept_accepted)
-	{
-		print_proof(proof_extension);
-	}
 
-	proof_extension.clear();
 	return 0;
 }
 
