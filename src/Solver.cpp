@@ -92,25 +92,13 @@ int32_t Solver::solve(bool credulous_mode) {
 	_solution = list<uint32_t>();
 	bool isAccepted = false;
 	if(credulous_mode) {
-		switch (_semantics) {
-		case complete:
-			isAccepted = Solver_DC_CO::solve(_query_argument, _framework, _solution);
-			break;
-		case stable:
-			isAccepted = Solver_DC_ST::solve(_query_argument, _framework, _solution);
-			break;
-		default:
-			cerr << _semantics << ": Unsupported semantics\n";
-			return -1;
-		}
+		cerr << _semantics << ": Unsupported problem\n";
+		return -1;
 	}
 	else {
 		switch (_semantics) {
 		case preferred:
 			isAccepted = Solver_DS_PR::solve(_query_argument, _framework, _solution);
-			break;
-		case stable:
-			isAccepted = Solver_DS_ST::solve(_query_argument, _framework, _solution);
 			break;
 		default:
 			cerr << _semantics << ": Unsupported semantics\n";

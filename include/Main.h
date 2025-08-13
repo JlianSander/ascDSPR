@@ -13,20 +13,15 @@ extern "C" {
 
 #include "../include/logic/AF.h"
 #include "../include/logic/Parser_iccma.h"
-#include "../include/logic/Solver_DC_CO.h"
-#include "../include/logic/Solver_DC_ST.h"
 #include "../include/logic/Solver_DS_PR.h"
-#include "../include/logic/Solver_DS_ST.h"
-#include "../include/logic/Solver_SE_PR.h"
-#include "../include/logic/Solver_SE_ST.h"
 
 #include "../include/logic/Enums.h"
 
 /// <summary>
 /// Name of the program
 /// </summary>
-constexpr auto PROGRAM_NAME = "reducto";
-constexpr auto VERSIONNUMBER = "2.121";
+constexpr auto PROGRAM_NAME = "ascDSPR";
+constexpr auto VERSIONNUMBER = "0.1";
 
 /// <summary>
 /// Flags used for internal processing.

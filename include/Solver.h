@@ -8,12 +8,7 @@
 
 #include "../include/logic/AF.h"
 #include "../include/logic/Enums.h"
-#include "../include/logic/Solver_DC_CO.h"
-#include "../include/logic/Solver_DC_ST.h"
 #include "../include/logic/Solver_DS_PR.h"
-#include "../include/logic/Solver_DS_ST.h"
-#include "../include/logic/Solver_SE_PR.h"
-#include "../include/logic/Solver_SE_ST.h"
 #include "../include/util/ToolsList.h"
 
 

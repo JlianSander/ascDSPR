@@ -43,7 +43,7 @@ void static print_formats()
 
 void static print_problems()
 {
-	cout << "[DC-CO,DC-ST,DS-PR,DS-ST,SE-PR,SE-ST]" << endl;
+	cout << "[DS-PR]" << endl;
 }
 
 /*===========================================================================================================================================================*/
@@ -59,30 +59,6 @@ void static print_proof(std::__cxx11::list<uint32_t> &proof_extension)
 		}
 		cout << endl;
 	}
-}
-
-void static print_proof(std::__cxx11::list<uint32_t> &proof_extension, unordered_map<uint32_t, uint32_t> &args_new_to_old)
-{
-	cout << "w ";
-
-	if (!proof_extension.empty()) {
-		for (list<uint32_t>::iterator mIter = proof_extension.begin(); mIter != proof_extension.end(); ++mIter) {
-			cout << args_new_to_old[*mIter] << " ";
-		}
-		cout << endl;
-	}
-}
-
-/*===========================================================================================================================================================*/
-/*===========================================================================================================================================================*/
-
-bool static check_query(uint32_t query, char **argv)
-{
-	if (query == 0) {
-		cerr << argv[0] << ": Query argument must be specified via -a flag\n";
-		return false;
-	}
-	return true;
 }
 
 /*===========================================================================================================================================================*/
@@ -169,156 +145,40 @@ int static execute(int argc, char **argv)
 			cerr << argv[0] << ": Unsupported file format\n";
 			return 1;
 	}
-	bool has_preprocessed = false;
-	unordered_map<uint32_t, uint32_t> args_new_to_old;
 
 	// parse the problem and semantics
 	string task = problem.substr(0, problem.find("-"));
 	problem.erase(0, problem.find("-") + 1);
 	string sem = problem.substr(0, problem.find("-"));
-
-	//preprocess if compiler flag is set
-#ifdef DO_PREPROC
-	//calculate relevant arguments for problems DC-CO and DS-PR
-	if ((Enums::string_to_task(task) == DS && Enums::string_to_sem(sem) == preferred)
-		|| (Enums::string_to_task(task) == DC && Enums::string_to_sem(sem) == complete)) {
-		has_preprocessed = true;
-		framework = PreProcessor::calculate_cone_influence(framework, query_argument, args_new_to_old);
-		query_argument = 1;
-	}	
-#endif
 		
 	// process the problem
-	switch (Enums::string_to_task(task)) {
-		// skeptical acceptance problem
-		case DS:
-		{
-			if (!check_query(query_argument, argv)) {
-				return 1;
-			}			
-
-			list<uint32_t> proof_extension;
-			bool skept_accepted = false;
-
-			// process the semantics
-			switch (Enums::string_to_sem(sem)) {
-				case preferred:
-					skept_accepted = Solver_DS_PR::solve(query_argument, framework, proof_extension);
-					break;
-				case stable:
-					skept_accepted = Solver_DS_ST::solve(query_argument, framework, proof_extension);
-					break;
-				default:
-					cerr << argv[0] << ": Unsupported semantics\n";
-					return 1;
-			}
-
-			// print result
-			cout << (skept_accepted ? "YES" : "NO") << endl;
-			if (!skept_accepted)
-			{
-				if (has_preprocessed)
-				{
-					print_proof(proof_extension, args_new_to_old);
-				}
-				else 
-				{
-					print_proof(proof_extension);
-				}
-			}
-
-			//free allocated memory
-			proof_extension.clear();			
-		}
-		break;
-
-		// credulous acceptance problem
-		case DC:
-		{
-			if (!check_query(query_argument, argv)) {
-				return 1;
-			}
-
-			list<uint32_t> proof_extension;
-			bool cred_accepted = false;
-
-			// process the semantics
-			switch (Enums::string_to_sem(sem)) {
-			case complete:
-				cred_accepted = Solver_DC_CO::solve(query_argument, framework, proof_extension);
-				break;
-			case stable:
-				cred_accepted = Solver_DC_ST::solve(query_argument, framework, proof_extension);
-				break;
-			default:
-				cerr << argv[0] << ": Unsupported semantics\n";
-				return 1;
-			}
-
-			// print result
-			cout << (cred_accepted ? "YES" : "NO") << endl;
-			if (cred_accepted)
-			{
-				if (has_preprocessed)
-				{
-					print_proof(proof_extension, args_new_to_old);
-				}
-				else
-				{
-					print_proof(proof_extension);
-				}
-			}
-
-			//free allocated memory
-			proof_extension.clear();
-		}
-		break;
-
-		// single extension problem
-		case SE:
-		{
-			list<uint32_t> proof_extension;
-			bool has_extension = false;
-
-			// process the semantics
-			switch (Enums::string_to_sem(sem)) {
-			case preferred:
-				has_extension = Solver_SE_PR::solve(framework, proof_extension);
-				break;
-			case stable:
-				has_extension = Solver_SE_ST::solve(framework, proof_extension);
-				break;
-			default:
-				cerr << argv[0] << ": Unsupported semantics\n";
-				return 1;
-			}
-
-			// print result
-			if (has_extension)
-			{
-				if (has_preprocessed)
-				{
-					print_proof(proof_extension, args_new_to_old);
-				}
-				else
-				{
-					print_proof(proof_extension);
-				}
-			}
-			else {
-				cout << "NO" << endl;
-			}
-
-			//free allocated memory
-			proof_extension.clear();
-		}
-		break;
-			
-		default:
-			cerr << argv[0] << ": Problem not supported!\n";
-			return 1;
+	if(Enums::string_to_task(task) != DS)
+	{
+		cerr << argv[0] << ": Unsupported problem\n";
+		return 1;
 	}
 
+	if(Enums::string_to_sem(sem) != preferred)
+	{
+		cerr << argv[0] << ": Unsupported semantics\n";
+		return 1;
+	}
+
+	if (query_argument == 0) {
+		cerr << argv[0] << ": Query argument must be specified via -a flag and greater than 0\n";
+		return 1;
+	}
+
+	list<uint32_t> proof_extension;
+	bool skept_accepted = Solver_DS_PR::solve(query_argument, framework, proof_extension);
+	// print result
+	cout << (skept_accepted ? "YES" : "NO") << endl;
+	if (!skept_accepted)
+	{
+		print_proof(proof_extension);
+	}
+
+	proof_extension.clear();
 	return 0;
 }
 
