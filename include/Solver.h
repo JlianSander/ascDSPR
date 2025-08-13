@@ -6,11 +6,8 @@
 #include <string>
 #include <cstdint>
 
-#include "../include/logic/AF.h"
-#include "../include/logic/Enums.h"
-#include "../include/logic/Solver_DS_PR.h"
+#include "Main.h"
 #include "../include/util/ToolsList.h"
-
 
 class Solver {
 public:

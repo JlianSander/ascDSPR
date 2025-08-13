@@ -88,7 +88,7 @@ int32_t Solver::solve(bool credulous_mode) {
 		_framework.finish_initilization();
 	}
 
-	bool isAccepted = false;
+	acceptance_result result = acceptance_result::unknown;
 	if(credulous_mode) {
 		cerr << _semantics << ": Unsupported problem\n";
 		return -1;
@@ -96,7 +96,8 @@ int32_t Solver::solve(bool credulous_mode) {
 	else {
 		switch (_semantics) {
 		case preferred:
-			isAccepted = Solver_DS_PR::solve(_framework, _query_argument);
+			ALGO_SHORT_T shortcut;
+			result = shortcut.try_solve(_framework, _query_argument);
 			break;
 		default:
 			cerr << _semantics << ": Unsupported semantics\n";
@@ -104,10 +105,12 @@ int32_t Solver::solve(bool credulous_mode) {
 		}
 	}
 
-	if (isAccepted) {
+	switch (result) {
+	case acceptance_result::accepted:
 		return 10;
-	}
-	else {
+	case acceptance_result::rejected:
 		return 20;
+	default:
+		return -1;
 	}
 }

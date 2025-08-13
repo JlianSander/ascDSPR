@@ -13,8 +13,6 @@ extern "C" {
 
 #include "../include/logic/AF.h"
 #include "../include/logic/Parser_iccma.h"
-#include "../include/logic/Solver_DS_PR.h"
-
 #include "../include/logic/Enums.h"
 
 #if defined(ASC_1)
