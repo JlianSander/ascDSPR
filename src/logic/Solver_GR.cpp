@@ -3,10 +3,11 @@
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-acceptance_result Solver_GR::calculate_grounded_extension(AF &framework, uint32_t query, bool break_accepted, bool break_rejected,
-	list<uint32_t> &out_gr_extension)
+list<uint32_t> Solver_GR::calculate_grounded_extension(AF &framework, uint32_t query, bool &is_contained, bool &is_attacked, bool stop_if_contained, bool stop_if_attacked)
 {
-	acceptance_result result = acceptance_result::unknown;
+	list<uint32_t> grounded_extension;
+	is_contained = false;
+	is_attacked = false;
 	// fill list with unattacked arguments
 	list<uint32_t> ls_unattacked_unprocessed;
 	vector<uint32_t> num_attacker;
@@ -18,7 +19,7 @@ acceptance_result Solver_GR::calculate_grounded_extension(AF &framework, uint32_
 		if (framework.attackers[argument].empty()) {
 			// add unattacked argument to list and to output grounded extension
 			ls_unattacked_unprocessed.push_back(argument);
-			out_gr_extension.push_back(argument);
+			grounded_extension.push_back(argument);
 		}
 		// set number of attacker for current argument
 		num_attacker[argument] = framework.attackers[argument].size();
@@ -29,21 +30,13 @@ acceptance_result Solver_GR::calculate_grounded_extension(AF &framework, uint32_
 	//process list of unattacked arguments
 	for (list<uint32_t>::iterator mIter = ls_unattacked_unprocessed.begin(); mIter != ls_unattacked_unprocessed.end(); ++mIter) {
 		const auto &ua = *mIter;
-
-		//accept query if query is part of grounded extension, if query == 0 then there is no query argument to check for
+		//check if query is part of grounded extension, if query == 0 then there is no query argument to check for
 		if (query != 0 && ua == query) {
-			if (break_accepted) {
-				return acceptance_result::accepted;
-			}
-			result = acceptance_result::accepted;
-		}
+			is_contained = true;
 
-		//reject query if it gets attacked by argument of grounded extension, if query == 0 then there is no query argument to check for
-		if (query != 0 && framework.exists_attack(ua, query)) {
-			if (break_rejected) {
-				return acceptance_result::rejected;
+			if (stop_if_contained) {
+				return grounded_extension;
 			}
-			result = acceptance_result::rejected;
 		}
 
 		//iterate through victims of the unattacked argument
@@ -53,6 +46,15 @@ acceptance_result Solver_GR::calculate_grounded_extension(AF &framework, uint32_
 			if (!reduct._bitset[vua]) {
 				continue;
 			}
+			//check if query gets attacked by argument of grounded extension, if query == 0 then there is no query argument to check for
+			if (query != 0 && vua == query) {
+				is_attacked = true;
+
+				if (stop_if_attacked) {
+					return grounded_extension;
+				}
+			}
+
 			//iterate through victims of the victims of unattacked argument
 			for (std::vector<unsigned int>::size_type j = 0; j < framework.victims[vua].size(); j++) {
 				uint32_t vvua = framework.victims[vua][j];
@@ -67,7 +69,7 @@ acceptance_result Solver_GR::calculate_grounded_extension(AF &framework, uint32_
 				//check if victim of victim is unattacked
 				if (num_attacker[vvua] == 0) {
 					ls_unattacked_unprocessed.push_back(vvua);
-					out_gr_extension.push_back(vvua);
+					grounded_extension.push_back(vvua);
 				}
 			}
 		}
@@ -76,6 +78,6 @@ acceptance_result Solver_GR::calculate_grounded_extension(AF &framework, uint32_
 		reduct = Reduct::get_reduct(reduct, framework, ua);
 	}
 
-	return result;
+	return grounded_extension;
 }
 

@@ -16,8 +16,11 @@ static acceptance_result apply_shortcuts(AF &framework, uint32_t query_argument)
 	}
 
 	ArrayBitSet initial_actives = framework.create_active_arguments();
-	std::__cxx11::list<uint32_t> out_grounded_extension;
-	return Solver_GR::calculate_grounded_extension(framework, query_argument, true, true, out_grounded_extension);
+	bool is_contained_in_GR, is_attack_by_GR;
+	Solver_GR::calculate_grounded_extension(framework, query_argument, is_contained_in_GR, is_attack_by_GR, true, true);
+	if(is_contained_in_GR) return acceptance_result::accepted;
+	if(is_attack_by_GR) return acceptance_result::rejected;
+	return acceptance_result::unknown;
 }
 
 /*===========================================================================================================================================================*/
