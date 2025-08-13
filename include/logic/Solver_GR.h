@@ -7,8 +7,6 @@
 
 #include "AF.h"
 #include "Reduct.h"
-#include "ConeOfInfluence.h"
-#include "PreProcessor.h"
 
 #include "../util/ArrayBitSet.h"
 #include "../logic/Enums.h"
