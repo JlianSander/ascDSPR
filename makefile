@@ -16,7 +16,8 @@ TARGET=$(shell basename "`pwd`")
 # front-end.
 #--------------------------------------------------------------------------#
 
-PREPROCESSING	?= y
+#The number of the algorithmic shortcut to use. Read from parameter at call e.g. "make ASC=3".
+ASC	?= 1
 
 # Name of IPASIR solver (library), e.g., cadical
 IPASIRSOLVER	?= cadical
@@ -45,13 +46,9 @@ INCLUDE_UTIL	=	./include/util/
 CC	=	gcc
 CFLAGS	?=	-Wall -std=c11
 CXX = g++
-CXXFLAGS ?= -Wall -std=c++11
+CXXFLAGS ?= -Wall -std=c++11 -D ASC_${ASC}
 LDFLAGS ?= -L$(IPASIRLIBDIR)
 LDLIBS ?= -l$(IPASIRSOLVER)
-
-ifeq ($(PREPROCESSING), y)
-	CXXFLAGS    += -D DO_PREPROC
-endif
 
 # Find all the C and C++ files we want to compile
 # Note the single quotes around the * expressions. The shell will incorrectly expand these otherwise, but we want to send the * directly to the find command.
