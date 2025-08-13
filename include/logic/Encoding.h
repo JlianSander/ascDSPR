@@ -34,6 +34,14 @@ public:
     /// <returns>Returns an rejecting literal.</returns>
     static int64_t get_literal_rejected(AF &framework, uint32_t argument, bool isPositive);
     /// <summary>
+    /// Calculates a literal of an auxiliary variable for the specified index.
+    /// </summary>
+    /// <param name="framework">The framework of the problem.</param>
+    /// <param name="index">The index used to identify the auxiliary variable.</param>
+    /// <param name="isPositive">Bool indicating whether the literal is positive. Negative literals are also called 'inverted'.</param>
+    /// <returns>Returns a literal.</returns>
+    static int64_t get_literal_aux(AF &framework, uint32_t index, bool isPositive);
+    /// <summary>
     /// Adds all clauses necessary to encode the calculation of nonempty admissible sets.
     /// </summary>
     /// <param name="solver">The SATSolver, to which the clauses will be added.</param>
