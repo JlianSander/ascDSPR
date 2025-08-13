@@ -79,7 +79,7 @@ CPPFLAGS := $(INC_FLAGS) -MMD -MP
 .PHONY:	all
 all: CXXFLAGS += -DNDEBUG -O3 
 all: CCFLAGS += -DNDEBUG -O3 
-all: $(BUILD_DIR)/$(TARGET)
+all: $(BUILD_DIR)/$(TARGET)_ASC$(ASC)
 
 .PHONY: clean
 clean: 
@@ -93,6 +93,9 @@ debug: $(BUILD_DIR)/$(TARGET)
 #--------------------------------------------------------------------------#
 # The executable target (your program).
 #--------------------------------------------------------------------------#
+
+$(BUILD_DIR)/$(TARGET)_ASC$(ASC): $(OBJS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(BUILD_DIR)/$(TARGET): $(OBJS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
