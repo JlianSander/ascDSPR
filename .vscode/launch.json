@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/${workspaceFolderBasename}",
-            "args": ["-p","DS-PR","-f","/home/jsander/datasets/iccma23/main/bw2.pfile-3-04.pddl.2.cnf.i23","-a","803"],
+            "args": ["-p","DS-PR","-f","/home/jsander/datasets/misc/test/self_attack.i23","-a","1"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

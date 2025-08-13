@@ -17,6 +17,16 @@ extern "C" {
 
 #include "../include/logic/Enums.h"
 
+#if defined(ASC_1)
+	#include "AlgorithmicShortcut_1.h"
+	typedef AlgorithmicShortcut_1 ALGO_SHORT_T;
+//#elif defined(SAT_CADICAL)
+	//#include "SatSolverCadical.h"
+	//typedef SatSolverCadical SAT_Solver;
+#else
+	//#error "No SAT Solver defined"
+#endif
+
 /// <summary>
 /// Name of the program
 /// </summary>
