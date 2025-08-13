@@ -38,13 +38,13 @@ public:
     /// </summary>
     /// <param name="solver">The SATSolver, to which the clauses will be added.</param>
     /// <param name="framework">The abstract argumentation framework, based upon which the attacks are analysed.</param>
-    static void add_clauses_nonempty_admissible_set(SatSolver &solver, AF &framework);
+    static void add_clauses_nonempty_admissible(SatSolver &solver, AF &framework);
     /// <summary>
     /// Adds all clauses necessary to encode the calculation of nonempty complete extensions.
     /// </summary>
     /// <param name="solver">The SATSolver, to which the clauses will be added.</param>
     /// <param name="framework">The abstract argumentation framework, based upon which the attacks are analysed.</param>
-    static void add_clauses_nonempty_complete_set(SatSolver &solver, AF &framework);
+    static void add_clauses_nonempty_complete(SatSolver &solver, AF &framework);
 };
 
 #endif

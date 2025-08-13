@@ -84,7 +84,7 @@ static void add_clauses_nonempty_admissible_set_part_two(SatSolver &solver, AF &
     update_clause_legal_out(legal_out_clause, attacker);
 }
 
-void Encoding::add_clauses_nonempty_admissible_set(SatSolver &solver, AF &framework)
+void Encoding::add_clauses_nonempty_admissible(SatSolver &solver, AF &framework)
 {
 	vector<int64_t> non_empty_clause;
 
@@ -135,7 +135,7 @@ static void add_clause_legal_undec_in(SatSolver &solver, AF &framework, uint32_t
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-void Encoding::add_clauses_nonempty_complete_set(SatSolver &solver, AF &framework)
+void Encoding::add_clauses_nonempty_complete(SatSolver &solver, AF &framework)
 {
 	vector<int64_t> non_empty_clause;
 
