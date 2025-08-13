@@ -20,9 +20,9 @@ extern "C" {
 #if defined(ASC_1)
 	#include "AlgorithmicShortcut_1.h"
 	typedef AlgorithmicShortcut_1 ALGO_SHORT_T;
-//#elif defined(SAT_CADICAL)
-	//#include "SatSolverCadical.h"
-	//typedef SatSolverCadical SAT_Solver;
+#elif defined(ASC_2)
+	#include "AlgorithmicShortcut_2.h"
+	typedef AlgorithmicShortcut_2 ALGO_SHORT_T;
 #else
 	//#error "No SAT Solver defined"
 #endif
