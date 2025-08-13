@@ -30,6 +30,21 @@ extern "C" {
 #elif defined(ASC_5)
 	#include "AlgorithmicShortcut_5.h"
 	typedef AlgorithmicShortcut_5 ALGO_SHORT_T;
+#elif defined(ASC_6)
+	#include "AlgorithmicShortcut_6.h"
+	typedef AlgorithmicShortcut_6 ALGO_SHORT_T;
+#elif defined(ASC_7)
+	#include "AlgorithmicShortcut_7.h"
+	typedef AlgorithmicShortcut_7 ALGO_SHORT_T;
+#elif defined(ASC_8)
+	#include "AlgorithmicShortcut_8.h"
+	typedef AlgorithmicShortcut_8 ALGO_SHORT_T;
+#elif defined(ASC_9)
+	#include "AlgorithmicShortcut_9.h"
+	typedef AlgorithmicShortcut_9 ALGO_SHORT_T;
+#elif defined(ASC_10)
+	#include "AlgorithmicShortcut_10.h"
+	typedef AlgorithmicShortcut_10 ALGO_SHORT_T;
 #else
 	//#error "No SAT Solver defined"
 #endif
