@@ -3,30 +3,29 @@
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-acceptance_result Solver_GR::reduce_by_grounded(AF &framework, ArrayBitSet &input_active_args, uint32_t query, bool break_accepted, bool break_rejected,
-	ArrayBitSet &out_reduct, list<uint32_t> &out_gr_extension)
+acceptance_result Solver_GR::calculate_grounded_extension(AF &framework, uint32_t query, bool break_accepted, bool break_rejected,
+	list<uint32_t> &out_gr_extension)
 {
-	//copy values to ensure not to change input values
-	ArrayBitSet active_args = input_active_args.copy();
 	acceptance_result result = acceptance_result::unknown;
 	// fill list with unattacked arguments
 	list<uint32_t> ls_unattacked_unprocessed;
 	vector<uint32_t> num_attacker;
 	num_attacker.resize(framework.num_args + 1);
 	//iterate through active arguments
-	for (std::vector<unsigned int>::size_type i = 0; i < active_args._array.size(); i++) {
+	for (std::vector<unsigned int>::size_type i = 1; i < framework.num_args; i++) {
+		uint32_t argument = i;
 		//check if argument is unattacked
-		if (framework.attackers[active_args._array[i]].empty()) {
+		if (framework.attackers[argument].empty()) {
 			// add unattacked argument to list and to output grounded extension
-			ls_unattacked_unprocessed.push_back(active_args._array[i]);
-			out_gr_extension.push_back(active_args._array[i]);
+			ls_unattacked_unprocessed.push_back(argument);
+			out_gr_extension.push_back(argument);
 		}
 		// set number of attacker for current argument
-		num_attacker[active_args._array[i]] = framework.attackers[active_args._array[i]].size();
+		num_attacker[argument] = framework.attackers[argument].size();
 	}
 
 	// init variable of current reduct
-	out_reduct = active_args;
+	ArrayBitSet  reduct = framework.create_active_arguments();
 	//process list of unattacked arguments
 	for (list<uint32_t>::iterator mIter = ls_unattacked_unprocessed.begin(); mIter != ls_unattacked_unprocessed.end(); ++mIter) {
 		const auto &ua = *mIter;
@@ -51,14 +50,14 @@ acceptance_result Solver_GR::reduce_by_grounded(AF &framework, ArrayBitSet &inpu
 		for (std::vector<unsigned int>::size_type i = 0; i < framework.victims[ua].size(); i++) {
 			uint32_t vua = framework.victims[ua][i];
 			//only account victims that are still active
-			if (!out_reduct._bitset[vua]) {
+			if (!reduct._bitset[vua]) {
 				continue;
 			}
 			//iterate through victims of the victims of unattacked argument
 			for (std::vector<unsigned int>::size_type j = 0; j < framework.victims[vua].size(); j++) {
 				uint32_t vvua = framework.victims[vua][j];
 				//only account victims of victims that are still active
-				if (!out_reduct._bitset[vvua]) {
+				if (!reduct._bitset[vvua]) {
 					continue;
 				}
 
@@ -74,7 +73,7 @@ acceptance_result Solver_GR::reduce_by_grounded(AF &framework, ArrayBitSet &inpu
 		}
 
 		//reduce active argument by unattacked argument + update current reduct
-		out_reduct = Reduct::get_reduct(out_reduct, framework, ua);
+		reduct = Reduct::get_reduct(reduct, framework, ua);
 	}
 
 	return result;

@@ -8,7 +8,6 @@
 #include "AF.h"
 #include "SatSolver.h"
 
-#include "../util/ArrayBitSet.h"
 #include "../util/Printer.h"
 
 
@@ -39,15 +38,13 @@ public:
     /// </summary>
     /// <param name="solver">The SATSolver, to which the clauses will be added.</param>
     /// <param name="framework">The abstract argumentation framework, based upon which the attacks are analysed.</param>
-    /// <param name="activeArgs">The set of active arguments, in the current state of the framework.</param>
-    static void add_clauses_nonempty_admissible_set(SatSolver &solver, AF &framework, ArrayBitSet &activeArgs);
+    static void add_clauses_nonempty_admissible_set(SatSolver &solver, AF &framework);
     /// <summary>
     /// Adds all clauses necessary to encode the calculation of nonempty complete extensions.
     /// </summary>
     /// <param name="solver">The SATSolver, to which the clauses will be added.</param>
     /// <param name="framework">The abstract argumentation framework, based upon which the attacks are analysed.</param>
-    /// <param name="activeArgs">The set of active arguments, in the current state of the framework.</param>
-    static void add_clauses_nonempty_complete_set(SatSolver &solver, AF &framework, ArrayBitSet &activeArgs);
+    static void add_clauses_nonempty_complete_set(SatSolver &solver, AF &framework);
 };
 
 #endif

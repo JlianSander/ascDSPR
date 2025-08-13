@@ -84,13 +84,13 @@ static void add_clauses_nonempty_admissible_set_part_two(SatSolver &solver, AF &
     update_clause_legal_out(legal_out_clause, attacker);
 }
 
-void Encoding::add_clauses_nonempty_admissible_set(SatSolver &solver, AF &framework, ArrayBitSet &activeArgs)
+void Encoding::add_clauses_nonempty_admissible_set(SatSolver &solver, AF &framework)
 {
 	vector<int64_t> non_empty_clause;
 
 	//////////////////////////////////////// FOR ALL ARGUMENTS /////////////////////////////////////////////////////////
-	for (std::vector<unsigned int>::size_type i = 0; i < activeArgs._array.size(); i++) {
-		uint32_t argument = activeArgs._array[i];
+	for (std::vector<unsigned int>::size_type i = 1; i < framework.num_args; i++) {
+		uint32_t argument = i;
 		vector<int64_t> legal_out_clause = add_clauses_nonempty_admissible_set_part_one(solver, framework, non_empty_clause, argument);
 
 		//////////////////////////////////////// FOR ALL ATTACKERS /////////////////////////////////////////////////////////
@@ -98,10 +98,7 @@ void Encoding::add_clauses_nonempty_admissible_set(SatSolver &solver, AF &framew
 		for (std::vector<unsigned int>::size_type i = 0; i < attackers.size(); i++)
 		{
 			uint32_t attacker = attackers[i];
-			if (activeArgs._bitset[attacker])
-			{
-                add_clauses_nonempty_admissible_set_part_two(solver, framework, argument, legal_out_clause, attacker);
-            }
+			add_clauses_nonempty_admissible_set_part_two(solver, framework, argument, legal_out_clause, attacker);
 		}
 
         add_clause(solver, legal_out_clause);
@@ -138,13 +135,13 @@ static void add_clause_legal_undec_in(SatSolver &solver, AF &framework, uint32_t
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-void Encoding::add_clauses_nonempty_complete_set(SatSolver &solver, AF &framework, ArrayBitSet &activeArgs)
+void Encoding::add_clauses_nonempty_complete_set(SatSolver &solver, AF &framework)
 {
 	vector<int64_t> non_empty_clause;
 
 	//////////////////////////////////////// FOR ALL ARGUMENTS /////////////////////////////////////////////////////////
-	for (std::vector<unsigned int>::size_type i = 0; i < activeArgs._array.size(); i++) {
-		uint32_t argument = activeArgs._array[i];
+	for (std::vector<unsigned int>::size_type i = 1; i < framework.num_args; i++) {
+		uint32_t argument = i;
 		vector<int64_t> legal_out_clause = add_clauses_nonempty_admissible_set_part_one(solver, framework, non_empty_clause, argument);
 		vector<int64_t> legal_undec_out_clause = create_clause_legal_undec_out(argument);
 
@@ -153,12 +150,9 @@ void Encoding::add_clauses_nonempty_complete_set(SatSolver &solver, AF &framewor
 		for (std::vector<unsigned int>::size_type i = 0; i < attackers.size(); i++)
 		{
 			uint32_t attacker = attackers[i];
-			if (activeArgs._bitset[attacker])
-			{
-                add_clauses_nonempty_admissible_set_part_two(solver, framework, argument, legal_out_clause, attacker);
-				update_clause_legal_undec_out(framework, legal_undec_out_clause, attacker);
-				add_clause_legal_undec_in(solver, framework, argument, attacker);
-            }
+            add_clauses_nonempty_admissible_set_part_two(solver, framework, argument, legal_out_clause, attacker);
+			update_clause_legal_undec_out(framework, legal_undec_out_clause, attacker);
+			add_clause_legal_undec_in(solver, framework, argument, attacker);
 		}
 
         add_clause(solver, legal_out_clause);

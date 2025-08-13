@@ -3,7 +3,7 @@
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-static acceptance_result apply_shortcuts(AF &framework, uint32_t query_argument, ArrayBitSet &out_reduct)
+static acceptance_result apply_shortcuts(AF &framework, uint32_t query_argument)
 {
 	if (framework.self_attack[query_argument])
 	{
@@ -17,7 +17,7 @@ static acceptance_result apply_shortcuts(AF &framework, uint32_t query_argument,
 
 	ArrayBitSet initial_actives = framework.create_active_arguments();
 	std::__cxx11::list<uint32_t> out_grounded_extension;
-	return Solver_GR::reduce_by_grounded(framework, initial_actives, query_argument, true, true, out_reduct, out_grounded_extension);
+	return Solver_GR::calculate_grounded_extension(framework, query_argument, true, true, out_grounded_extension);
 }
 
 /*===========================================================================================================================================================*/
@@ -26,8 +26,7 @@ static acceptance_result apply_shortcuts(AF &framework, uint32_t query_argument,
 bool Solver_DS_PR::solve(AF &framework, uint32_t query_argument)
 {
 	// initialize variables
-	ArrayBitSet reduct_after_grounded = ArrayBitSet();
-	switch (apply_shortcuts(framework, query_argument, reduct_after_grounded)) {
+	switch (apply_shortcuts(framework, query_argument)) {
 		case accepted:
 			return true;
 
