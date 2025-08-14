@@ -66,14 +66,6 @@ public:
     /// <returns>TRUE iff the attack was successfully added.</returns>
     bool add_attack(uint32_t attacker, uint32_t victim);
 	/// <summary>
-	/// Checks if a specified argument gets attacked by any member of the specified set of arguments.
-	/// </summary>
-	/// <param name="argument">An argument of the framework.</param>
-	/// <param name="set_arguments">Set of arguments of the framework.</param>
-	/// <param name="framework">The abstract argumentation framework, specifying the underlying attack relations between the arguments.</param>
-	/// <returns>TRUE iff any member of the set attacks the specified argument. FALSE otherwise.</returns>
-	bool check_attack(std::uint32_t argument, std::list<std::uint32_t> &set_arguments, AF &framework);
-	/// <summary>
 	/// This method deletes the data structure of the instance.
 	/// </summary>
 	void clear();
@@ -97,6 +89,13 @@ public:
     /// <param name="victim">The argument which is been attacked by the other.</param>
     /// <returns>TRUE iff there is an attack.</returns>
     bool exists_attack(uint32_t attacker, uint32_t victim) const;
+	/// <summary>
+	/// Checks if a specified argument gets attacked by any member of the specified set of arguments.
+	/// </summary>
+	/// <param name="argument">An argument of the framework.</param>
+	/// <param name="set_arguments">Set of arguments of the framework.</param>
+	/// <returns>TRUE iff any member of the set attacks the specified argument. FALSE otherwise.</returns>
+	bool exists_attack(std::uint32_t argument, std::list<std::uint32_t> &set_arguments) const;
     /// <summary>
     /// This method signals the instance, that it has all necessary information to finish
 	/// the initialization process.

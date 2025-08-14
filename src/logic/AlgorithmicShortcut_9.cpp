@@ -20,7 +20,6 @@
         bool exists_complete_labeling_not_in = (*solver).solve(Encoding::get_literal_accepted(query_argument, false));
 
         if(exists_complete_labeling_not_in){
-            list<uint32_t> solution = Decoding::get_set_from_solver(*solver, framework);
             return acceptance_result::unknown;
         } else {
             return acceptance_result::accepted;

@@ -3,7 +3,6 @@
     #ifdef ASC_9
     
         #include "AlgorithmicShortcut.h"
-        #include "Decoding.h"
         #include "Encoding.h"
         #include "SatSolver.h"
 
@@ -12,12 +11,6 @@
         public:
             ~AlgorithmicShortcut_9() { };
             acceptance_result try_solve(AF &framework, uint32_t query_argument);
-
-            
-
-        private:
-            static void create_clauses(AF &framework, uint32_t query_argument, SatSolver &solver);
-            static bool check_each_attacker_has_defender(AF &framework, uint32_t query_argument);
         };
     #endif
 #endif

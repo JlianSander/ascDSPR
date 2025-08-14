@@ -20,22 +20,6 @@ bool AF::add_attack(uint32_t attacker, uint32_t victim)
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-bool AF::check_attack(std::uint32_t argument, std::list<std::uint32_t> &set_arguments, AF &framework)
-{
-	//iterate through arguments of the set
-	for (list<uint32_t>::iterator mIter = set_arguments.begin(); mIter != set_arguments.end(); ++mIter) {
-		//check if query argument is victim of the set
-		if (framework.exists_attack(*mIter, argument)) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-/*===========================================================================================================================================================*/
-/*===========================================================================================================================================================*/
-
 void AF::clear() {
 	attacks.clear();
 	attackers.clear();
@@ -74,6 +58,21 @@ bool AF::delete_attack(uint32_t attacker, uint32_t victim) {
 
 bool AF::exists_attack(uint32_t attacker, uint32_t victim) const {
 	return attacks.count(make_pair(attacker, victim));
+}
+
+/*===========================================================================================================================================================*/
+/*===========================================================================================================================================================*/
+
+bool AF::exists_attack(std::uint32_t argument, std::list<std::uint32_t> &set_arguments) const {
+	//iterate through arguments of the set
+	for (list<uint32_t>::iterator mIter = set_arguments.begin(); mIter != set_arguments.end(); ++mIter) {
+		//check if query argument is victim of the set
+		if (exists_attack(*mIter, argument)) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /*===========================================================================================================================================================*/
