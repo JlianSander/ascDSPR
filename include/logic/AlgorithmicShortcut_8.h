@@ -1,6 +1,6 @@
 #ifndef ALGO_SHORT_8_H
 #define ALGO_SHORT_8_H
-    //#ifdef ASC_8
+    #ifdef ASC_8
     
         #include "AlgorithmicShortcut.h"
         #include "Encoding.h"
@@ -18,5 +18,5 @@
             static void create_clauses(AF &framework, uint32_t query_argument, SatSolver &solver);
             static bool check_each_attacker_has_defender(AF &framework, uint32_t query_argument);
         };
-    //#endif
+    #endif
 #endif

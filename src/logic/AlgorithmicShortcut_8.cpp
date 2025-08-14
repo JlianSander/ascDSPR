@@ -1,4 +1,4 @@
-//#ifdef ASC_8
+#ifdef ASC_8
     #include "../../include/logic/AlgorithmicShortcut_8.h"
 #include "AlgorithmicShortcut_8.h"
 
@@ -6,6 +6,12 @@ acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query
 {
     // check if there is at least one attacker of q
     if (framework.attackers[query_argument].size() == 0)
+    {
+        return acceptance_result::unknown;
+    }
+
+    // check if query argument is attacking itself
+    if(framework.self_attack[query_argument])
     {
         return acceptance_result::unknown;
     }
@@ -77,6 +83,12 @@ acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query
             for(uint32_t j = 0; j < defenders.size(); j++)
             {
                 uint32_t defender = defenders[j];
+                //do not process self-attacks
+                if(defender == attacker)
+                {
+                    continue;
+                }
+                                
                 solver.add_clause_short(Encoding::get_literal_aux(framework, i, false),Encoding::get_literal_rejected(framework, defender, true));
             }
         }
@@ -84,4 +96,4 @@ acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query
         solver.add_clause(clause_all_z);
     }
 
-    // #endif
+    #endif

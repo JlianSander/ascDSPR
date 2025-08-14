@@ -25,8 +25,10 @@ int64_t Encoding::get_literal_rejected(AF &framework, uint32_t argument, bool is
 /*===========================================================================================================================================================*/
 /*===========================================================================================================================================================*/
 
-static int64_t get_literal_aux(AF &framework, uint32_t index, bool isPositive)
+int64_t Encoding::get_literal_aux(AF &framework, uint32_t index, bool isPositive)
 {
+	// use offset (2 * framework.num_args), because all arguments are decoded as [1 ... framework.num_args], hence all positive literals are decoded same as the arguments
+    // while all negative literals are decoded as [(framework.num_args + 1) ... (framework.num_args + framework.num_args)]. Therefore use space above neg. literals.
 	int64_t variable = static_cast<int64_t>(index) + 2 * framework.num_args + 1;
 	return isPositive ? variable : -1 * variable;
 }
