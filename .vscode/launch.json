@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/${workspaceFolderBasename}",
-            "args": ["-p","DS-PR","-f","/home/jsander/datasets/misc/test/example_asc_8.i23","-a","4"],
+            "args": ["-p","DS-PR","-f","/home/jsander/datasets/misc/test/example_asc_9.i23","-a","1"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

@@ -100,8 +100,8 @@ void Encoding::add_clauses_nonempty_admissible(SatSolver &solver, AF &framework)
 	vector<int64_t> non_empty_clause;
 
 	//////////////////////////////////////// FOR ALL ARGUMENTS /////////////////////////////////////////////////////////
-	for (std::vector<unsigned int>::size_type i = 1; i < framework.num_args; i++) {
-		uint32_t argument = i;
+	for (std::vector<unsigned int>::size_type i = 0; i < framework.num_args; i++) {
+		uint32_t argument = i + 1;
 		vector<int64_t> legal_out_clause = add_clauses_nonempty_admissible_set_part_one(solver, framework, non_empty_clause, argument);
 
 		//////////////////////////////////////// FOR ALL ATTACKERS /////////////////////////////////////////////////////////
@@ -151,8 +151,8 @@ void Encoding::add_clauses_nonempty_complete(SatSolver &solver, AF &framework)
 	vector<int64_t> non_empty_clause;
 
 	//////////////////////////////////////// FOR ALL ARGUMENTS /////////////////////////////////////////////////////////
-	for (std::vector<unsigned int>::size_type i = 1; i < framework.num_args; i++) {
-		uint32_t argument = i;
+	for (std::vector<unsigned int>::size_type i = 0; i < framework.num_args; i++) {
+		uint32_t argument = i + 1;
 		vector<int64_t> legal_out_clause = add_clauses_nonempty_admissible_set_part_one(solver, framework, non_empty_clause, argument);
 		vector<int64_t> legal_undec_out_clause = create_clause_legal_undec_out(argument);
 
