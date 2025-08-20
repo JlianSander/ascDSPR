@@ -26,7 +26,7 @@ IPASIRSOLVER	?= cadical
 IPASIRLIBDIR	?=	sat/$(IPASIRSOLVER)/build/ 
 
 # Directory to store object files, libraries, executables, and dependencies:
-BUILD_DIR := ./build
+BUILD_DIR := ./build/asc_$(ASC)/
 
 # Paths to the .cpp files
 SRC				=	./src/
