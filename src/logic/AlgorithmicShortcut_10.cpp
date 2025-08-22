@@ -52,6 +52,13 @@
         for (uint32_t i = 0; i < framework.num_args; i++)
         {
             uint32_t argument = i + 1;
+
+            //ensure that self-attacking arguments cannot be self-defending arguments
+            if(framework.self_attack[argument])
+            {
+                continue;
+            }
+
             vector<uint32_t> attackers = framework.attackers[argument];
             bool is_self_defending = true;
             for (uint32_t j = 0; j < framework.attackers[argument].size(); j++)
