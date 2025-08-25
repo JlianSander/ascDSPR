@@ -9,7 +9,7 @@ extern "C" {
 	#include "../../sat/ipasir.h"
 }
 
-#include "../../sat/kissat/src/kissat.h"
+#include <../../sat/kissat/build/kissat>
 
 /// <summary>
 /// This class is responsible for realizing an interface to the SATSolver, an extern program to solve the satisfiability problem (SAT) of a propositional formula.
@@ -18,12 +18,6 @@ class SatSolver {
 public:
 
 	SatSolver();
-
-	/// <summary>
-	/// This method adds a temporary assumption to the solver, which will be deleted after the solver calculates the next solution.
-	/// </summary>
-	/// <param name="clause">Variable the SAT-solver has to assume to be true if positive and false if negative.</param>
-	void add_assumption(int64_t assumption);
 
 	/// <summary>
 	/// Adds a new clause to the SAT-problem of the solver. This method is used to define the propositional formula of the SatSolver, which is formulated in conjunctive normal form.
@@ -52,23 +46,8 @@ public:
 	/// <returns> <c>TRUE</c> iff a solution was found. Otherwise <c>FALSE</c></returns>
 	bool solve();
 
-	/// <summary>
-	/// This method calculates an assignment, which evaluates the propositional formula of the SatSolver to true, under the specified assumption.
-	/// </summary>
-	/// <param name="assumption">Variable the SAT-solver has to assume to be true if positive and false if negative.</param>
-	/// <returns> <c>TRUE</c> iff a solution was found. Otherwise <c>FALSE</c></returns>
-	bool solve(int64_t assumption);
-
-	/// <summary>
-	/// This method calculates an assignment, which evaluates the propositional formula of the SatSolver to true, under the specified assumptions.
-	/// </summary>
-	/// <param name="assumption1">Variable the SAT-solver has to assume to be true if positive and false if negative.</param>
-	/// /// <param name="assumption2">Variable the SAT-solver has to assume to be true if positive and false if negative.</param>
-	/// <returns> <c>TRUE</c> iff a solution was found. Otherwise <c>FALSE</c></returns>
-	bool solve(int64_t assumption1, int64_t assumption2);
-
 private:
-	void *_solver;
+	kissat *_solver;
 };
 
 

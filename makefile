@@ -20,7 +20,7 @@ TARGET=$(shell basename "`pwd`")
 ASC	?= 1
 
 # Name of IPASIR solver (library), e.g., cadical
-IPASIRSOLVER	?= cadical
+IPASIRSOLVER	?= kissat
 
 # Path to the IPASIR library (e.g., points to where libcadical.a is)
 IPASIRLIBDIR	?=	sat/$(IPASIRSOLVER)/build/ 
