@@ -9,7 +9,8 @@
         // add encoding for nonempty complete labeling to the SATSolver
         Encoding::add_clauses_nonempty_complete(*solver, framework);
         // ask SAT solver if a nonempty complete labeling lab exists, so that lab(q) = OUT
-        bool exists_complete_labeling = (*solver).solve(Encoding::get_literal_rejected(framework, query_argument, true));
+        (*solver).add_clause_short(Encoding::get_literal_rejected(framework, query_argument, true), 0);
+        bool exists_complete_labeling = (*solver).solve();
 
         if(exists_complete_labeling){
             return acceptance_result::rejected;
