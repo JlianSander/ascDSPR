@@ -9,6 +9,8 @@ extern "C" {
 	#include "../../sat/ipasir.h"
 }
 
+#include "../../sat/kissat/src/kissat.h"
+
 /// <summary>
 /// This class is responsible for realizing an interface to the SATSolver, an extern program to solve the satisfiability problem (SAT) of a propositional formula.
 /// </summary>

@@ -7,8 +7,8 @@
 
 cd sat
 wget https://github.com/arminbiere/kissat/archive/refs/tags/rel-4.0.3.tar.gz
-tar -xvzf kissat-rel-4.0.3.tar.gz
-rm kissat-rel-4.0.3.tar.gz
+tar -xvzf rel-4.0.3.tar.gz
+rm rel-4.0.3.tar.gz
 mv kissat-rel-4.0.3 kissat
 cd kissat
 ./configure && make
