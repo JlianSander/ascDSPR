@@ -6,10 +6,9 @@
 #include <vector>
 
 extern "C" {
-	#include "../../sat/ipasir.h"
+    #include <kissat.h>
+    #include "../../sat/ipasir.h"
 }
-
-#include <../../sat/kissat/build/kissat>
 
 /// <summary>
 /// This class is responsible for realizing an interface to the SATSolver, an extern program to solve the satisfiability problem (SAT) of a propositional formula.

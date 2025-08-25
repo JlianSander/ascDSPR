@@ -22,6 +22,9 @@ ASC	?= 1
 # Name of IPASIR solver (library), e.g., cadical
 IPASIRSOLVER	?= kissat
 
+#Path to the folder of the sat solver (containing the header files)
+IPASIRDIR		?=	sat/$(IPASIRSOLVER)/
+
 # Path to the IPASIR library (e.g., points to where libcadical.a is)
 IPASIRLIBDIR	?=	sat/$(IPASIRSOLVER)/build/ 
 
@@ -35,8 +38,6 @@ SRC_UTIL		=	./src/util/
 
 #Paths to the .h files
 INCLUDE			=	./include/
-INCLUDE_LOGIC	=	./include/logic/
-INCLUDE_UTIL	=	./include/util/
 
 #--------------------------------------------------------------------------#
 # There is usually no need to change something here unless you want to force
@@ -68,7 +69,11 @@ INC_DIRS := $(shell find $(INCLUDE) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 # The -MMD and -MP flags together generate Makefiles for us!
 # These files will have .d instead of .o as the output.
-CPPFLAGS := $(INC_FLAGS) -MMD -MP
+
+INC_DIRS_SOLVER = ./$(IPASIRDIR)src
+INC_FLAGS_SOLVER	:= $(addprefix -I,$(INC_DIRS_SOLVER))
+
+CPPFLAGS := $(INC_FLAGS) $(INC_FLAGS_SOLVER) -MMD -MP
 
 #--------------------------------------------------------------------------#
 # Here comes the real makefile part which needs to be adapted and provide
