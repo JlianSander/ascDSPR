@@ -53,7 +53,7 @@ extern "C" {
 /// Name of the program
 /// </summary>
 constexpr auto PROGRAM_NAME = "ascDSPR";
-constexpr auto VERSIONNUMBER = "0.1";
+constexpr auto VERSIONNUMBER = "1.0";
 
 /// <summary>
 /// Flags used for internal processing.
