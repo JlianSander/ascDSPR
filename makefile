@@ -93,16 +93,13 @@ clean:
 .PHONY: debug
 debug: CXXFLAGS += -DDEBUG -g -O0
 debug: CCFLAGS += -DDEBUG -g -O0
-debug: $(BUILD_DIR)/$(TARGET)
+debug: $(BUILD_DIR)/$(TARGET)_ASC$(ASC)
 
 #--------------------------------------------------------------------------#
 # The executable target (your program).
 #--------------------------------------------------------------------------#
 
 $(BUILD_DIR)/$(TARGET)_ASC$(ASC): $(OBJS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
-
-$(BUILD_DIR)/$(TARGET): $(OBJS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
 
 #--------------------------------------------------------------------------#
