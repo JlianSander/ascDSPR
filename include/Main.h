@@ -12,8 +12,9 @@ extern "C" {
 }
 
 #include "../include/logic/AF.h"
-#include "../include/logic/Parser_iccma.h"
 #include "../include/logic/Enums.h"
+#include "../include/logic/Parser_iccma.h"
+#include "../include/logic/PreProcessor.h"
 
 #if defined(ASC_1)
 	#include "AlgorithmicShortcut_1.h"

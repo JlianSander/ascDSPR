@@ -154,6 +154,13 @@ int static execute(int argc, char **argv)
 		return 1;
 	}
 
+	// preprocessing - reduce framework to the relevant arguments
+#ifdef DO_PREPROC
+	std::unordered_map<uint32_t, uint32_t> args_new_to_old;
+	framework = PreProcessor::calculate_cone_influence(framework, query_argument, args_new_to_old);
+	query_argument = 1;	
+#endif
+
 	ALGO_SHORT_T shortcut;
 	acceptance_result result = shortcut.try_solve(framework, query_argument);
 	// print result

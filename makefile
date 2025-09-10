@@ -19,6 +19,9 @@ TARGET=$(shell basename "`pwd`")
 #The number of the algorithmic shortcut to use. Read from parameter at call e.g. "make ASC=3".
 ASC	?= 1
 
+# if flag is set then apply preprocessing techniques
+PREPROCESSING	?= y
+
 # Name of IPASIR solver (library), e.g., cadical
 IPASIRSOLVER	?= kissat
 
@@ -50,6 +53,10 @@ CXX = g++
 CXXFLAGS ?= -Wall -std=c++11 -D ASC_${ASC}
 LDFLAGS ?= -L$(IPASIRLIBDIR)
 LDLIBS ?= -l$(IPASIRSOLVER)
+
+ifeq ($(PREPROCESSING), y)
+	CXXFLAGS    += -D DO_PREPROC
+endif
 
 # Find all the C and C++ files we want to compile
 # Note the single quotes around the * expressions. The shell will incorrectly expand these otherwise, but we want to send the * directly to the find command.
@@ -93,16 +100,13 @@ clean:
 .PHONY: debug
 debug: CXXFLAGS += -DDEBUG -g -O0
 debug: CCFLAGS += -DDEBUG -g -O0
-debug: $(BUILD_DIR)/$(TARGET)
+debug: $(BUILD_DIR)/$(TARGET)_ASC$(ASC)
 
 #--------------------------------------------------------------------------#
 # The executable target (your program).
 #--------------------------------------------------------------------------#
 
 $(BUILD_DIR)/$(TARGET)_ASC$(ASC): $(OBJS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
-
-$(BUILD_DIR)/$(TARGET): $(OBJS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
 
 #--------------------------------------------------------------------------#
