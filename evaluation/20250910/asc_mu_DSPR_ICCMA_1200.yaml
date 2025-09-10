@@ -1,0 +1,58 @@
+archive: null
+archive_output: null
+benchmark:
+- '1'
+- '2'
+- '3'
+- '4'
+- '5'
+copy_raws: false
+exclude_task: null
+grouping:
+- tag
+- task
+- benchmark_id
+- solver_id
+name: asc_mu_DSPR_ICCMAall_1200
+plot: null
+printing: default
+raw_results_path: /home/jsander/probo2/src/results/asc_mu_DSPR_ICCMAall_1200/raw.csv
+repetitions: 1
+result_format: csv
+save_output: true
+save_to: /home/jsander/experiments/results/asc_mu_DSPR_ICCMAall_1200
+score: all
+significance:
+  non_parametric_post_hoc: null
+  non_parametric_test: null
+  p_adjust: null
+  parametric_post_hoc: null
+  parametric_test: null
+  plot: null
+  table_export: null
+solver:
+- '1'
+- '6'
+- '7'
+- '8'
+- '9'
+- '10'
+- '11'
+- '12'
+- '13'
+- '14'
+- '15'
+solver_options: null
+statistics: all
+status_file_path: /home/jsander/probo2/src/results/asc_mu_DSPR_ICCMAall_1200/status.json
+table_export:
+- txt
+task:
+- DS-PR
+time_measurement: perf_counter
+timeout: 1200
+validation:
+  mode: null
+  plot: null
+  table_export: null
+yaml_file_name: asc_mu_DSPR_ICCMA_1200.yaml
