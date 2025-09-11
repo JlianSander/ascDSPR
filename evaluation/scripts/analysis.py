@@ -1,6 +1,7 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 import sys
+
+import pandas as pd
+
 
 def read_csv_to_dataframe(file_path):
     try:
@@ -17,57 +18,47 @@ def read_csv_to_dataframe(file_path):
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
     if len(sys.argv) != 5:
-        print("Usage: python script.py <file_path> <output_file> <PARX> <timeOut>")
+        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsSummary> <file_path_resultsDetails> <output_file>")
         sys.exit(1)
     
-    file_path = sys.argv[1]
-    output_file = sys.argv[2]
-    X_in_parX = int(sys.argv[3])
-    timeout = int(sys.argv[4])
+    file_path_raw = sys.argv[1]
+    file_path_resultsSummary = sys.argv[2]
+    file_path_resultsDetails = sys.argv[3]
+    output_file = sys.argv[4]
     
-    dataframe = read_csv_to_dataframe(file_path)
+    df_raw = read_csv_to_dataframe(file_path_raw)
+    df_resSum = read_csv_to_dataframe(file_path_resultsSummary)
+    df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
 
+    #print(df_raw.head(10))
+    #print(df_raw.info())
+    #print(df_resSum.head(10))
+    #print(df_resSum.info())
+    print(df_resDetails.info())
+    print(df_resDetails.head(10))
+
+    # for solver in df_resSum["solver_name"].unique():
+    #     for index, row in df_resSum.iterrows():
+    #         if(solver == row.solver_name):
+                #print(row["solver_name"] + " " + row["dataset"])
+
+    #print(df_resSum["solver_name"])
+    # df_new = df_resSum.loc[df_resSum["solver_name"] == "asc_01"]
+    # df_new.index = df_new["dataset"]
+    # print(df_new["number_empty"])
+
+    #print(df_resSum[df_resSum["solver_name"] == "asc_01"][["dataset", "number_empty"]])
+
+     
     # Group DataFrame by the "name" column
-    grouped_dataframe = dataframe.groupby("solver_name")
+    grouped_dataframe = df_raw.groupby("solver_name")
     
-    # Define markers for each group
-    markers = ['o', 's', '^', 'x', '*', '+', 'D', 'v', '>', '<']
-
-    # Set up Matplotlib for producing .tex output
-    plt.rcParams.update({
-        "pgf.texsystem": "pdflatex",
-        "pgf.preamble": r"\usepackage{amsmath}"
-    })
-
-    # Create figure and axis objects
-    fig, ax = plt.subplots()
-
-    # Print the grouped DataFrame
-    for i, (name, group) in enumerate(grouped_dataframe):
-        group = group.sort_values(by="runtime")
-        group = group.reset_index(drop=True)
-        ax.plot(group.index, group["runtime"], marker=markers[i % len(markers)], markersize=5, linewidth=1, label=name)
-
-    ax.axhline(y=timeout, color='r', linestyle='--', label=None)
-
-    # Add labels and title
-    ax.set_xlabel("Instance")
-    ax.set_ylabel("Runtime in s")
-    #ax.set_title("Line Plot of Runtime for Each Group")
-    ax.legend()
-
-    #ax.set_yscale('log')
     
-    # Save plot to file
-    if output_file.endswith(".pgf"):
-        plt.savefig(output_file, format='pgf')
-    elif output_file.endswith(".png"):
-        plt.savefig(output_file)
-    else:
-        raise NameError("Unsupported Output type")
     
     # Create a table with one row for each group
     table_data = []
+    timeout = df_raw.loc[0,"cut_off"]
+    X_in_parX = 2
     for name, group in grouped_dataframe:
         nb_rows = len(group)
         nb_timeouts = group["runtime"].eq(timeout).sum()
@@ -88,4 +79,5 @@ if __name__ == "__main__":
     table_df = pd.DataFrame(table_data, columns=["Algorithm", "N", "#TO", "RTslv", "avgRTslv", "avgRT", "PAR"+ str(X_in_parX), "#err", "RTerr"])
     
     # Save table to file
-    table_df.to_latex(output_file + '_table.tex', index=False)
+    #table_df.to_latex(output_file + '_table.tex', index=False) 
+    
