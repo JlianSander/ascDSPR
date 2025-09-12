@@ -17,43 +17,39 @@ def read_csv_to_dataframe(file_path):
 
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
-    if len(sys.argv) != 5:
-        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsSummary> <file_path_resultsDetails> <output_file>")
+    if len(sys.argv) != 4:
+        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <output_file>")
         sys.exit(1)
     
     file_path_raw = sys.argv[1]
-    file_path_resultsSummary = sys.argv[2]
-    file_path_resultsDetails = sys.argv[3]
-    output_file = sys.argv[4]
+    file_path_resultsDetails = sys.argv[2]
+    output_file = sys.argv[3]
     
     df_raw = read_csv_to_dataframe(file_path_raw)
-    df_resSum = read_csv_to_dataframe(file_path_resultsSummary)
     df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
-
-    #print(df_raw.head(10))
     #print(df_raw.info())
-    #print(df_resSum.head(10))
-    #print(df_resSum.info())
-    print(df_resDetails.info())
-    print(df_resDetails.head(10))
+    #print(df_resDetails.info())
 
-    # for solver in df_resSum["solver_name"].unique():
-    #     for index, row in df_resSum.iterrows():
-    #         if(solver == row.solver_name):
-                #print(row["solver_name"] + " " + row["dataset"])
-
-    #print(df_resSum["solver_name"])
-    # df_new = df_resSum.loc[df_resSum["solver_name"] == "asc_01"]
-    # df_new.index = df_new["dataset"]
-    # print(df_new["number_empty"])
-
-    #print(df_resSum[df_resSum["solver_name"] == "asc_01"][["dataset", "number_empty"]])
+    df_resDetails = df_resDetails.rename(columns={'result':'answer'})
+    df_resDetails = df_resDetails.rename(columns={'dataset':'benchmark_name'})
+    df_rawAnswered = pd.merge(df_raw, df_resDetails, on=['solver_name','task','benchmark_name','instance'], how='left')
+    #print(df_rawAnswered.info())
 
      
-    # Group DataFrame by the "name" column
-    grouped_dataframe = df_raw.groupby("solver_name")
-    
-    
+    # group DataFrame by the solver name
+    grouped_dataframe = df_rawAnswered.groupby("solver_name")
+    # number of answers over all data sets per solver
+    #print(grouped_dataframe['answer'].value_counts())
+    # number of all instances of each solver
+    #print(grouped_dataframe.size())
+
+    df_groupDouble = df_rawAnswered.groupby(['solver_name','benchmark_name'])
+    # number of  answers per data set and per solver
+    df_answerCount = df_groupDouble['answer'].value_counts().unstack(level=1)
+    print(df_answerCount)
+    df_datasetInstTotal = df_groupDouble.size()
+    #TODO how to iterate over the double grouped dataframe
+    #TODO set number of answers in relation to total number of instances in data set
     
     # Create a table with one row for each group
     table_data = []
