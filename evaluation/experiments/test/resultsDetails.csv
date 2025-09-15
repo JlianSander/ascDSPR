@@ -1,4 +1,4 @@
-solver_name,task,dataset,instance,result
+solver_name,task,benchmark_name,instance,answer
 asc_01,DS-PR,iccma15,1004485__826_8__0_1_4__-1244770945,NO
 asc_01,DS-PR,iccma15,105005__283_61__0_2_288__1501667607,NO
 asc_01,DS-PR,iccma15,1066801__777_18__0_4_9__1685411540,NA

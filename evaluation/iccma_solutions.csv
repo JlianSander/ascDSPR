@@ -1,0 +1,6 @@
+benchmark_name,number_instances,number_yes,number_no
+iccma15,192,14,178
+iccma17,300,99,99
+iccma19,326,39,287
+iccma21,480,99,99
+iccma23,329,32,273

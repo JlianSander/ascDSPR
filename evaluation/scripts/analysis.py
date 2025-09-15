@@ -17,27 +17,31 @@ def read_csv_to_dataframe(file_path):
 
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
-    if len(sys.argv) != 4:
-        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <output_file>")
+    if len(sys.argv) != 5:
+        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <file_path_iccma_summary> <output_file>")
         sys.exit(1)
     
     file_path_raw = sys.argv[1]
     file_path_resultsDetails = sys.argv[2]
-    output_file = sys.argv[3]
+    file_path_iccmas = sys.argv[3]
+    output_file = sys.argv[4]
     
     df_raw = read_csv_to_dataframe(file_path_raw)
     df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
+    df_iccmas = read_csv_to_dataframe(file_path_iccmas)
     #print(df_raw.info())
     #print(df_resDetails.info())
+    print(df_iccmas)
 
-    df_resDetails = df_resDetails.rename(columns={'result':'answer'})
-    df_resDetails = df_resDetails.rename(columns={'dataset':'benchmark_name'})
     df_rawAnswered = pd.merge(df_raw, df_resDetails, on=['solver_name','task','benchmark_name','instance'], how='left')
     #print(df_rawAnswered.info())
+    #print(df_rawAnswered)
 
      
     # group DataFrame by the solver name
     grouped_dataframe = df_rawAnswered.groupby("solver_name")
+    
+
     # number of answers over all data sets per solver
     #print(grouped_dataframe['answer'].value_counts())
     # number of all instances of each solver
@@ -46,9 +50,20 @@ if __name__ == "__main__":
     df_groupDouble = df_rawAnswered.groupby(['solver_name','benchmark_name'])
     # number of  answers per data set and per solver
     df_answerCount = df_groupDouble['answer'].value_counts().unstack(level=1)
+    df_answerCount.fillna(0, inplace = True)
     print(df_answerCount)
-    df_datasetInstTotal = df_groupDouble.size()
-    #TODO how to iterate over the double grouped dataframe
+    
+
+    # df_muToksiaGlucose = df_rawAnswered[df_rawAnswered['solver_name'] == 'mu-toksia-glucose']
+    # gr_df_mutoksia = df_muToksiaGlucose.groupby(['benchmark_name'])
+    # df_datasetInstTotal = gr_df_mutoksia.size()
+    # print(df_datasetInstTotal)
+
+    # iterate through each combination of solver and benchmark
+    #for (solver_name, benchmark_name), subdf in df_groupDouble:
+        
+
+    
     #TODO set number of answers in relation to total number of instances in data set
     
     # Create a table with one row for each group

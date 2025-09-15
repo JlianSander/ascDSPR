@@ -16,8 +16,8 @@ dir_1=$1
 output_file=$2
 output_details_file=$3
 
-echo "solver_name,task,dataset,number_files,number_empty,number_yes,number_no" > $output_file
-echo "solver_name,task,dataset,instance,result" > $output_details_file
+echo "solver_name,task,benchmark_name,number_instances,number_empty,number_yes,number_no" > $output_file
+echo "solver_name,task,benchmark_name,instance,answer" > $output_details_file
 
 for folderSolver in "$dir_1"/*/; do
     #echo "$folderSolver"

@@ -1,4 +1,4 @@
-solver_name,task,dataset,number_files,number_empty,number_yes,number_no
+solver_name,task,benchmark_name,number_instances,number_empty,number_yes,number_no
 asc_01,DS-PR,iccma15,192,166,0,26
 asc_01,DS-PR,iccma17,350,305,0,45
 asc_01,DS-PR,iccma19,326,269,0,57
