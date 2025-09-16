@@ -2,70 +2,14 @@ import sys
 
 import pandas as pd
 
-# Method to extract the number of instances with a given answer for each benchmark as a row
-def extract_solution_data(df_iccmas, solution_type):
-    """
-    Extracts solution data for a given solution type ('YES' or 'NO') and returns the corresponding row.
-    
-    Parameters:
-    - df_iccmas: DataFrame containing the benchmark data
-    - solution_type: String, either 'YES' or 'NO' to extract corresponding solution data
-    
-    Returns:
-    - dfrow_solution: A DataFrame containing the extracted solution data for the given type
-    """
-    if solution_type == "YES":
-        s_solution = df_iccmas['number_yes']
-    elif solution_type == "NO":
-        s_solution = df_iccmas['number_no']
-    else:
-        raise ValueError("solution_type must be either 'YES' or 'NO'")
+from parser_iccmaInfo import *
+from analysis_applicability import *
 
-    dfrow_solution = pd.DataFrame(s_solution).T  # .T transposes the series to match the row format
-    dfrow_solution.index = ['solution']
-    
-    return dfrow_solution
 
-# Method to create a table counting the answers of a given type for each solver
-def create_table_number_answers(answerType, df_answers, dfrow_solution, dfrow_total_instances):
-    """
-    Processes the answers, calculates percentages, and returns the updated DataFrame.
-    
-    Parameters:
-    - answerType: string containing 'NO' or 'YES' to indicate which answers are to be processed
-    - df_answers: DataFrame containing the answers for each solver and benchmark
-    - dfrow_solution: Row containing the number of NO-solutions
-    - dfrow_total_instances: Row containing the total number of instances
-    
-    Returns:
-    - df_answers_tmp: DataFrame with the number of answers for each solver, the total instances, and the percentages of answers found of the solver compared to the solution
-    """
-    # Filter out only those rows with answer {answerType}
-    df_answers_tmp = df_answers.xs(answerType, level='answer')
-    
-    # Reorder position of rows so that 'mu-toksia' is at the top
-    dfrow_mu = df_answers_tmp.loc[['mu-toksia-glucose']]
-    df_answers_tmp = df_answers_tmp.drop('mu-toksia-glucose')
-    df_answers_tmp = pd.concat([dfrow_mu, df_answers_tmp])
-    
-    # Add row for total number of instances and row of the solutions to the dataframe
-    df_answers_tmp = pd.concat([dfrow_solution, df_answers_tmp])
-    df_answers_tmp = pd.concat([dfrow_total_instances, df_answers_tmp])
-    
-    # Calculate the sum of the 'solution' row 
-    solution_sum = df_answers_tmp.loc['solution'].sum()
-    
-    # Add an empty column 'percentage'
-    df_answers_tmp['percentage'] = None
-    
-    # Calculate the percentage for each row (except 'solution')
-    for index in df_answers_tmp.index:
-        if index != 'number_instances':
-            row_sum = df_answers_tmp.loc[index].sum()
-            percentage = (row_sum / solution_sum) * 100
-            df_answers_tmp.loc[index, 'percentage'] = percentage
-    
-    return df_answers_tmp 
+# ---------------- CONSTANTS ---------------
+NAME_MUTOSKIA = 'mu-toksia-glucose'
+NAME_COLUMN_PERCENTAGE = 'percentage'
+NAME_ROW_SOLUTION = 'solution'
 
 
 # Method to read a dataframe from a csv file
@@ -95,28 +39,48 @@ if __name__ == "__main__":
     
     # read data frames
     df_raw = read_csv_to_dataframe(file_path_raw)
+
+    # define keys to access data  - Part 1
+    key_benchmarks = df_raw.columns[15]  #'benchmark_name'
+    key_instance = df_raw.columns[4] #'instance'
+    key_solvers = df_raw.columns[0] #'solver_name'
+    key_task = df_raw.columns[6] #'task'
+
+    # read data frames
     df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
     df_iccmas = read_csv_to_dataframe(file_path_iccmas)
-    df_iccmas = df_iccmas.set_index('benchmark_name')
+    df_iccmas = df_iccmas.set_index(key_benchmarks)
+    print(df_raw.info())
+    #print(df_resDetails.info())
+    #print(df_iccmas.info())
+
+    # define keys to access data
+    key_total_number_instances = 'number_instances'
+    
+    
+    key_answer = 'answer'
+    key_YES = 'YES'
+    key_NO = 'NO'
+    key_number_no = 'number_no'
+    key_number_yes = 'number_yes'
+    
 
     # get the total number of instances as a row
-    s_total_instances = df_iccmas['number_instances']
-    dfrow_total_instances = pd.DataFrame(s_total_instances).T  # .T transposes the series to match the row format
-    #dfrow_total_instances.index = [('number_instances', '')]  # Set the correct index for the new row to match the multi-index structure of df_answers
+    dfrow_total_instances = extract_total_number_instances(df_iccmas, key_total_number_instances)
     #print(dfrow_total_instances) #DEBUG
 
     # merge answers with raw data
-    df_rawAnswered = pd.merge(df_raw, df_resDetails, on=['solver_name','task','benchmark_name','instance'], how='left')
+    df_rawAnswered = pd.merge(df_raw, df_resDetails, on=[key_solvers, key_task,key_benchmarks,key_instance], how='left')
      
     # count answers for each solver and each benchmark
-    df_rawSolvBench = df_rawAnswered.groupby(['solver_name','benchmark_name'])
-    df_answers = df_rawSolvBench['answer'].value_counts().unstack(level=1)
+    df_rawSolvBench = df_rawAnswered.groupby([key_solvers,key_benchmarks])
+    df_answers = df_rawSolvBench[key_answer].value_counts().unstack(level=1)
     df_answers = df_answers.fillna(0).astype('int')
     #print(df_answers) #DEBUG
 
     # create the tables for visualizing the number of answered found by each solver
-    print(create_table_number_answers("YES", df_answers, extract_solution_data(df_iccmas, 'YES'), dfrow_total_instances))
-    print(create_table_number_answers("NO", df_answers, extract_solution_data(df_iccmas, 'NO'), dfrow_total_instances))
+    print(create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, key_YES, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION))
+    print(create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, key_NO, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION))
 
     
 
