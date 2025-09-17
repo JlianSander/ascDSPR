@@ -1,11 +1,10 @@
 import sys
-
 import pandas as pd
 
-# Method to create a table counting the answers of a given type for each solver
+
 def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_instances, key_answer, key_answerType, key_benchmarks, key_mutoksia, key_number_instances, key_percentage, key_solution, key_solvers):
     """
-    Processes the answers, calculates percentages, and returns the updated DataFrame.
+    Method to create a table counting the answers of a given type for each solver
     
     Parameters:
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance

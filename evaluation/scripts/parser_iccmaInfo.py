@@ -1,11 +1,9 @@
 import sys
-
 import pandas as pd
 
-# Method to extract the total number of instances per benchmark as a row
 def extract_total_number_instances(df_iccmas, keyColumn):
     """
-    Extracts the total number of instances per benchmark as a row.
+    Method to extract the total number of instances per benchmark as a row
     
     Parameters:
     - df_iccmas: DataFrame containing the benchmark data
@@ -18,10 +16,9 @@ def extract_total_number_instances(df_iccmas, keyColumn):
     dfrow_num_instances = pd.DataFrame(s_total_instances).T  # .T transposes the series to match the row format
     return dfrow_num_instances
 
-# Method to extract the number of instances with a given answer for each benchmark as a row
 def extract_solution_data(df_iccmas, key_answerType, indexName):
     """
-    Extracts solution data for a given solution type ('YES' or 'NO') and returns the corresponding row.
+    Method to extract the number of instances with a given answer for each benchmark as a row
     
     Parameters:
     - df_iccmas: DataFrame containing the benchmark data

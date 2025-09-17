@@ -1,10 +1,9 @@
 import sys
-
 import pandas as pd
 
 from parser_iccmaInfo import *
 from analysis_applicability import *
-
+from analysis_overlap import *
 
 # ---------------- CONSTANTS ---------------
 NAME_MUTOSKIA = 'mu-toksia-glucose'
@@ -12,6 +11,8 @@ NAME_COLUMN_PERCENTAGE = 'percentage'
 NAME_ROW_SOLUTION = 'solution'
 NAME_ANSWER_YES = 'YES'
 NAME_ANSWER_NO = 'NO'
+SUFFIX_ABSOLUTE = 'ABS'
+SUFFIX_PERCENTAGE = '%'
 
 # Method to read a dataframe from a csv file
 def read_csv_to_dataframe(file_path):
@@ -75,13 +76,16 @@ if __name__ == "__main__":
      
     #-------------------------------- creating analysis --------------------------------
 
-    # create the tables for visualizing the number of answered found by each solver
+    # create the tables for visualizing the number of answers found by each solver
     df_tabApplicability_yes = create_table_number_answers(df_rawAnswered, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_YES, 
                                       key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
     df_tabApplicability_no = create_table_number_answers(df_rawAnswered, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_NO, 
                                       key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
+    
+    # create the tables for visualizing the overlap of the applicability of the different solvers
+    df_tabOverlap = create_table_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_solvers, SUFFIX_ABSOLUTE, SUFFIX_PERCENTAGE)
 
-    #print(df_tabApplicability_yes)#DEBUG
+    #print(df_tabOverlap)#DEBUG
 
     # #DEBUG
     # stop=False
