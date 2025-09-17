@@ -1,6 +1,24 @@
 import sys
 import pandas as pd
 
+def count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers):
+    """
+    Method to count the answers of each solver for each benchmark dataset
+    
+    Parameters:
+    - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_solvers: string to access the rows of a specific solver
+    
+    Returns:
+    - df_answers_tmp: DataFrame with the number of answers for each solver for each benchmark dataset
+    """
+
+    df_rawSolvBench = df_rawAnswered.groupby([key_solvers,key_benchmarks])
+    df_answers = df_rawSolvBench[key_answer].value_counts().unstack(level=1)
+    df_answers = df_answers.fillna(0).astype('int')
+    return df_answers
 
 def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_instances, key_answer, key_answerType, key_benchmarks, key_mutoksia, key_number_instances, key_percentage, key_solution, key_solvers):
     """
@@ -24,9 +42,7 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_inst
     """
 
     # count answers for each solver and each benchmark
-    df_rawSolvBench = df_rawAnswered.groupby([key_solvers,key_benchmarks])
-    df_answers = df_rawSolvBench[key_answer].value_counts().unstack(level=1)
-    df_answers = df_answers.fillna(0).astype('int')
+    df_answers = count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers)
 
     # Filter out only those rows with answer {key_answerType}
     df_answers_tmp = df_answers.xs(key_answerType, level=key_answer)

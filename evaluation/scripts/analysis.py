@@ -11,8 +11,10 @@ NAME_COLUMN_PERCENTAGE = 'percentage'
 NAME_ROW_SOLUTION = 'solution'
 NAME_ANSWER_YES = 'YES'
 NAME_ANSWER_NO = 'NO'
-SUFFIX_ABSOLUTE = 'ABS'
-SUFFIX_PERCENTAGE = '%'
+SUFFIX_PERCENTAGE = '_PCT'
+TABLE_FORMAT_OVERLAP_INT = "INT"
+TABLE_FORMAT_OVERLAP_PCT = "PCT"
+TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
 
 # Method to read a dataframe from a csv file
 def read_csv_to_dataframe(file_path):
@@ -72,7 +74,7 @@ if __name__ == "__main__":
     dfrow_total_instances = extract_total_number_instances(df_iccmas, key_total_number_instances)
 
     # merge answers with raw data
-    df_rawAnswered = pd.merge(df_raw, df_resDetails, on=[key_solvers, key_task,key_benchmarks,key_instance], how='left')
+    df_rawAnswered = pd.merge(df_raw, df_resDetails, on=[key_solvers,key_task,key_benchmarks,key_instance], how='left')
      
     #-------------------------------- creating analysis --------------------------------
 
@@ -81,11 +83,21 @@ if __name__ == "__main__":
                                       key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
     df_tabApplicability_no = create_table_number_answers(df_rawAnswered, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_NO, 
                                       key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
+    print(df_tabApplicability_yes) #DEBUG
+    print(df_tabApplicability_no) #DEBUG
     
     # create the tables for visualizing the overlap of the applicability of the different solvers
-    df_tabOverlap = create_table_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_solvers, SUFFIX_ABSOLUTE, SUFFIX_PERCENTAGE)
+    df_tabOverlap_int = create_table_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
+    df_tabOverlap_pct = create_table_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
+    df_tabOverlap_formatted = create_table_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
 
-    #print(df_tabOverlap)#DEBUG
+    #print(df_tabOverlap_int)
+    #print(df_tabOverlap_pct)
+    print(df_tabOverlap_formatted)
+
+    
+
+
 
     # #DEBUG
     # stop=False
