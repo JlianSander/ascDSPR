@@ -73,20 +73,15 @@ if __name__ == "__main__":
     # merge answers with raw data
     df_rawAnswered = pd.merge(df_raw, df_resDetails, on=[key_solvers, key_task,key_benchmarks,key_instance], how='left')
      
-    # count answers for each solver and each benchmark
-    df_rawSolvBench = df_rawAnswered.groupby([key_solvers,key_benchmarks])
-    df_answers = df_rawSolvBench[key_answer].value_counts().unstack(level=1)
-    df_answers = df_answers.fillna(0).astype('int')
-    
     #-------------------------------- creating analysis --------------------------------
 
     # create the tables for visualizing the number of answered found by each solver
-    df_tabApplicability_yes = create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_YES, 
-                                      NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION)
-    df_tabApplicability_no = create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_NO, 
-                                      NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION)
+    df_tabApplicability_yes = create_table_number_answers(df_rawAnswered, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_YES, 
+                                      key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
+    df_tabApplicability_no = create_table_number_answers(df_rawAnswered, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_NO, 
+                                      key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
 
-    
+    #print(df_tabApplicability_yes)#DEBUG
 
     # #DEBUG
     # stop=False
