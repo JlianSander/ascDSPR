@@ -10,7 +10,8 @@ from analysis_applicability import *
 NAME_MUTOSKIA = 'mu-toksia-glucose'
 NAME_COLUMN_PERCENTAGE = 'percentage'
 NAME_ROW_SOLUTION = 'solution'
-
+NAME_ANSWER_YES = 'YES'
+NAME_ANSWER_NO = 'NO'
 
 # Method to read a dataframe from a csv file
 def read_csv_to_dataframe(file_path):
@@ -31,43 +32,43 @@ if __name__ == "__main__":
         print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <file_path_iccma_summary> <output_file>")
         sys.exit(1)
     
+    #-------------------------------- initializing data --------------------------------
+
     # read paths to data
     file_path_raw = sys.argv[1]
     file_path_resultsDetails = sys.argv[2]
     file_path_iccmas = sys.argv[3]
     output_file = sys.argv[4]
     
-    # read data frames
+    # read data frame of raw results from probo
     df_raw = read_csv_to_dataframe(file_path_raw)
 
-    # define keys to access data  - Part 1
+    # read keys from input data frames
     key_benchmarks = df_raw.columns[15]  #'benchmark_name'
     key_instance = df_raw.columns[4] #'instance'
     key_solvers = df_raw.columns[0] #'solver_name'
     key_task = df_raw.columns[6] #'task'
 
-    # read data frames
+    # read data frame from analyzing the .out files of the experiment
     df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
+
+    # read keys from input data frames
+    key_answer = df_resDetails.columns[4] #'answer'
+
+    # read data frame from the general information about the iccma benchmark datasets
     df_iccmas = read_csv_to_dataframe(file_path_iccmas)
     df_iccmas = df_iccmas.set_index(key_benchmarks)
-    print(df_raw.info())
-    #print(df_resDetails.info())
-    #print(df_iccmas.info())
 
-    # define keys to access data
-    key_total_number_instances = 'number_instances'
-    
-    
-    key_answer = 'answer'
-    key_YES = 'YES'
-    key_NO = 'NO'
-    key_number_no = 'number_no'
-    key_number_yes = 'number_yes'
-    
+    # read keys from input data frames
+    key_number_no = df_iccmas.columns[2] #'number_no'
+    key_number_yes = df_iccmas.columns[1] #'number_yes'
+    key_total_number_instances = df_iccmas.columns[0] #'number_instances'
 
+
+    #-------------------------------- preprocessing data --------------------------------
+    
     # get the total number of instances as a row
     dfrow_total_instances = extract_total_number_instances(df_iccmas, key_total_number_instances)
-    #print(dfrow_total_instances) #DEBUG
 
     # merge answers with raw data
     df_rawAnswered = pd.merge(df_raw, df_resDetails, on=[key_solvers, key_task,key_benchmarks,key_instance], how='left')
@@ -76,14 +77,16 @@ if __name__ == "__main__":
     df_rawSolvBench = df_rawAnswered.groupby([key_solvers,key_benchmarks])
     df_answers = df_rawSolvBench[key_answer].value_counts().unstack(level=1)
     df_answers = df_answers.fillna(0).astype('int')
-    #print(df_answers) #DEBUG
+    
+    #-------------------------------- creating analysis --------------------------------
 
     # create the tables for visualizing the number of answered found by each solver
-    print(create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, key_YES, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION))
-    print(create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, key_NO, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION))
+    df_tabApplicability_yes = create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_YES, 
+                                      NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION)
+    df_tabApplicability_no = create_table_number_answers(df_answers, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_NO, 
+                                      NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION)
 
     
-
 
     # #DEBUG
     # stop=False
