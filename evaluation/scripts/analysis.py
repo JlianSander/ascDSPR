@@ -21,6 +21,7 @@ TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
 NUM_STD_LIMIT = 3
+NUM_STD_DIGITS = 3
 TITLE_INSTANCES = '#AF'
 TITLE_RUNTIME_MEAN = "mean RT"
 TITLE_RUNTIME_STD = "std RT"
@@ -149,7 +150,7 @@ if __name__ == "__main__":
     # print(df_tabRuntime_intersect_yes)
 
 
-    df_tabRuntime_comparison = create_table_runtime_comparison(df_answeredYES)
+    df_tabRuntime_comparison = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS)
    
     
     # Save table to file
