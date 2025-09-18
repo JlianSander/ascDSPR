@@ -17,6 +17,14 @@ TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
 NUM_STD_LIMIT = 3
+TITLE_INSTANCES = '#AF'
+TITLE_RUNTIME_MEAN = "mean RT"
+TITLE_RUNTIME_STD = "std RT"
+TITLE_RUNTIME_MEAN_CAPPED = "mean RT*"
+TITLE_RUNTIME_STD_CAPPED = "std RT*"
+TITLE_RUNTIME_VBS_COUNT = "#VBS"
+TITLE_SOLVER_VBS = 'VBS'
+
 
 # Method to read a dataframe from a csv file
 def read_csv_to_dataframe(file_path):
@@ -119,9 +127,18 @@ if __name__ == "__main__":
 
     # filter out all rows of the solver 'asc_01'
     df_rawAnsweredNoASC01 = df_rawAnswered[df_rawAnswered['solver_name'] != 'asc_01']
-    
-    create_table_runtime(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, key_runtime, key_solvers, key_task, key_exit_with_error, "iccma23", "DS-PR", timeout, NUM_STD_LIMIT)
+    # analyze runtime of the intersection of instances of solved instances of solvers
+    df_tabRuntime_IntersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, key_runtime, key_solvers, key_exit_with_error, timeout, NUM_STD_LIMIT, True,
+                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
+    print()
+    print("----------------- runtime intersection NO (no asc_01) -----------------")
+    print(df_tabRuntime_IntersectNoASC01_no)
 
+    df_tabRuntime_Intersect_yes = create_table_runtime_intersection(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, key_runtime, key_solvers, key_exit_with_error, timeout, NUM_STD_LIMIT, False,
+                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
+    print()
+    print("----------------- runtime intersection NO -----------------")
+    print(df_tabRuntime_Intersect_yes)
 
 
     # #DEBUG

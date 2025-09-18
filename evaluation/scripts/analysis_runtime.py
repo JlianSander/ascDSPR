@@ -65,6 +65,7 @@ def build_table(df_runtimes, key_contributor, key_VBS, timeout):
 
 def build_vbsCount(df_runtimes, key_contributor):
     s_vbsCount = df_runtimes[[key_contributor]].value_counts()
+    s_vbsCount.index = s_vbsCount.index.map(lambda x: x[0])
     return s_vbsCount
 
 def filter_intersection(df_input, key_benchmarks, key_instance, key_solvers):
@@ -93,7 +94,8 @@ def limit_outliers(df_input, num_stdLimit):
     return df_capped
 
 
-def create_table_runtime(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_instance, key_runtime, key_solvers, key_task, key_exit_with_error, dataset, task, timeout, num_stdLimit):
+def create_table_runtime_intersection(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_instance, key_runtime, key_solvers, key_exit_with_error, timeout, num_stdLimit, show_capped,
+                         title_solver_VBS, title_instances, title_mean, title_std, title_meanCapped, title_stdCapped, title_vbsCount):
     """
     Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
     
@@ -105,29 +107,39 @@ def create_table_runtime(df_rawAnswered, key_answer, key_answerType, key_benchma
     """
 
     key_contributor = 'contributor'
-    key_VBS = 'VBS'
+    key_VBS = title_solver_VBS
+
+    # initialize output dataframe
+    df_output = pd.DataFrame()
 
     # filter to keep only rows with an answer similiar to the given answerType
     df_rawAnswered = df_rawAnswered[df_rawAnswered[key_answer] == key_answerType]
+
+    # prepare data frame
     df_IntersectionAll = filter_intersection(df_rawAnswered, key_benchmarks, key_instance, key_solvers)
     df_IntersectionAll = df_IntersectionAll.astype({key_runtime: 'float'})
     df_IntersectionAllRunTime = sanitize_dataframe(df_IntersectionAll, key_exit_with_error, key_runtime, timeout)
     df_IntersectionAllRunTime = restructure_dataframe(df_IntersectionAllRunTime, key_solvers, key_runtime)
     
+    # compute the virtual best solver
     df_IntersectionAllRunTimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS)
-    #print(df_IntersectionAllRunTimeVBS)
+
+    # count contribution to the VBS
     s_vbsCount = build_vbsCount(df_IntersectionAllRunTimeVBS, key_contributor)
-    # print(s_vbsCount)
+    s_vbsCount[key_VBS] = 0 
 
-    df_IntersectionAllRunTimeVBS = df_IntersectionAllRunTimeVBS.drop(columns=[key_contributor])
+    # prepare dataframe to compute statistical values for each solver
+    df_IntersectionAllRunTimeVBS_stripped = df_IntersectionAllRunTimeVBS.drop(columns=[key_contributor])
     
-    # print(df_IntersectionAllRunTimeVBS)
-    # print(df_IntersectionAllRunTimeVBS.mean())
-    # print(df_IntersectionAllRunTimeVBS.std())
-    # df_IntersectionAllRunTimeVBSCapped = limit_outliers(df_IntersectionAllRunTimeVBS, num_stdLimit)
-    # print(df_IntersectionAllRunTimeVBSCapped)
-    # print(df_IntersectionAllRunTimeVBSCapped.mean())
-    # print(df_IntersectionAllRunTimeVBSCapped.std())
+    df_output[title_instances] = df_IntersectionAllRunTimeVBS_stripped.count()
+    df_output[title_mean] = df_IntersectionAllRunTimeVBS_stripped.mean()
+    df_output[title_std] = df_IntersectionAllRunTimeVBS_stripped.std()
+
+    if(show_capped):
+        df_IntersectionAllRunTimeVBSCapped = limit_outliers(df_IntersectionAllRunTimeVBS_stripped, num_stdLimit)
+        df_output[title_meanCapped] = df_IntersectionAllRunTimeVBSCapped.mean()
+        df_output[title_stdCapped] = df_IntersectionAllRunTimeVBSCapped.std()
+
+    df_output[title_vbsCount] = df_output.index.map(s_vbsCount)
     
-
-
+    return df_output  
