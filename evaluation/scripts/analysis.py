@@ -5,6 +5,7 @@ from parser_iccmaInfo import *
 from analysis_applicability import *
 from analysis_overlap import *
 from analysis_runtime import *
+from analysis_runtime_intersection import *
 
 # ---------------- CONSTANTS ---------------
 NAME_MUTOSKIA = 'mu-toksia-glucose'
@@ -128,13 +129,13 @@ if __name__ == "__main__":
     # filter out all rows of the solver 'asc_01'
     df_rawAnsweredNoASC01 = df_rawAnswered[df_rawAnswered['solver_name'] != 'asc_01']
     # analyze runtime of the intersection of instances of solved instances of solvers
-    df_tabRuntime_IntersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, key_runtime, key_solvers, key_exit_with_error, timeout, NUM_STD_LIMIT, True,
+    df_tabRuntime_IntersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
                          TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
     print()
     print("----------------- runtime intersection NO (no asc_01) -----------------")
     print(df_tabRuntime_IntersectNoASC01_no)
 
-    df_tabRuntime_Intersect_yes = create_table_runtime_intersection(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, key_runtime, key_solvers, key_exit_with_error, timeout, NUM_STD_LIMIT, False,
+    df_tabRuntime_Intersect_yes = create_table_runtime_intersection(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
                          TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
     print()
     print("----------------- runtime intersection NO -----------------")

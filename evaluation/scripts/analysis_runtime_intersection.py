@@ -1,0 +1,72 @@
+import sys
+import pandas as pd
+import numpy as np
+
+from analysis_runtime import *
+
+def create_table_runtime_intersection(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
+                         title_solver_VBS, title_instances, title_mean, title_std, title_meanCapped, title_stdCapped, title_vbsCount):
+    """
+    Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
+    
+    Parameters:
+    - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_answer: string to access the answer column
+    - key_answerType: string containing 'NO' or 'YES' to indicate which answers are to be processed
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_exit_with_error: string to access column indicating an error during calculation
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
+    - key_solvers: string to access the rows of a specific solver
+    - timeout: number of seconds after which the calculation was aborted
+    - num_stdLimit: number indicating how many times the standard deviation is add/substracted from the mean value to define a limit for outliers
+    - show_capped: if 'True' the returned data frame contains columns for mean and std with capped values
+    - title_solver_VBS: string used as a title for the row of the VBS solver
+    - title_instances: string used as a title for the column 'number_instances'
+    - title_mean: string used as a title for the column 'mean RT'
+    - title_std: string used as a title for the column 'std RT'
+    - title_meanCapped: string used as a title for the column 'mean RT capped'
+    - title_stdCapped: string used as a title for the column 'std RT capped'
+    - title_vbsCount: string used as a title for the column '#VBS'
+    
+    Returns:
+    - df_answers_tmp: DataFrame visualizing the runtimes of all solvers for instances with the given answerType solution
+    """
+
+    key_contributor = 'contributor'
+    key_VBS = title_solver_VBS
+
+    # initialize output dataframe
+    df_output = pd.DataFrame()
+
+    # filter to keep only rows with an answer similiar to the given answerType
+    df_rawAnswered = df_rawAnswered[df_rawAnswered[key_answer] == key_answerType]
+
+    # prepare data frame
+    df_IntersectionAll = filter_intersection(df_rawAnswered, key_benchmarks, key_instance, key_solvers)
+    df_IntersectionAll = df_IntersectionAll.astype({key_runtime: 'float'})
+    df_IntersectionAllRunTime = sanitize_dataframe(df_IntersectionAll, key_exit_with_error, key_runtime, timeout)
+    df_IntersectionAllRunTime = restructure_dataframe(df_IntersectionAllRunTime, key_solvers, key_runtime)
+    
+    # compute the virtual best solver
+    df_IntersectionAllRunTimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS)
+
+    # count contribution to the VBS
+    s_vbsCount = count_vbsContribution(df_IntersectionAllRunTimeVBS, key_contributor)
+    s_vbsCount[key_VBS] = 0 
+
+    # prepare dataframe to compute statistical values for each solver
+    df_IntersectionAllRunTimeVBS_stripped = df_IntersectionAllRunTimeVBS.drop(columns=[key_contributor])
+    
+    df_output[title_instances] = df_IntersectionAllRunTimeVBS_stripped.count()
+    df_output[title_mean] = df_IntersectionAllRunTimeVBS_stripped.mean()
+    df_output[title_std] = df_IntersectionAllRunTimeVBS_stripped.std()
+
+    if(show_capped):
+        df_IntersectionAllRunTimeVBSCapped = limit_outliers(df_IntersectionAllRunTimeVBS_stripped, num_stdLimit)
+        df_output[title_meanCapped] = df_IntersectionAllRunTimeVBSCapped.mean()
+        df_output[title_stdCapped] = df_IntersectionAllRunTimeVBSCapped.std()
+
+    df_output[title_vbsCount] = df_output.index.map(s_vbsCount)
+    
+    return df_output 
