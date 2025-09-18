@@ -16,6 +16,7 @@ SUFFIX_PERCENTAGE = '_PCT'
 TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
+NUM_STD_LIMIT = 3
 
 # Method to read a dataframe from a csv file
 def read_csv_to_dataframe(file_path):
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     # filter out all rows of the solver 'asc_01'
     df_rawAnsweredNoASC01 = df_rawAnswered[df_rawAnswered['solver_name'] != 'asc_01']
     
-    create_table_runtime(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, key_runtime, key_solvers, key_task, key_exit_with_error, "iccma23", "DS-PR", timeout)
+    create_table_runtime(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, key_runtime, key_solvers, key_task, key_exit_with_error, "iccma23", "DS-PR", timeout, NUM_STD_LIMIT)
 
 
 

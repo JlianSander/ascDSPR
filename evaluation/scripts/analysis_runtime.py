@@ -86,7 +86,18 @@ def filter_intersection(df_input, key_benchmarks, key_instance, key_solvers):
     filtered_df = df_input[df_input.apply(check_row, axis=1)]
     return filtered_df
 
-def create_table_runtime(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_instance, key_runtime, key_solvers, key_task, key_exit_with_error, dataset, task, timeout):
+def limit_outliers(df_input, num_stdLimit):
+    upper_limit = df_input.mean() + num_stdLimit * df_input.std()
+
+    print(upper_limit)
+
+    lower_limit = df_input.mean() - num_stdLimit * df_input.std()
+
+    df_capped = df_input.where(df_input <= upper_limit, upper_limit, axis = 1).where(df_input >= lower_limit, lower_limit, axis = 1)
+    return df_capped
+
+
+def create_table_runtime(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_instance, key_runtime, key_solvers, key_task, key_exit_with_error, dataset, task, timeout, num_stdLimit):
     """
     Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
     
@@ -107,14 +118,18 @@ def create_table_runtime(df_rawAnswered, key_answer, key_answerType, key_benchma
     df_IntersectionAllRunTime = sanitize_dataframe(df_IntersectionAll, key_exit_with_error, key_runtime, timeout)
     df_IntersectionAllRunTime = restructure_dataframe(df_IntersectionAllRunTime, key_solvers, key_runtime)
     
+    # print(df_IntersectionAllRunTime)
+    # print(df_IntersectionAllRunTime.mean())
+    # print(df_IntersectionAllRunTime.std())
+    # df_IntersectionAllRunTimeCapped = limit_outliers(df_IntersectionAllRunTime, num_stdLimit)
+    # print(df_IntersectionAllRunTimeCapped)
+    # print(df_IntersectionAllRunTimeCapped.mean())
+    # print(df_IntersectionAllRunTimeCapped.std())
+
     df_runtimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS)
     s_vbsCount = build_vbsCount(df_runtimeVBS, key_contributor)
-    print(s_vbsCount)
-    print(df_IntersectionAllRunTime)
-    print(df_IntersectionAllRunTime.mean())
-    print(df_IntersectionAllRunTime.std())
-
-
+    # print(s_vbsCount)
+    
     
     
     #print(df_table)
