@@ -4,6 +4,7 @@ import pandas as pd
 from parser_iccmaInfo import *
 from analysis_applicability import *
 from analysis_overlap import *
+from analysis_runtime import *
 
 # ---------------- CONSTANTS ---------------
 NAME_MUTOSKIA = 'mu-toksia-glucose'
@@ -51,6 +52,9 @@ if __name__ == "__main__":
     key_instance = df_raw.columns[4] #'instance'
     key_solvers = df_raw.columns[0] #'solver_name'
     key_task = df_raw.columns[6] #'task'
+    key_runtime = 'runtime'
+    timeout = df_raw.loc[0,"cut_off"]
+    key_exit_with_error = 'exit_with_error'
 
     # read data frame from analyzing the .out files of the experiment
     df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
@@ -112,7 +116,10 @@ if __name__ == "__main__":
     # #print(df_tabOverlap_pct_no)
     # print(df_tabOverlap_formatted_no)
 
+    # filter out all rows of the solver 'asc_01'
+    df_rawAnsweredNoASC01 = df_rawAnswered[df_rawAnswered['solver_name'] != 'asc_01']
     
+    create_table_runtime(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, key_runtime, key_solvers, key_task, key_exit_with_error, "iccma23", "DS-PR", timeout)
 
 
 
@@ -154,7 +161,7 @@ if __name__ == "__main__":
     #grouped_dataframe = df_rawAnswered.groupby("solver_name")
     # # Create a table with one row for each group
     # table_data = []
-    # timeout = df_raw.loc[0,"cut_off"]
+    # 
     # X_in_parX = 2
     # for name, group in grouped_dataframe:
     #     nb_rows = len(group)

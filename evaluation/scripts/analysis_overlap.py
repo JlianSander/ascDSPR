@@ -77,12 +77,10 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
 
     key_solverPair_key = 'solver_pair'
     key_solverPair_value = 'pair_count'
-
+    # filter to keep only rows with an answer similiar to the given answerType
     df_rawAnswered = df_rawAnswered[df_rawAnswered[key_answer] == key_answerType]
-    
+    # calculate the overlap
     df_overlap = calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_muToksia, key_solvers, key_solverPair_key, key_solverPair_value)
-
-
     # count answers for each solver and each benchmark
     df_answers = count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers)
     #df_answers = df_answers.xs(key_answerType, level=key_answer)
