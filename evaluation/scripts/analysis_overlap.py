@@ -78,7 +78,7 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
     key_solverPair_key = 'solver_pair'
     key_solverPair_value = 'pair_count'
 
-    df_rawAnswered = df_rawAnswered[df_rawAnswered['answer'] == key_answerType]
+    df_rawAnswered = df_rawAnswered[df_rawAnswered[key_answer] == key_answerType]
     
     df_overlap = calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_muToksia, key_solvers, key_solverPair_key, key_solverPair_value)
 
