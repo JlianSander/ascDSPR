@@ -58,13 +58,14 @@ def calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
 
 
 
-def create_table_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_muToksia, key_solvers, suffix_percentage, table_format):
+def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_instance, key_muToksia, key_solvers, suffix_percentage, table_format):
     """
     Method to create a table showing the overlap of the applicability between each solver
     
     Parameters:
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - key_answer: string to access the answer column
+    - key_answerType: string containing 'NO' or 'YES' to indicate which answers are to be processed
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_mutoksia: string to access the row of the benchmark-solver
     - key_solvers: string to access the rows of a specific solver
@@ -77,21 +78,26 @@ def create_table_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instanc
     key_solverPair_key = 'solver_pair'
     key_solverPair_value = 'pair_count'
 
+    df_rawAnswered = df_rawAnswered[df_rawAnswered['answer'] == key_answerType]
+    
     df_overlap = calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_muToksia, key_solvers, key_solverPair_key, key_solverPair_value)
+
 
     # count answers for each solver and each benchmark
     df_answers = count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers)
-
+    #df_answers = df_answers.xs(key_answerType, level=key_answer)
     # drop the answers of the benchmark solver
     df_answers = df_answers.drop(index=df_answers[df_answers.index.get_level_values(key_solvers) == key_muToksia].index)
 
     # sum up the number of answers over all benchmark datasets
     s_rowSumsAnswers = df_answers.sum(axis=1)
     s_rowSumsAnswers = s_rowSumsAnswers.groupby(key_solvers).first()
-    #print(s_rowSumsAnswers)
-    #print(" ")
-    #print(" ")
-    #print(df_overlap)  
+
+
+    # print(s_rowSumsAnswers)
+    # print(" ")
+    # print(" ")
+    # print(df_overlap)  
 
     if(table_format == "INT"):
         return populate_tab_overlap_int(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value)

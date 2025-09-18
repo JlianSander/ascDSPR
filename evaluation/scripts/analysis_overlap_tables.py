@@ -73,19 +73,12 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
         pair_count = row[key_solverPair_value]
 
         # Fill the values
-        if(pair_count == 0):
-            df_tabOverLap.at[solver1, solver2] = ""
-            df_tabOverLap.at[solver1, solver2 + suffix_percentage] = " "
-            df_tabOverLap.at[solver2, solver1] = ""
-            df_tabOverLap.at[solver2, solver1 + suffix_percentage] = ""
-        else:
-            df_tabOverLap.at[solver1, solver2] = pair_count.__str__() + '/' + s_rowSumsAnswers[solver2].__str__()
-            pct_slv1 = pair_count /s_rowSumsAnswers[solver2] * 100
-            df_tabOverLap.at[solver1, solver2 + suffix_percentage] = f"{pct_slv1:.0f}%"
-            df_tabOverLap.at[solver2, solver1] = pair_count.__str__() + '/' + s_rowSumsAnswers[solver1].__str__()
-            pct_slv2 = pair_count / s_rowSumsAnswers[solver1] * 100
-            df_tabOverLap.at[solver2, solver1 + suffix_percentage] = f"{pct_slv2:.0f}%"
-            
+        df_tabOverLap.at[solver1, solver2] = pair_count.__str__() + '/' + s_rowSumsAnswers[solver2].__str__()
+        pct_slv1 = pair_count /s_rowSumsAnswers[solver2] * 100
+        df_tabOverLap.at[solver1, solver2 + suffix_percentage] = f"{pct_slv1:.0f}%"
+        df_tabOverLap.at[solver2, solver1] = pair_count.__str__() + '/' + s_rowSumsAnswers[solver1].__str__()
+        pct_slv2 = pair_count / s_rowSumsAnswers[solver1] * 100
+        df_tabOverLap.at[solver2, solver1 + suffix_percentage] = f"{pct_slv2:.0f}%" 
         df_tabOverLap.at[solver1, solver1] = ' '
         df_tabOverLap.at[solver1, solver1 + suffix_percentage] = ' '
         df_tabOverLap.at[solver2, solver2] = ' '
