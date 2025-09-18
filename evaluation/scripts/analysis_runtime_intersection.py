@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 
 from analysis_runtime import *
+from analysis_util import *
 
 def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
                          title_solver_VBS, title_instances, title_mean, title_std, title_meanCapped, title_stdCapped, title_vbsCount):
