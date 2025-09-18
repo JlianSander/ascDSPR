@@ -100,9 +100,9 @@ if __name__ == "__main__":
     #-------------------------------- creating analysis --------------------------------
 
     # create the tables for visualizing the number of answers found by each solver
-    df_tabApplicability_yes = create_table_number_answers(df_rawAnswered, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_YES, 
+    df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer,  
                                       key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
-    df_tabApplicability_no = create_table_number_answers(df_rawAnswered, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer, NAME_ANSWER_NO, 
+    df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer,  
                                       key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
 
     # print()
@@ -138,15 +138,15 @@ if __name__ == "__main__":
     # analyze runtime of the intersection of instances of solved instances of solvers
     df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
                          TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
-    print()
-    print("----------------- runtime intersection NO (no asc_01) -----------------")
-    print(df_tabRuntime_intersectNoASC01_no)
+    # print()
+    # print("----------------- runtime intersection NO (no asc_01) -----------------")
+    # print(df_tabRuntime_intersectNoASC01_no)
 
     df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
                          TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
-    print()
-    print("----------------- runtime intersection NO -----------------")
-    print(df_tabRuntime_intersect_yes)
+    # print()
+    # print("----------------- runtime intersection NO -----------------")
+    # print(df_tabRuntime_intersect_yes)
 
 
     df_tabRuntime_comparison = create_table_runtime_comparison(df_rawAnswered)

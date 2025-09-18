@@ -17,10 +17,11 @@ def count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers):
 
     df_rawSolvBench = df_rawAnswered.groupby([key_solvers,key_benchmarks])
     df_answers = df_rawSolvBench[key_answer].value_counts().unstack(level=1)
+    df_answers.index = df_answers.index.droplevel(key_answer)
     df_answers = df_answers.fillna(0).astype('int')
     return df_answers
 
-def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_instances, key_answer, key_answerType, key_benchmarks, key_mutoksia, key_number_instances, key_percentage, key_solution, key_solvers):
+def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_instances, key_answer, key_benchmarks, key_mutoksia, key_number_instances, key_percentage, key_solution, key_solvers):
     """
     Method to create a table counting the answers of a given type for each solver
     
@@ -29,7 +30,6 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_inst
     - dfrow_solution: Row containing the number of NO-solutions
     - dfrow_total_instances: Row containing the total number of instances
     - key_answer: string to access the answer column
-    - key_answerType: string containing 'NO' or 'YES' to indicate which answers are to be processed
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_mutoksia: string to access the row of the benchmark-solver
     - key_number_instances: string to access the row of the total number of instances per benchmark dataset
@@ -42,10 +42,7 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_inst
     """
 
     # count answers for each solver and each benchmark
-    df_answers = count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers)
-
-    # Filter out only those rows with answer {key_answerType}
-    df_answers_tmp = df_answers.xs(key_answerType, level=key_answer)
+    df_answers_tmp = count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers)
     
     # Reorder position of rows so that 'mu-toksia' is at the top
     dfrow_mu = df_answers_tmp.loc[[key_mutoksia]]
@@ -69,4 +66,7 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_inst
             percentage = (row_sum / solution_sum) * 100
             df_answers_tmp.loc[index, key_percentage] = percentage
     
+    # format NaN values
+    df_answers_tmp = df_answers_tmp.fillna(0)
+
     return df_answers_tmp 
