@@ -36,7 +36,7 @@ def populate_tab_overlap_int(df_overlap, s_rowSumsAnswers, key_solverPair_key, k
         df_tabOverLap.at[solver2, solver2] = s_rowSumsAnswers[solver2]
 
     # convert to integers
-    df_tabOverLap = df_tabOverLap.astype('int')
+    df_tabOverLap = df_tabOverLap.fillna(0).astype('int')
     return df_tabOverLap
 
 def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, suffix_percentage):
@@ -84,6 +84,7 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
         df_tabOverLap.at[solver2, solver2] = ' '
         df_tabOverLap.at[solver2, solver2 + suffix_percentage] = ' '
 
+    df_tabOverLap = df_tabOverLap.fillna(' ')
     return df_tabOverLap
 
 def populate_tab_overlap_percentage(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value):
@@ -118,4 +119,5 @@ def populate_tab_overlap_percentage(df_overlap, s_rowSumsAnswers, key_solverPair
         df_tabOverLap.at[solver1, solver1] = 100
         df_tabOverLap.at[solver2, solver2] = 100
 
+    df_tabOverLap = df_tabOverLap.fillna(0).astype('float')
     return df_tabOverLap

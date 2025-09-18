@@ -119,8 +119,8 @@ if __name__ == "__main__":
 
     # print()
     # print("----------------- overlap YES -----------------")
-    # #print(df_tabOverlap_int_yes)
-    # #print(df_tabOverlap_pct_yes)
+    # print(df_tabOverlap_int_yes)
+    # print(df_tabOverlap_pct_yes)
     # print(df_tabOverlap_formatted_yes)
 
     df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
@@ -129,8 +129,8 @@ if __name__ == "__main__":
 
     # print()
     # print("----------------- overlap NO -----------------")
-    # #print(df_tabOverlap_int_no)
-    # #print(df_tabOverlap_pct_no)
+    # print(df_tabOverlap_int_no)
+    # print(df_tabOverlap_pct_no)
     # print(df_tabOverlap_formatted_no)
 
     # filter out all rows of the solver 'asc_01'
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     # print(df_tabRuntime_intersect_yes)
 
 
-    df_tabRuntime_comparison = create_table_runtime_comparison(df_rawAnswered)
+    df_tabRuntime_comparison = create_table_runtime_comparison(df_answeredYES)
    
     
     # Save table to file

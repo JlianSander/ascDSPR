@@ -64,5 +64,8 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
         df_output[title_stdCapped] = df_IntersectionAllRunTimeVBSCapped.std()
 
     df_output[title_vbsCount] = df_output.index.map(s_vbsCount)
-    
+
+    # cleaning output df of NaN values
+    df_output[title_vbsCount] = df_output[title_vbsCount].fillna(0).astype('int')
+    df_output = df_output.fillna(0)
     return df_output 

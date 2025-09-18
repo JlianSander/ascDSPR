@@ -31,6 +31,7 @@ def calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
         # filter out the benchmark solver
         if(solver_temp1 == key_muToksia): continue
         for solver_temp2 in unique_solvers[i+1:]:
+            if(solver_temp2 == key_muToksia): continue
             # Filter the dataframe for rows where solver_name is either solver_temp1 or solver_temp2
             df_filtered = df_rawAnswered[df_rawAnswered[key_solvers].isin([solver_temp1, solver_temp2])]
 
@@ -92,10 +93,10 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
     s_rowSumsAnswers = s_rowSumsAnswers.groupby(key_solvers).first()
 
 
-    # print(s_rowSumsAnswers)
-    # print(" ")
-    # print(" ")
-    # print(df_overlap)  
+    #print(s_rowSumsAnswers)
+    #print(" ")
+    #print(" ")
+    #print(df_overlap)  
 
     if(table_format == "INT"):
         return populate_tab_overlap_int(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value)
