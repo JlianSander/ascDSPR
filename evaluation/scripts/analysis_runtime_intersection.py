@@ -4,15 +4,13 @@ import numpy as np
 
 from analysis_runtime import *
 
-def create_table_runtime_intersection(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
+def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
                          title_solver_VBS, title_instances, title_mean, title_std, title_meanCapped, title_stdCapped, title_vbsCount):
     """
     Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
     
     Parameters:
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
-    - key_answer: string to access the answer column
-    - key_answerType: string containing 'NO' or 'YES' to indicate which answers are to be processed
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_exit_with_error: string to access column indicating an error during calculation
     - key_instance: string to access column indicating the framework of the problem instance solved
@@ -38,9 +36,6 @@ def create_table_runtime_intersection(df_rawAnswered, key_answer, key_answerType
 
     # initialize output dataframe
     df_output = pd.DataFrame()
-
-    # filter to keep only rows with an answer similiar to the given answerType
-    df_rawAnswered = df_rawAnswered[df_rawAnswered[key_answer] == key_answerType]
 
     # prepare data frame
     df_IntersectionAll = filter_intersection(df_rawAnswered, key_benchmarks, key_instance, key_solvers)

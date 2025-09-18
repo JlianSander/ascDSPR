@@ -2,10 +2,13 @@ import sys
 import pandas as pd
 
 from parser_iccmaInfo import *
+from analysis_util import *
 from analysis_applicability import *
 from analysis_overlap import *
 from analysis_runtime import *
 from analysis_runtime_intersection import *
+from analysis_runtime_comparison import *
+
 
 # ---------------- CONSTANTS ---------------
 NAME_MUTOSKIA = 'mu-toksia-glucose'
@@ -89,7 +92,11 @@ if __name__ == "__main__":
 
     # merge answers with raw data
     df_rawAnswered = pd.merge(df_raw, df_resDetails, on=[key_solvers,key_task,key_benchmarks,key_instance], how='left')
-     
+
+    # filter data frame to have only answers of one type
+    df_answeredYES = filter_by_answer(df_rawAnswered, key_answer, NAME_ANSWER_YES)
+    df_answeredNO = filter_by_answer(df_rawAnswered, key_answer, NAME_ANSWER_NO)
+
     #-------------------------------- creating analysis --------------------------------
 
     # create the tables for visualizing the number of answers found by each solver
@@ -127,79 +134,23 @@ if __name__ == "__main__":
     # print(df_tabOverlap_formatted_no)
 
     # filter out all rows of the solver 'asc_01'
-    df_rawAnsweredNoASC01 = df_rawAnswered[df_rawAnswered['solver_name'] != 'asc_01']
+    df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
     # analyze runtime of the intersection of instances of solved instances of solvers
-    df_tabRuntime_IntersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_answer, NAME_ANSWER_NO, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
+    df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
                          TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
     print()
     print("----------------- runtime intersection NO (no asc_01) -----------------")
-    print(df_tabRuntime_IntersectNoASC01_no)
+    print(df_tabRuntime_intersectNoASC01_no)
 
-    df_tabRuntime_Intersect_yes = create_table_runtime_intersection(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
+    df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
                          TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
     print()
     print("----------------- runtime intersection NO -----------------")
-    print(df_tabRuntime_Intersect_yes)
+    print(df_tabRuntime_intersect_yes)
 
 
-    # #DEBUG
-    # stop=False
-    # # iterate through each combination of solver and benchmark
-    # for (solver, benchmark), subdf in df_rawSolvBench:
-    #     #DEBUG
-    #     if stop==True: break
-
-    #     print(f"Processing solver: {solver}, benchmark: {benchmark}")
-    
-    #     if solver not in df_answers.index.get_level_values(0):
-    #         continue
-        
-    #     s_answers = df_answers.loc[(solver, benchmark)]
-
-    #     # Check if 'No' exists in the index
-    #     if 'NO' in s_answers.index:
-    #         #print(f"'NO' exists in the index for solver {solver}, benchmark {benchmark}")
-            
-    #         answers_solver = s_answers['NO']
-    #         answers_solution = df_iccmas.loc[benchmark]['number_no']
-    #         print(f"{answers_solver}/{answers_solution}")
-
-        
-        #if 'YES' in s_answers.index:
-            #print(f"'YES' exists in the index for solver {solver}, benchmark {benchmark}")
-
-        #DEBUG
-        #stop=True
-
-    
-    #TODO set number of answers in relation to total number of instances in data set
-    
-
-
-    # group DataFrame by the solver name
-    #grouped_dataframe = df_rawAnswered.groupby("solver_name")
-    # # Create a table with one row for each group
-    # table_data = []
-    # 
-    # X_in_parX = 2
-    # for name, group in grouped_dataframe:
-    #     nb_rows = len(group)
-    #     nb_timeouts = group["runtime"].eq(timeout).sum()
-    #     nb_empty_runtime_rows = group['runtime'].isna().sum() + (group['runtime'] == '').sum()
-    #     nb_rt_too_high = group["runtime"].apply(lambda x: (x > timeout)).sum()
-    #     nb_errors = nb_empty_runtime_rows + nb_rt_too_high
-    #     nb_timeout_counted = nb_timeouts + nb_rt_too_high
-    #     nb_timeouts_all = nb_timeout_counted + nb_empty_runtime_rows
-        
-    #     delta_rt_too_high = group.loc[group["runtime"] > timeout, "runtime"].sum() - nb_rt_too_high * timeout
-    #     sum_rt_correct = group["runtime"].sum() - delta_rt_too_high
-
-    #     runtime_solved = sum_rt_correct - nb_timeout_counted * timeout
-    #     average_runtime_solved = runtime_solved / (nb_rows - nb_timeouts_all)
-    #     average_runtime = (sum_rt_correct + nb_empty_runtime_rows * timeout)/ nb_rows
-    #     par_X = (runtime_solved + (nb_timeouts_all * X_in_parX * timeout)) / nb_rows
-    #     table_data.append([name, nb_rows, nb_timeouts, round(runtime_solved, 2), round(average_runtime_solved, 2),round(average_runtime, 2), par_X, nb_errors, delta_rt_too_high])
-    # table_df = pd.DataFrame(table_data, columns=["Algorithm", "N", "#TO", "RTslv", "avgRTslv", "avgRT", "PAR"+ str(X_in_parX), "#err", "RTerr"])
+    df_tabRuntime_comparison = create_table_runtime_comparison(df_rawAnswered)
+   
     
     # Save table to file
     #table_df.to_latex(output_file + '_table.tex', index=False) 
