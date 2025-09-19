@@ -6,8 +6,30 @@ from analysis_runtime import *
 from analysis_util import *
 
 
-def analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solvers, timeout, title_VBS):
+def __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solvers, timeout, title_solver_VBS):
+    """
+    Method to compare the solvers runtimes on the intersection of their solved instances
     
+    Parameters:
+    - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_contributor: string to access column of contributors in the data frame of the VBS contributions
+    - key_exit_with_error: string to access column indicating an error during calculation
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
+    - key_solvers: string to access the rows of a specific solver
+    - list_solvers: list of solvers which runtimes are to be compared
+    - timeout: number of seconds after which the calculation was aborted
+    - title_solver_VBS: string used as a title for the row of the VBS solver
+    
+    Returns:
+    (df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount):
+    - df_runtimeMean: data frame of the mean runtime values for the two solver of this comparison
+    - df_runtimeStd: data frame of the standard deviation of the runtime values for the two solver of this comparison
+    - df_runtimeSum: data frame of the sum of the runtime values for the two solver of this comparison
+    - s_vbsCount: series of the number of contributions to the vbs for each solver of this comparison
+    """
+
     # Filter the dataframe for rows where solver_name is either solver1 or solver2
     df_filtered = df_rawAnswered[df_rawAnswered[key_solvers].isin(list_solvers)]
 
@@ -22,11 +44,11 @@ def analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_ex
     df_intersectionVBS = df_intersection.astype({key_runtime: 'float'})
     df_intersectionVBS = sanitize_dataframe(df_intersectionVBS, key_exit_with_error, key_runtime, timeout)
     df_intersectionVBS = restructure_dataframe(df_intersectionVBS, key_solvers, key_runtime)
-    df_intersectionVBS = compute_vbs(df_intersectionVBS, key_contributor, title_VBS)
+    df_intersectionVBS = compute_vbs(df_intersectionVBS, key_contributor, title_solver_VBS)
 
     # count contribution to the VBS
     s_vbsCount = count_vbsContribution(df_intersectionVBS, key_contributor)
-    s_vbsCount[title_VBS] = 0 
+    s_vbsCount[title_solver_VBS] = 0 
 
     # prepare dataframe to compute statistical values for each solver
     df_intersectionVBS = df_intersectionVBS.drop(columns=[key_contributor])
@@ -55,8 +77,28 @@ def analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_ex
 
     return (df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount)
 
-def fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2):
+def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2):
+    """
+    Method to fill the table to visualize a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
+    Parameters:
+    - df_outputMean: OUTPUT data frame of the mean runtime for each solver in each pairwise comparison
+    - df_outputMeanDiff: OUTPUT data frame of the differences between the mean runtime for each pairwise comparison of solvers
+    - df_outputMeanSumPct: OUTPUT data frame of the percentage differences of the runtimes for each pairwise comparison of solvers
+    - df_outputStd: OUTPUT data frame of the standard deviation for each solver in each pairwise comparison
+    - df_outputSum: OUTPUT data frame of the sum of runtimes for each solver in each pairwise comparison
+    - df_outputSumDiff: OUTPUT data frame of the differences between the sum of runtimes for each pairwise comparison of solvers
+    - df_outputVbsCount: OUTPUT data frame of the number of contribution to the VBS for each solver in each pairwise comparison
+    - num_digits_std: number indicating the number of digits displayed for the standard deviation
+    - df_runtimeMean: data frame of the mean runtime values for the two solver of this comparison
+    - df_runtimeStd: data frame of the standard deviation of the runtime values for the two solver of this comparison
+    - df_runtimeSum: data frame of the sum of the runtime values for the two solver of this comparison
+    - s_vbsCount: series of the number of contributions to the vbs for each solver of this comparison
+    - is_under_diagonale: if 'True' the values are written under the diagonal of the table
+    - solver1: first solver of this comparison
+    - solver2: second solver of this comparison
+    """
+
     # retrieve values
     mean_solver1 = df_runtimeMean.loc[solver1]
     mean_solver2 = df_runtimeMean.loc[solver2]
@@ -90,10 +132,28 @@ def fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputS
     #     return
     # # ------------- DEBUG ------------- 
 
-def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, timeout, title_VBS):
-    solvers = sorted(df_rawAnswered[key_solvers].unique().tolist())
+def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, timeout, title_solver_VBS):
+    """
+    Method to create a table visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
+    Parameters:
+    - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_exit_with_error: string to access column indicating an error during calculation
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
+    - key_mutoksia: string to access the row of the benchmark-solver
+    - key_solvers: string to access the rows of a specific solver
+    - num_digits_std: number indicating the number of digits displayed for the standard deviation
+    - timeout: number of seconds after which the calculation was aborted
+    - title_solver_VBS: string used as a title for the row of the VBS solver
+    
+    Returns:
+    - df_answers_tmp: DataFrame visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
+    """
+
     key_contributor = 'contributor'
+    solvers = sorted(df_rawAnswered[key_solvers].unique().tolist())
 
     ## ------------- DEBUG ------------- 
     # print(solvers)
@@ -130,7 +190,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
             # # ------------- DEBUG ------------- 
 
             list_solversForIntersection = [solver1, solver2]
-            res = analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_VBS)
+            res = __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_solver_VBS)
 
             if(len(res) == 0):
                 continue
@@ -149,7 +209,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
             #     return
             # # ------------- DEBUG ------------- 
 
-            fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2)
+            __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2)
 
             
     df_outputMean = df_outputMean.drop(columns=[key_mutoksia])
