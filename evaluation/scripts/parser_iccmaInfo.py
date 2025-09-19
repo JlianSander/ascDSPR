@@ -9,7 +9,7 @@ def extract_total_number_instances(df_iccmas, keyColumn):
     - df_iccmas: DataFrame containing the benchmark data
     
     Returns:
-    - dfrow_num_instances: A DataFrame containing a row of the total number of instances per benchmark
+    - DataFrame containing a row of the total number of instances per benchmark
     """
 
     s_total_instances = df_iccmas[keyColumn]
@@ -26,7 +26,7 @@ def extract_solution_data(df_iccmas, key_answerType, indexName):
     - indexName: String, which is set as the index of the returned dataframe row
     
     Returns:
-    - dfrow_solution: A DataFrame containing the extracted solution data for the given type
+    - DataFrame containing the extracted solution data for the given type
     """
     
     s_solution = df_iccmas[key_answerType]

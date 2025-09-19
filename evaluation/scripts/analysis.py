@@ -34,14 +34,14 @@ TITLE_SOLVER_VBS = 'VBS'
 
 
 ## ------------- DEBUG ------------- 
-PRINT_APP_YES = False
-PRINT_APP_NO = False
-PRINT_OVERLAP_YES = False
-PRINT_OVERLAP_NO = False
+PRINT_APP_YES = True
+PRINT_APP_NO = True
+PRINT_OVERLAP_YES = True
+PRINT_OVERLAP_NO = True
 PRINT_RT_INTERSEC_YES = True
 PRINT_RT_INTERSEC_NO = True
-PRINT_RT_COMP_YES = False
-PRINT_RT_COMP_NO = False
+PRINT_RT_COMP_YES = True
+PRINT_RT_COMP_NO = True
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file

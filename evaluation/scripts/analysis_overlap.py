@@ -17,7 +17,7 @@ def calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
     - key_solvers: string to access the rows of a specific solver
     
     Returns:
-    - df_answers_tmp: DataFrame of the number of overlapping solved instances for each possible pair of solvers
+    - DataFrame of the number of overlapping solved instances for each possible pair of solvers
     """
 
     # Get unique solver names
@@ -73,7 +73,7 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
     - suffix_percentage: string to concatenate after solver name to title the column of percentage values
     
     Returns:
-    - df_answers_tmp: DataFrame showing the absolute and percentage overlap between the different solvers
+    - DataFrame showing the absolute and percentage overlap between the different solvers
     """
 
     key_solverPair_key = 'solver_pair'

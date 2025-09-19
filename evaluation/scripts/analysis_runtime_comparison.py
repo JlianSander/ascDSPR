@@ -43,7 +43,7 @@ def __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_
     # calculate VBS for this intersection
     df_intersectionVBS = df_intersection.astype({key_runtime: 'float'})
     df_intersectionVBS = sanitize_dataframe(df_intersectionVBS, key_exit_with_error, key_runtime, timeout)
-    df_intersectionVBS = restructure_dataframe(df_intersectionVBS, key_solvers, key_runtime)
+    df_intersectionVBS = pivot_dataframe(df_intersectionVBS, key_solvers, key_runtime)
     df_intersectionVBS = compute_vbs(df_intersectionVBS, key_contributor, title_solver_VBS)
 
     # count contribution to the VBS
@@ -97,6 +97,9 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
     - is_under_diagonale: if 'True' the values are written under the diagonal of the table
     - solver1: first solver of this comparison
     - solver2: second solver of this comparison
+
+    Returns:
+    void
     """
 
     # retrieve values
@@ -149,7 +152,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
     - title_solver_VBS: string used as a title for the row of the VBS solver
     
     Returns:
-    - df_answers_tmp: DataFrame visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
+    - DataFrame visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     """
 
     key_contributor = 'contributor'

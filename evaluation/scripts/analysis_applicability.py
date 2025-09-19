@@ -12,7 +12,7 @@ def count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers):
     - key_solvers: string to access the rows of a specific solver
     
     Returns:
-    - df_answers_tmp: DataFrame with the number of answers for each solver for each benchmark dataset
+    - DataFrame with the number of answers for each solver for each benchmark dataset
     """
 
     df_rawSolvBench = df_rawAnswered.groupby([key_solvers,key_benchmarks])
@@ -38,7 +38,7 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_inst
     - key_solvers: string to access the rows of a specific solver
     
     Returns:
-    - df_answers_tmp: DataFrame with the number of answers for each solver, the total instances, and the percentages of answers found of the solver compared to the solution
+    - DataFrame with the number of answers for each solver, the total instances, and the percentages of answers found of the solver compared to the solution
     """
 
     # count answers for each solver and each benchmark

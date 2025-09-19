@@ -14,7 +14,7 @@ def populate_tab_overlap_int(df_overlap, s_rowSumsAnswers, key_solverPair_key, k
     - key_solverPair_value: string to access the values of the dictionary in df_overlap
     
     Returns:
-    - df_answers_tmp: DataFrame showing the absolute (integer) overlap between the different solvers
+    - DataFrame showing the absolute (integer) overlap between the different solvers
     """
 
     # Extract unique solvers of interest
@@ -51,7 +51,7 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
     - suffix_percentage: string to concatenate after solver name to title the column of percentage values
     
     Returns:
-    - df_answers_tmp: DataFrame showing the absolute (formatted string) overlap between the different solvers
+    - DataFrame showing the absolute (formatted string) overlap between the different solvers
     """
 
     # Extract unique solvers of interest
@@ -98,7 +98,7 @@ def populate_tab_overlap_percentage(df_overlap, s_rowSumsAnswers, key_solverPair
     - key_solverPair_value: string to access the values of the dictionary in df_overlap
     
     Returns:
-    - df_answers_tmp: DataFrame showing the percentage overlap between the different solvers
+    - DataFrame showing the percentage overlap between the different solvers
     """
 
     # Extract unique solvers of interest

@@ -31,7 +31,7 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     - title_vbsCount: string used as a title for the column '#VBS'
     
     Returns:
-    - df_answers_tmp: DataFrame visualizing the runtimes of all solvers for instances with the given answerType solution
+    - DataFrame visualizing the runtimes of all solvers for instances with the given answerType solution
     """
 
     key_contributor = 'contributor'
@@ -44,7 +44,7 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     df_IntersectionAll = filter_intersection(df_rawAnswered, key_benchmarks, key_instance, key_solvers)
     df_IntersectionAll = df_IntersectionAll.astype({key_runtime: 'float'})
     df_IntersectionAllRunTime = sanitize_dataframe(df_IntersectionAll, key_exit_with_error, key_runtime, timeout)
-    df_IntersectionAllRunTime = restructure_dataframe(df_IntersectionAllRunTime, key_solvers, key_runtime)
+    df_IntersectionAllRunTime = pivot_dataframe(df_IntersectionAllRunTime, key_solvers, key_runtime)
     
     # compute the virtual best solver
     df_IntersectionAllRunTimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS)

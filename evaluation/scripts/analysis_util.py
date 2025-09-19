@@ -12,19 +12,35 @@ import pandas as pd
 
 
 def filter_by_answer(df_rawAnswered, key_answer, key_answerType):
+    """
+    Method to filter the given data frame to those rows with the given answerType as answer
+    Parameters:
+    - df_input: data frame with a column 'answer'
+    - key_answer: string to access the answer column
+    - key_answerType: string containing 'NO' or 'YES' to indicate which answers are to be processed
+    
+    Returns:
+    - Data frame containing only those rows with the given answerType as answer
+    """
+
     # filter to keep only rows with an answer similiar to the given answerType
     return df_rawAnswered[df_rawAnswered[key_answer] == key_answerType]
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def filter_dataframe(df_input: pd.DataFrame, key_benchmarks, key_task, benchmark: str, problem: str):
-    df_filtered = df_input[df_input[key_task] == problem]
-    df_filtered = df_filtered[df_filtered[key_benchmarks] == benchmark]
-    return df_filtered
-
-#---------------------------------------------------------------------------------------------------------------------------
-
 def filter_intersection(df_input, key_benchmarks, key_instance, key_solvers):
+    """
+    Method to filter the given data frame to those rows which instance has been solved by all solvers
+    Parameters:
+    - df_input: data frame with columns 'key_solvers','key_benchmarks','key_instance'
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_solvers: string to access the rows of a specific solver
+    
+    Returns:
+    - Data frame containing only those rows which instance has been solved by all solvers
+    """
+
     # Create a set of unique pairs of ('benchmark_name', 'instance') for each 'solver_name'
     s_solvedInstances = df_input.groupby(key_solvers).apply(lambda x: set(zip(x[key_benchmarks], x[key_instance])))
     # get the list of solvers
@@ -45,7 +61,16 @@ def filter_intersection(df_input, key_benchmarks, key_instance, key_solvers):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def print_full(x):
-    pd.set_option('display.max_rows', len(x))
-    print(x)
+def print_full(df_input):
+    """
+    Method to print all rows of the given data frame
+    Parameters:
+    - df_input: a nonempty data frame
+    
+    Returns:
+    void
+    """
+
+    pd.set_option('display.max_rows', len(df_input))
+    print(df_input)
     pd.reset_option('display.max_rows')
