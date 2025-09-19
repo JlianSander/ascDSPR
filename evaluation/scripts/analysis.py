@@ -166,8 +166,8 @@ if __name__ == "__main__":
         print("----------------- runtime intersection NO (no asc_01) -----------------")
         print(df_tabRuntime_intersectNoASC01_no)
         
-    df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS)
-    df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS)
+    df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, timeout, TITLE_SOLVER_VBS)
+    df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, timeout, TITLE_SOLVER_VBS)
    
 
     if(PRINT_RT_COMP_YES):

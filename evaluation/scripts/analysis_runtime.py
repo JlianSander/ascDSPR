@@ -48,5 +48,7 @@ def restructure_dataframe(df_input: pd.DataFrame, key_solvers, key_runtime):
 def sanitize_dataframe(df_input: pd.DataFrame, key_exit_with_error, key_runtime, timeout: float) -> pd.DataFrame:
     df_output = df_input.copy()
     df_output.loc[df_output[key_runtime] > timeout, key_runtime] = timeout
-    df_output.loc[df_output[key_exit_with_error] == True, key_runtime] = timeout
+
+    if(key_exit_with_error in df_input.columns):
+        df_output.loc[df_output[key_exit_with_error] == True, key_runtime] = timeout
     return df_output
