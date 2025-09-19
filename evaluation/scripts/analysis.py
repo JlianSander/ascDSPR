@@ -38,8 +38,8 @@ PRINT_OVERLAP_YES = False
 PRINT_OVERLAP_NO = False
 PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
-PRINT_RT_COMP_YES = False
-PRINT_RT_COMP_NO = True
+PRINT_RT_COMP_YES = True
+PRINT_RT_COMP_NO = False
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -190,6 +190,9 @@ if __name__ == "__main__":
         print()
         print(" - mean/sum procentual -")
         print(df_tabRuntime_comparisonNo[2])
+        print()
+        print(" - #VBS -")
+        print(df_tabRuntime_comparisonNo[6])
 
     if(PRINT_RT_COMP_NO):
         print()
@@ -211,6 +214,9 @@ if __name__ == "__main__":
         print()
         print(" - mean/sum procentual -")
         print(df_tabRuntime_comparisonNo[2])
+        print()
+        print(" - #VBS -")
+        print(df_tabRuntime_comparisonNo[6])
 
 
     # Save table to file

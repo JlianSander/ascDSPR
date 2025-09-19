@@ -55,7 +55,8 @@ def analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_ex
 
     return (df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount)
 
-def fill_table(df_outputMean, df_outputMeanDiff, df_outputStd, df_outputSum, df_outputSumDiff, df_outputMeanSumPct, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, is_under_diagonale, solver1, solver2):
+def fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2):
+    
     # retrieve values
     mean_solver1 = df_runtimeMean.loc[solver1]
     mean_solver2 = df_runtimeMean.loc[solver2]
@@ -65,7 +66,8 @@ def fill_table(df_outputMean, df_outputMeanDiff, df_outputStd, df_outputSum, df_
     sum_solver1 = df_runtimeSum.loc[solver1]
     sum_solver2 = df_runtimeSum.loc[solver2]
     sum_diff = sum_solver2 - sum_solver1
-            
+    vbsCount_solver2 = s_vbsCount.loc[solver2]
+    vbsCount_sum =  s_vbsCount.sum()
 
     # fill cells in data frame
     if(is_under_diagonale):
@@ -74,7 +76,8 @@ def fill_table(df_outputMean, df_outputMeanDiff, df_outputStd, df_outputSum, df_
         df_outputStd[solver1][solver2] = f"{std_solver2:.{num_digits_std}f}" + "/" + f"{std_solver1:.{num_digits_std}f}"
         df_outputSum[solver1][solver2] = f"{sum_solver2:.{num_digits_std}f}" + "/" + f"{sum_solver1:.{num_digits_std}f}"
         df_outputSumDiff[solver1][solver2] = sum_diff
-            
+
+    df_outputVbsCount[solver1][solver2] = vbsCount_solver2.__str__() + "/" + vbsCount_sum.__str__()     
     df_outputMeanSumPct[solver1][solver2] = (mean_solver2 / mean_solver1) * 100
             
     # # ------------- DEBUG ------------- 
@@ -92,21 +95,18 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
     
     key_contributor = 'contributor'
 
-    # add VBS as index
-    indexes = solvers.copy()
-    indexes.append(title_VBS)
-
     ## ------------- DEBUG ------------- 
     # print(solvers)
     ## ------------- DEBUG ------------- 
     
     #initialize output dataframe
-    df_outputMean = pd.DataFrame(index=indexes, columns=solvers)
-    df_outputMeanDiff = pd.DataFrame(index=indexes, columns=solvers)
-    df_outputMeanSumPct = pd.DataFrame(index=indexes, columns=solvers)
-    df_outputStd = pd.DataFrame(index=indexes, columns=solvers)
-    df_outputSum = pd.DataFrame(index=indexes, columns=solvers)
-    df_outputSumDiff = pd.DataFrame(index=indexes, columns=solvers)
+    df_outputMean = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputMeanDiff = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputMeanSumPct = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputStd = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputSum = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputSumDiff = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputVbsCount = pd.DataFrame(index=solvers, columns=solvers)
 
     for i, solver1 in enumerate(solvers):
 
@@ -115,23 +115,6 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
         if((solver1 == "asc_01")):
             print_debug = True
         # ------------- DEBUG ------------- 
-
-        # analyse the set of problem instances solved by this solver
-        list_solversForIntersection = [solver1]
-        res = analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_VBS)
-        df_runtimeMean = res[0]
-        df_runtimeStd = res[1]
-        df_runtimeSum = res[2]
-        s_vbsCount = res[3]
-
-        # ------------- DEBUG ------------- 
-        if(print_debug):
-            print(df_runtimeMean)
-            print(df_runtimeStd)
-            print(df_runtimeSum)
-        # ------------- DEBUG -------------
-
-        fill_table(df_outputMean, df_outputMeanDiff, df_outputStd, df_outputSum, df_outputSumDiff, df_outputMeanSumPct, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, True, solver1, title_VBS)
 
         # analyse the intersections of solved problem instances with each of the other solvers
         for solver2 in solvers:
@@ -162,10 +145,11 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
             #     print(df_runtimeMean)
             #     print(df_runtimeStd)
             #     print(df_runtimeSum)
+            #     print(s_vbsCount)
             #     return
             # # ------------- DEBUG ------------- 
 
-            fill_table(df_outputMean, df_outputMeanDiff, df_outputStd, df_outputSum, df_outputSumDiff, df_outputMeanSumPct, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, is_under_diagonale, solver1, solver2)
+            fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2)
 
             
     df_outputMean = df_outputMean.drop(columns=[key_mutoksia])
@@ -180,6 +164,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
     df_outputStd = df_outputStd.fillna('')
     df_outputSum = df_outputSum.fillna('')
     df_outputSumDiff = df_outputSumDiff.fillna('')
+    df_outputVbsCount = df_outputVbsCount.fillna('')
     
     ## ------------- DEBUG ------------- 
     # print(df_outputMean)
@@ -190,4 +175,4 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
     ## ------------- DEBUG ------------- 
 
 
-    return (df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff)
+    return (df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount)
