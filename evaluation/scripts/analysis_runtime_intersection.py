@@ -5,7 +5,7 @@ import numpy as np
 from analysis_runtime import *
 from analysis_util import *
 
-def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
+def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_muToksia, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
                          title_solver_VBS, title_instances, title_mean, title_std, title_sum, title_meanCapped, title_stdCapped, title_sumCapped, title_vbsCount):
     """
     Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
@@ -15,6 +15,7 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_exit_with_error: string to access column indicating an error during calculation
     - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_mutoksia: string to access the rows of the benchmark-solver
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
     - timeout: number of seconds after which the calculation was aborted
@@ -45,6 +46,7 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     df_IntersectionAll = df_IntersectionAll.astype({key_runtime: 'float'})
     df_IntersectionAllRunTime = sanitize_dataframe(df_IntersectionAll, key_exit_with_error, key_runtime, timeout)
     df_IntersectionAllRunTime = pivot_dataframe(df_IntersectionAllRunTime, key_solvers, key_runtime)
+    df_IntersectionAllRunTime = df_IntersectionAllRunTime[[col for col in df_IntersectionAllRunTime.columns if col != key_muToksia] + [key_muToksia]]
     
     # compute the virtual best solver
     df_IntersectionAllRunTimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS)
