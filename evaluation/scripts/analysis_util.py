@@ -42,3 +42,10 @@ def filter_intersection(df_input, key_benchmarks, key_instance, key_solvers):
     df_input.apply(check_row, axis=1)
     filtered_df = df_input[df_input.apply(check_row, axis=1)]
     return filtered_df
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+def print_full(x):
+    pd.set_option('display.max_rows', len(x))
+    print(x)
+    pd.reset_option('display.max_rows')

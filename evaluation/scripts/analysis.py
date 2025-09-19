@@ -109,9 +109,9 @@ if __name__ == "__main__":
     # print()
     # print("----------------- applicability YES -----------------")    
     # print(df_tabApplicability_yes) #DEBUG
-    # print()
-    # print("----------------- applicability NO -----------------")  
-    # print(df_tabApplicability_no) #DEBUG
+    print()
+    print("----------------- applicability NO -----------------")  
+    print(df_tabApplicability_no) #DEBUG
     
     # create the tables for visualizing the overlap of the applicability of the different solvers
     df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
@@ -120,19 +120,19 @@ if __name__ == "__main__":
 
     # print()
     # print("----------------- overlap YES -----------------")
-    # print(df_tabOverlap_int_yes)
-    # print(df_tabOverlap_pct_yes)
+    # # print(df_tabOverlap_int_yes)
+    # # print(df_tabOverlap_pct_yes)
     # print(df_tabOverlap_formatted_yes)
 
     df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
     df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
     df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
 
-    # print()
-    # print("----------------- overlap NO -----------------")
+    print()
+    print("----------------- overlap NO -----------------")
     # print(df_tabOverlap_int_no)
     # print(df_tabOverlap_pct_no)
-    # print(df_tabOverlap_formatted_no)
+    print(df_tabOverlap_formatted_no)
 
     # filter out all rows of the solver 'asc_01'
     df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
@@ -150,9 +150,32 @@ if __name__ == "__main__":
     # print(df_tabRuntime_intersect_yes)
 
 
-    df_tabRuntime_comparison = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS)
+    df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS)
+    df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS)
    
-    
+    # print()
+    # print("----------------- runtime comparison YES -----------------")
+    # print(" - mean -")
+    # print(df_tabRuntime_comparisonYes[0])
+    # print()
+    # print(" - mean procentual -")
+    # print(df_tabRuntime_comparisonYes[1])
+    # print()
+    # print(" - std -")
+    # print(df_tabRuntime_comparisonYes[2])
+
+    print()
+    print("----------------- runtime comparison NO -----------------")
+    print(" - mean -")
+    print(df_tabRuntime_comparisonNo[0])
+    print()
+    print(" - mean procentual -")
+    print(df_tabRuntime_comparisonNo[1])
+    print()
+    print(" - std -")
+    print(df_tabRuntime_comparisonNo[2])
+
+
     # Save table to file
     #table_df.to_latex(output_file + '_table.tex', index=False) 
     
