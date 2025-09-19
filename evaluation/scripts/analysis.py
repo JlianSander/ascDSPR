@@ -169,11 +169,14 @@ if __name__ == "__main__":
     print(" - mean -")
     print(df_tabRuntime_comparisonNo[0])
     print()
-    print(" - mean procentual -")
+    print(" - mean comparison -")
     print(df_tabRuntime_comparisonNo[1])
     print()
-    print(" - std -")
+    print(" - mean comparison procentual -")
     print(df_tabRuntime_comparisonNo[2])
+    print()
+    print(" - std -")
+    print(df_tabRuntime_comparisonNo[3])
 
 
     # Save table to file

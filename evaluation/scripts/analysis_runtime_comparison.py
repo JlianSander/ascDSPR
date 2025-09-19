@@ -14,7 +14,8 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
     
     #initialize output dataframe
     df_outputMean = pd.DataFrame(index=solvers, columns=solvers)
-    df_outputMeanPct = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputMeanComp = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputMeanCompPct = pd.DataFrame(index=solvers, columns=solvers)
     df_outputStd = pd.DataFrame(index=solvers, columns=solvers)
 
     for i, solver1 in enumerate(solvers):
@@ -73,10 +74,15 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
             ## ------------- DEBUG ------------- 
 
             # fill cells in data frame
-            runtime_diff = df_runtimeMean.loc[solver2].values[0] - df_runtimeMean.loc[solver1].values[0]
-            df_outputMean[solver1][solver2] = runtime_diff
-            df_outputMeanPct[solver1][solver2] = (runtime_diff / df_runtimeMean.loc[solver2].values[0]) * 100
-            df_outputStd[solver1][solver2] = f"{df_runtimeStd.loc[solver2].values[0]:.{num_digits_std}f}" + "/" + f"{df_runtimeStd.loc[solver1].values[0]:.{num_digits_std}f}"
+            mean_solver1 = df_runtimeMean.loc[solver1].values[0]
+            mean_solver2 = df_runtimeMean.loc[solver2].values[0]
+            runtime_diff = mean_solver2 - mean_solver1
+            df_outputMean[solver1][solver2] = f"{mean_solver2:.{num_digits_std}f}" + "/" + f"{mean_solver1:.{num_digits_std}f}"
+            df_outputMeanComp[solver1][solver2] = runtime_diff
+            df_outputMeanCompPct[solver1][solver2] = (runtime_diff / df_runtimeMean.loc[solver2].values[0]) * 100
+            std_solver1 = df_runtimeStd.loc[solver1].values[0]
+            std_solver2 = df_runtimeStd.loc[solver2].values[0]
+            df_outputStd[solver1][solver2] = f"{std_solver2:.{num_digits_std}f}" + "/" + f"{std_solver1:.{num_digits_std}f}"
 
             ## ------------- DEBUG ------------- 
             # if(print_debug):
@@ -86,17 +92,19 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
             ## ------------- DEBUG ------------- 
             
     df_outputMean = df_outputMean.drop(columns=[key_mutoksia])
-    df_outputMeanPct = df_outputMeanPct.drop(columns=[key_mutoksia])
+    df_outputMeanComp = df_outputMeanComp.drop(columns=[key_mutoksia])
+    df_outputMeanCompPct = df_outputMeanCompPct.drop(columns=[key_mutoksia])
     df_outputStd = df_outputStd.drop(columns=[key_mutoksia])
     df_outputMean = df_outputMean.fillna('')
-    df_outputMeanPct = df_outputMeanPct.fillna('')
+    df_outputMeanComp = df_outputMeanComp.fillna('')
+    df_outputMeanCompPct = df_outputMeanCompPct.fillna('')
     df_outputStd = df_outputStd.fillna('')
     
     ## ------------- DEBUG ------------- 
     # print(df_outputMean)
-    # print(df_outputMeanPct)
+    # print(df_outputMeanCompPct)
     # print(df_outputStd)
     ## ------------- DEBUG ------------- 
 
 
-    return (df_outputMean, df_outputMeanPct, df_outputStd)
+    return (df_outputMean, df_outputMeanComp, df_outputMeanCompPct, df_outputStd)
