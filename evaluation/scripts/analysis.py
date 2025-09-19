@@ -25,8 +25,10 @@ NUM_STD_DIGITS = 3
 TITLE_INSTANCES = '#AF'
 TITLE_RUNTIME_MEAN = "mean RT"
 TITLE_RUNTIME_STD = "std RT"
+TITLE_RUNTIME_SUM = "sum RT"
 TITLE_RUNTIME_MEAN_CAPPED = "mean RT*"
 TITLE_RUNTIME_STD_CAPPED = "std RT*"
+TITLE_RUNTIME_SUM_CAPPED = "sum RT*"
 TITLE_RUNTIME_VBS_COUNT = "#VBS"
 TITLE_SOLVER_VBS = 'VBS'
 
@@ -36,9 +38,9 @@ PRINT_APP_YES = False
 PRINT_APP_NO = False
 PRINT_OVERLAP_YES = False
 PRINT_OVERLAP_NO = False
-PRINT_RT_INTERSEC_YES = False
-PRINT_RT_INTERSEC_NO = False
-PRINT_RT_COMP_YES = True
+PRINT_RT_INTERSEC_YES = True
+PRINT_RT_INTERSEC_NO = True
+PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
 ## ------------- DEBUG ------------- 
 
@@ -152,9 +154,9 @@ if __name__ == "__main__":
     df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
     # analyze runtime of the intersection of instances of solved instances of solvers
     df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
-                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
+                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_RUNTIME_VBS_COUNT)
     df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
-                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_VBS_COUNT)
+                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_RUNTIME_VBS_COUNT)
     
     if(PRINT_RT_INTERSEC_YES):
         print()

@@ -6,7 +6,7 @@ from analysis_runtime import *
 from analysis_util import *
 
 def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
-                         title_solver_VBS, title_instances, title_mean, title_std, title_meanCapped, title_stdCapped, title_vbsCount):
+                         title_solver_VBS, title_instances, title_mean, title_std, title_sum, title_meanCapped, title_stdCapped, title_sumCapped, title_vbsCount):
     """
     Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
     
@@ -24,8 +24,10 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     - title_instances: string used as a title for the column 'number_instances'
     - title_mean: string used as a title for the column 'mean RT'
     - title_std: string used as a title for the column 'std RT'
+    - title_sum: string used as a title for the column 'sum RT'
     - title_meanCapped: string used as a title for the column 'mean RT capped'
     - title_stdCapped: string used as a title for the column 'std RT capped'
+    - title_sumCapped: string used as a title for the column 'sum RT capped'
     - title_vbsCount: string used as a title for the column '#VBS'
     
     Returns:
@@ -49,7 +51,6 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
 
     # count contribution to the VBS
     s_vbsCount = count_vbsContribution(df_IntersectionAllRunTimeVBS, key_contributor)
-    s_vbsCount[key_VBS] = 0 
 
     # prepare dataframe to compute statistical values for each solver
     df_IntersectionAllRunTimeVBS_stripped = df_IntersectionAllRunTimeVBS.drop(columns=[key_contributor])
@@ -57,15 +58,18 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     df_output[title_instances] = df_IntersectionAllRunTimeVBS_stripped.count()
     df_output[title_mean] = df_IntersectionAllRunTimeVBS_stripped.mean()
     df_output[title_std] = df_IntersectionAllRunTimeVBS_stripped.std()
+    df_output[title_sum] = df_IntersectionAllRunTimeVBS_stripped.sum()
 
     if(show_capped):
         df_IntersectionAllRunTimeVBSCapped = limit_outliers(df_IntersectionAllRunTimeVBS_stripped, num_stdLimit)
         df_output[title_meanCapped] = df_IntersectionAllRunTimeVBSCapped.mean()
         df_output[title_stdCapped] = df_IntersectionAllRunTimeVBSCapped.std()
+        df_output[title_sumCapped] = df_IntersectionAllRunTimeVBSCapped.sum()
 
     df_output[title_vbsCount] = df_output.index.map(s_vbsCount)
 
     # cleaning output df of NaN values
     df_output[title_vbsCount] = df_output[title_vbsCount].fillna(0).astype('int')
+    df_output.loc[key_VBS, title_vbsCount] = ""
     df_output = df_output.fillna(0)
     return df_output 
