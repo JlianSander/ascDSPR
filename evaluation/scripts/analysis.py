@@ -39,7 +39,7 @@ PRINT_OVERLAP_NO = False
 PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
-PRINT_RT_COMP_NO = False
+PRINT_RT_COMP_NO = True
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -174,13 +174,22 @@ if __name__ == "__main__":
         print()
         print("----------------- runtime comparison YES -----------------")
         print(" - mean -")
-        print(df_tabRuntime_comparisonYes[0])
+        print(df_tabRuntime_comparisonNo[0])
         print()
-        print(" - mean procentual -")
-        print(df_tabRuntime_comparisonYes[1])
+        print(" - mean difference -")
+        print(df_tabRuntime_comparisonNo[1])
         print()
         print(" - std -")
-        print(df_tabRuntime_comparisonYes[2])
+        print(df_tabRuntime_comparisonNo[3])
+        print()
+        print(" - sum -")
+        print(df_tabRuntime_comparisonNo[4])
+        print()
+        print(" - sum difference -")
+        print(df_tabRuntime_comparisonNo[5])
+        print()
+        print(" - mean/sum procentual -")
+        print(df_tabRuntime_comparisonNo[2])
 
     if(PRINT_RT_COMP_NO):
         print()
@@ -191,11 +200,17 @@ if __name__ == "__main__":
         print(" - mean difference -")
         print(df_tabRuntime_comparisonNo[1])
         print()
-        print(" - mean procentual -")
-        print(df_tabRuntime_comparisonNo[2])
-        print()
         print(" - std -")
         print(df_tabRuntime_comparisonNo[3])
+        print()
+        print(" - sum -")
+        print(df_tabRuntime_comparisonNo[4])
+        print()
+        print(" - sum difference -")
+        print(df_tabRuntime_comparisonNo[5])
+        print()
+        print(" - mean/sum procentual -")
+        print(df_tabRuntime_comparisonNo[2])
 
 
     # Save table to file

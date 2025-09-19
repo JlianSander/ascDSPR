@@ -14,15 +14,15 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
     
     #initialize output dataframe
     df_outputMean = pd.DataFrame(index=solvers, columns=solvers)
-    df_outputMeanComp = pd.DataFrame(index=solvers, columns=solvers)
-    df_outputMeanPct = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputMeanDiff = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputMeanSumPct = pd.DataFrame(index=solvers, columns=solvers)
     df_outputStd = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputSum = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputSumDiff = pd.DataFrame(index=solvers, columns=solvers)
 
     for i, solver1 in enumerate(solvers):
         for solver2 in solvers:
             if(solver1 == solver2):
-                df_outputMean[solver1][solver1] = "-"
-                df_outputStd[solver1][solver1] = "-"
                 continue
 
             is_under_diagonale = solver2 in solvers[i+1:]
@@ -58,19 +58,20 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
             # # ------------- DEBUG ------------- 
 
             # restructure data frame to be grouped by solvers
-            df_runtimeMean = df_filtered.groupby(key_solvers)
+            df_filtered = df_filtered.groupby(key_solvers)
             
             # # ------------- DEBUG ------------- 
             # if(print_debug):
-            #     for key, item in df_runtimeMean:
-            #         print_full(df_runtimeMean.get_group(key))
+            #     for key, item in df_filtered:
+            #         print_full(df_filtered.get_group(key))
             #         print("\n\n")
             # continue
             # # ------------- DEBUG ------------- 
 
             # calculate mean and std values of the runtimes on these filtered instances
-            df_runtimeMean = df_runtimeMean.mean()
-            df_runtimeStd = df_filtered.groupby(key_solvers).std()
+            df_runtimeMean = df_filtered.mean()
+            df_runtimeStd = df_filtered.std()
+            df_runtimeSum = df_filtered.sum()
 
             # # ------------- DEBUG ------------- 
             # if(print_debug):
@@ -82,19 +83,23 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
             # retrieve values
             mean_solver1 = df_runtimeMean.loc[solver1].values[0]
             mean_solver2 = df_runtimeMean.loc[solver2].values[0]
-            runtime_diff = mean_solver2 - mean_solver1
+            mean_diff = mean_solver2 - mean_solver1
             std_solver1 = df_runtimeStd.loc[solver1].values[0]
             std_solver2 = df_runtimeStd.loc[solver2].values[0]
-            
+            sum_solver1 = df_runtimeSum.loc[solver1].values[0]
+            sum_solver2 = df_runtimeSum.loc[solver2].values[0]
+            sum_diff = sum_solver2 - sum_solver1
             
 
             # fill cells in data frame
             if(is_under_diagonale):
                 df_outputMean[solver1][solver2] = f"{mean_solver2:.{num_digits_std}f}" + "/" + f"{mean_solver1:.{num_digits_std}f}"
-                df_outputMeanComp[solver1][solver2] = runtime_diff
+                df_outputMeanDiff[solver1][solver2] = mean_diff
                 df_outputStd[solver1][solver2] = f"{std_solver2:.{num_digits_std}f}" + "/" + f"{std_solver1:.{num_digits_std}f}"
+                df_outputSum[solver1][solver2] = f"{sum_solver2:.{num_digits_std}f}" + "/" + f"{sum_solver1:.{num_digits_std}f}"
+                df_outputSumDiff[solver1][solver2] = sum_diff
             
-            df_outputMeanPct[solver1][solver2] = (mean_solver2 / mean_solver1) * 100
+            df_outputMeanSumPct[solver1][solver2] = (mean_solver2 / mean_solver1) * 100
             
             
 
@@ -106,18 +111,25 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
             ## ------------- DEBUG ------------- 
             
     df_outputMean = df_outputMean.drop(columns=[key_mutoksia])
-    df_outputMeanComp = df_outputMeanComp.drop(columns=[key_mutoksia])
+    df_outputMeanDiff = df_outputMeanDiff.drop(columns=[key_mutoksia])
     df_outputStd = df_outputStd.drop(columns=[key_mutoksia])
+    df_outputSum = df_outputSum.drop(columns=[key_mutoksia])
+    df_outputSumDiff = df_outputSumDiff.drop(columns=[key_mutoksia])
+
     df_outputMean = df_outputMean.fillna('')
-    df_outputMeanComp = df_outputMeanComp.fillna('')
-    df_outputMeanPct = df_outputMeanPct.fillna('')
+    df_outputMeanDiff = df_outputMeanDiff.fillna('')
+    df_outputMeanSumPct = df_outputMeanSumPct.fillna('')
     df_outputStd = df_outputStd.fillna('')
+    df_outputSum = df_outputSum.fillna('')
+    df_outputSumDiff = df_outputSumDiff.fillna('')
     
     ## ------------- DEBUG ------------- 
     # print(df_outputMean)
-    # print(df_outputMeanPct)
+    # print(df_outputMeanSumPct)
     # print(df_outputStd)
+    # print(df_outputSum)
+    # print(df_outputSumDiff)
     ## ------------- DEBUG ------------- 
 
 
-    return (df_outputMean, df_outputMeanComp, df_outputMeanPct, df_outputStd)
+    return (df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff)
