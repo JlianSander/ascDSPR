@@ -19,15 +19,17 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
     df_outputStd = pd.DataFrame(index=solvers, columns=solvers)
 
     for i, solver1 in enumerate(solvers):
-        for solver2 in solvers[i+1:]:
+        for solver2 in solvers:
             if(solver1 == solver2):
                 df_outputMean[solver1][solver1] = "-"
                 df_outputStd[solver1][solver1] = "-"
                 continue
 
+            is_under_diagonale = solver2 in solvers[i+1:]
+
             # # ------------- DEBUG ------------- 
             # print_debug = False
-            # if((solver2 == "asc_08") & (solver1 == "asc_04")):
+            # if((solver2 == "asc_02")):
             #     print_debug = True
             # # ------------- DEBUG ------------- 
 
@@ -69,23 +71,32 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
             # calculate mean and std values of the runtimes on these filtered instances
             df_runtimeMean = df_runtimeMean.mean()
             df_runtimeStd = df_filtered.groupby(key_solvers).std()
-            
-            ## ------------- DEBUG ------------- 
+
+            # # ------------- DEBUG ------------- 
             # if(print_debug):
             #     print(df_runtimeMean)#DEBUG
             #     print(df_runtimeStd)#DEBUG
-            ## ------------- DEBUG ------------- 
+            #     return
+            # # ------------- DEBUG ------------- 
 
-            # fill cells in data frame
+            # retrieve values
             mean_solver1 = df_runtimeMean.loc[solver1].values[0]
             mean_solver2 = df_runtimeMean.loc[solver2].values[0]
             runtime_diff = mean_solver2 - mean_solver1
-            df_outputMean[solver1][solver2] = f"{mean_solver2:.{num_digits_std}f}" + "/" + f"{mean_solver1:.{num_digits_std}f}"
-            df_outputMeanComp[solver1][solver2] = runtime_diff
-            df_outputMeanPct[solver1][solver2] = (mean_solver2 / mean_solver1) * 100
             std_solver1 = df_runtimeStd.loc[solver1].values[0]
             std_solver2 = df_runtimeStd.loc[solver2].values[0]
-            df_outputStd[solver1][solver2] = f"{std_solver2:.{num_digits_std}f}" + "/" + f"{std_solver1:.{num_digits_std}f}"
+            
+            
+
+            # fill cells in data frame
+            if(is_under_diagonale):
+                df_outputMean[solver1][solver2] = f"{mean_solver2:.{num_digits_std}f}" + "/" + f"{mean_solver1:.{num_digits_std}f}"
+                df_outputMeanComp[solver1][solver2] = runtime_diff
+                df_outputStd[solver1][solver2] = f"{std_solver2:.{num_digits_std}f}" + "/" + f"{std_solver1:.{num_digits_std}f}"
+            
+            df_outputMeanPct[solver1][solver2] = (mean_solver2 / mean_solver1) * 100
+            
+            
 
             ## ------------- DEBUG ------------- 
             # if(print_debug):
@@ -96,7 +107,6 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_instance
             
     df_outputMean = df_outputMean.drop(columns=[key_mutoksia])
     df_outputMeanComp = df_outputMeanComp.drop(columns=[key_mutoksia])
-    df_outputMeanPct = df_outputMeanPct.drop(columns=[key_mutoksia])
     df_outputStd = df_outputStd.drop(columns=[key_mutoksia])
     df_outputMean = df_outputMean.fillna('')
     df_outputMeanComp = df_outputMeanComp.fillna('')
