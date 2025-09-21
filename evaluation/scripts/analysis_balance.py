@@ -5,7 +5,7 @@ import numpy as np
 from analysis_runtime import *
 from analysis_util import *
 
-def __compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers):
+def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers):
     """
     Method to create the data frame containing for each instance and each solver the calculated balance
     
@@ -81,7 +81,7 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     df_muToksia = df_muToksia[[key_instance, key_runtime]]
 
     # compute a dataframe for each instance [rows] and each solver [columns] the calculated balance
-    df_balance = __compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers)
+    df_balance = compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers)
     # add Mu-Toksia as a column with only '0' as entry, since it is compared to itself
     df_balance[key_mutoksia] = 0
     print(df_balance)
