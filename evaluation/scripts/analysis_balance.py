@@ -5,7 +5,34 @@ import numpy as np
 from analysis_runtime import *
 from analysis_util import *
 
-def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_solver_VBS, title_vbsCount):
+def __compute_balance(df, df_muToksia, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, unique_instances, unique_solvers):
+    # create the data frame containing for each instance and each solver the calculated balance
+    df_balance = pd.DataFrame(index=unique_instances, columns=unique_solvers)
+
+    # Iterate through each solver
+    for solverX in unique_solvers:
+
+        # Filter out the rows of this solver
+        solver_rows = df[df[key_solvers] == solverX]
+
+        for _, rowX in solver_rows.iterrows():
+            # set runtime of solver as negative number in the corresponding cell
+            instanceX = rowX[key_instance]
+            df_balance.loc[instanceX, solverX] = rowX[key_runtime]
+            
+            # Check if answer of the solver for this instance was NaN, if not add Mu-Toksia's runtime for this instance
+            if pd.notna(rowX[key_answer]):
+                # Find the corresponding instance solved by Mu_Toksia
+                row_muToksia = df_muToksia[(df_muToksia[key_instance] == instanceX)]
+
+                if not row_muToksia.empty:
+                    # Add the runtime of Mu-Toksia
+                    df_balance.loc[instanceX, solverX] -= row_muToksia.iloc[0][key_runtime]
+
+    return df_balance
+
+
+def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount):
     """
     Method to create a table visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
@@ -28,34 +55,52 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     # Create the output data frame
 
     # get list of the solvers, wihtout Mu-Toksia
-    unique_solvers = df[key_solvers].unique()
+    unique_solvers = sorted(df[key_solvers].unique().tolist())
     unique_solvers = [solver for solver in unique_solvers if solver != key_mutoksia]
-    df_result = pd.DataFrame(index=unique_solvers, columns=[title_balance])
 
-    # Iterate through each solver
-    for solverX in df_result.index:
-        sumX = 0.0
+    # get a list of all instances
+    unique_instances = df[key_instance].unique()
 
-        # Filter out the rows of this solver
-        solver_rows = df[df[key_solvers] == solverX]
+    # get only those rows of Mu-Toksia
+    df_muToksia = df[(df[key_solvers] == key_mutoksia)]
+    df_muToksia = df_muToksia[[key_instance, key_runtime]]
 
-        for _, rowX in solver_rows.iterrows():
-            # Subtract runtime for each row/instance of the solver from the sum
-            sumX -= rowX[key_runtime]
-            instanceX = rowX[key_instance]
-            
-            # Check if answer of the solver for this instance was NaN, if not add Mu-Toksia's runtime for this instance
-            if pd.notna(rowX[key_answer]):
-                # Find the corresponding instance solved by Mu_Toksia
-                rowY = df[(df[key_solvers] == key_mutoksia) & (df[key_instance] == instanceX)]
+    # compute a dataframe for each instance [rows] and each solver [columns] the calculated balance
+    df_balance = __compute_balance(df, df_muToksia, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, unique_instances, unique_solvers)
+    # add Mu-Toksia as a column with only '0' as entry, since it is compared to itself
+    df_balance[key_mutoksia] = 0
+    print(df_balance)
 
-                if not rowY.empty:
-                    # Add the runtime of Mu-Toksia
-                    sumX += rowY.iloc[0][key_runtime]
+    # compute the virtual best solver (VBS)
+    df_balance = df_balance.astype('float')
+    key_contributor = 'contributor'
+    df_vbs = compute_vbs(df_balance, key_contributor, title_solver_VBS, True)
+    print(df_vbs)
 
-        # fill the cell in the result data frame
-        df_result.loc[solverX, title_balance] = sumX
 
-    # Now, df_result contains the 'balance' for each solver.
-    print(df_result)
+    # count the number of contributions to the VBS
+    s_vbsCount = count_vbsContribution(df_vbs, key_contributor)
+    print(s_vbsCount)
 
+    # prepare dataframe to compute statistical values for each solver
+    df_vbs = df_vbs.drop(columns=[key_contributor])
+    print(df_vbs)
+
+    # calculate sum of runtime of Mu-Toksia for comparison
+    df_muToksia = df_muToksia.drop(columns=[key_instance])
+    df_muToksia = df_muToksia.sum()
+    rt_sum_mutoksia = df_muToksia[key_runtime]
+    print(rt_sum_mutoksia)
+
+    # create the table
+    df_table = pd.DataFrame()
+    df_table[title_balance] = df_vbs.sum()
+    df_table[title_resulting_sum_rt] = (rt_sum_mutoksia + df_table[title_balance])
+    df_table[title_pct_change] = (df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100
+    df_table[title_vbsCount] = df_table.index.map(s_vbsCount)
+
+    # cleaning table data frame
+    df_table[title_vbsCount] = df_table[title_vbsCount].fillna(0).astype('int')
+    df_table.loc[title_solver_VBS, title_vbsCount] = ""
+    
+    return df_table

@@ -49,7 +49,7 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     df_IntersectionAllRunTime = df_IntersectionAllRunTime[[col for col in df_IntersectionAllRunTime.columns if col != key_muToksia] + [key_muToksia]]
     
     # compute the virtual best solver
-    df_IntersectionAllRunTimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS)
+    df_IntersectionAllRunTimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS, True)
 
     # count contribution to the VBS
     s_vbsCount = count_vbsContribution(df_IntersectionAllRunTimeVBS, key_contributor)

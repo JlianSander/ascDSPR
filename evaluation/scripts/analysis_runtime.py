@@ -11,13 +11,14 @@ import numpy as np
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def compute_vbs(df_input: pd.DataFrame, key_contributor, key_VBS):
+def compute_vbs(df_input: pd.DataFrame, key_contributor, key_VBS, search_for_min):
     """
     Method to compute the Virtual Best Solver (VBS)
     Parameters:
     - df_input: DataFrame containing for each solver a column and in each row the runtimes of the solvers
     - key_contributor: string to access column of contributors in the data frame of the VBS contributions
     - key_VBS: string used as a title for the column of the VBS solver
+    - search_for_min: if 'True', then the best results are those minimal, otherwise the VBS is constitute of the maximum values
     
     Returns:
     - Data frame: [df_input][key_contributor][key_VBS] indicating which solver contributed to the VBS and the runtime of the VBS
@@ -25,8 +26,13 @@ def compute_vbs(df_input: pd.DataFrame, key_contributor, key_VBS):
 
     df_output = df_input.copy()
     solvers = df_output.columns.tolist()
-    df_output[key_contributor] = df_output.idxmin(axis=1)
-    df_output[key_VBS] = df_output[solvers].min(axis=1)
+
+    if(search_for_min):
+        df_output[key_contributor] = df_output.idxmin(axis=1)
+        df_output[key_VBS] = df_output[solvers].min(axis=1)
+    else:
+        df_output[key_contributor] = df_output.idxmax(axis=1)
+        df_output[key_VBS] = df_output[solvers].max(axis=1)
     return df_output
 
 #---------------------------------------------------------------------------------------------------------------------------

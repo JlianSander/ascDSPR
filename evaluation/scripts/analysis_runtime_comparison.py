@@ -44,7 +44,7 @@ def __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_
     df_intersectionVBS = df_intersection.astype({key_runtime: 'float'})
     df_intersectionVBS = sanitize_dataframe(df_intersectionVBS, key_exit_with_error, key_runtime, timeout)
     df_intersectionVBS = pivot_dataframe(df_intersectionVBS, key_solvers, key_runtime)
-    df_intersectionVBS = compute_vbs(df_intersectionVBS, key_contributor, title_solver_VBS)
+    df_intersectionVBS = compute_vbs(df_intersectionVBS, key_contributor, title_solver_VBS, True)
 
     # count contribution to the VBS
     s_vbsCount = count_vbsContribution(df_intersectionVBS, key_contributor)

@@ -57,5 +57,6 @@
         "streambuf": "cpp",
         "typeinfo": "cpp"
     },
+    "python.REPL.enableREPLSmartSend": false,
     
 }
