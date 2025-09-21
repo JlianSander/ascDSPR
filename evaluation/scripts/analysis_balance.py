@@ -50,7 +50,7 @@ def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_
 
 def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount):
     """
-    Method to create a table visualizing a comparison of the solvers of the given input data frame with the benchmark solver
+    Method to create a table visualizing a comparison of all solvers with the benchmark solver
     
     Parameters:
     - df: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
@@ -66,7 +66,7 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     - title_vbsCount: string used as a title for the column '#VBS'
     
     Returns:
-    - DataFrame visualizing a comparison of the solvers of the given input data frame with the benchmark solver
+    - DataFrame visualizing a comparison of all solvers with the benchmark solver
     """
 
     # get list of the solvers, wihtout Mu-Toksia
@@ -84,28 +84,22 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     df_balance = compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers)
     # add Mu-Toksia as a column with only '0' as entry, since it is compared to itself
     df_balance[key_mutoksia] = 0
-    print(df_balance)
 
     # compute the virtual best solver (VBS)
     df_balance = df_balance.astype('float')
     key_contributor = 'contributor'
     df_vbs = compute_vbs(df_balance, key_contributor, title_solver_VBS, True)
-    print(df_vbs)
-
 
     # count the number of contributions to the VBS
     s_vbsCount = count_vbsContribution(df_vbs, key_contributor)
-    print(s_vbsCount)
 
     # prepare dataframe to compute statistical values for each solver
     df_vbs = df_vbs.drop(columns=[key_contributor])
-    print(df_vbs)
 
     # calculate sum of runtime of Mu-Toksia for comparison
     df_muToksia = df_muToksia.drop(columns=[key_instance])
     df_muToksia = df_muToksia.sum()
     rt_sum_mutoksia = df_muToksia[key_runtime]
-    print(rt_sum_mutoksia)
 
     # create the table
     df_table = pd.DataFrame()

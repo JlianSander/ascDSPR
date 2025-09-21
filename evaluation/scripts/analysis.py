@@ -48,8 +48,9 @@ PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
 PRINT_BL_ALL = True
-PRINT_BL_YES = True
-PRINT_BL_NO = True
+PRINT_BL_YES = False
+PRINT_BL_NO = False
+PRINT_BL_COMBI = True
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -229,29 +230,37 @@ if __name__ == "__main__":
         print(df_tabRuntime_comparisonNo[6])
 
 
-    # df_tab_balance_all = create_table_balance_sheet(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
-    # df_tab_balance_yes = create_table_balance_sheet(df_answeredYES, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
-    # df_tab_balance_no = create_table_balance_sheet(df_answeredNO, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
+    df_tab_balance_all = create_table_balance_sheet(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
+    df_tab_balance_yes = create_table_balance_sheet(df_answeredYES, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
+    df_tab_balance_no = create_table_balance_sheet(df_answeredNO, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
 
-    # if(PRINT_BL_ALL):
-    #     print()
-    #     print("----------------- Balance all -----------------")
-    #     print(df_tab_balance_all)
+    if(PRINT_BL_ALL):
+        print()
+        print("----------------- Balance all -----------------")
+        print(df_tab_balance_all)
 
-    # if(PRINT_BL_YES):
-    #     print()
-    #     print("----------------- Balance only YES -----------------")
-    #     print(df_tab_balance_yes)
+    if(PRINT_BL_YES):
+        print()
+        print("----------------- Balance only YES -----------------")
+        print(df_tab_balance_yes)
 
-    # if(PRINT_BL_NO):
-    #     print()
-    #     print("----------------- Balance only NO -----------------")
-    #     print(df_tab_balance_no)
+    if(PRINT_BL_NO):
+        print()
+        print("----------------- Balance only NO -----------------")
+        print(df_tab_balance_no)
 
-    list_combi = ('asc_01','asc_02','asc_03','asc_04')
-    df_column_balance_combi = create_column_balance_sheet_combination(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, list_combi)
-
-    print(df_column_balance_combi)
+    single_solvers = ('asc_01','asc_02','asc_03','asc_04')
+    combi_01 = ('asc_01','asc_02')
+    combi_02 = ('asc_01','asc_02','asc_03','asc_04')
+    combi_03 = ('asc_04','asc_01','asc_02','asc_03')
+    list_combi = (combi_01, combi_02, combi_03)
+    df_column_balance_combi = create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
+                                                                     TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, 
+                                                                     single_solvers, list_combi)
+    if(PRINT_BL_COMBI):
+        print()
+        print("----------------- Balance combinations -----------------")
+        print(df_column_balance_combi)
 
     # Save table to file
     #table_df.to_latex(output_file + '_table.tex', index=False) 
