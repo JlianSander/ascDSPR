@@ -5,8 +5,24 @@ import numpy as np
 from analysis_runtime import *
 from analysis_util import *
 
-def __compute_balance(df, df_muToksia, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, unique_instances, unique_solvers):
-    # create the data frame containing for each instance and each solver the calculated balance
+def __compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers):
+    """
+    Method to create the data frame containing for each instance and each solver the calculated balance
+    
+    Parameters:
+    - df: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - df_muToksia: subset of the dataframe df, containing only the rows of Mu-Toksia being the solver
+    - key_answer: string to access the answer column
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
+    - key_solvers: string to access the rows of a specific solver
+    - unique_instances: list of all instances in the data frame
+    - unique_solvers: list of all solvers in the data frame
+    
+    Returns:
+    - DataFrame containing for each instance and each solver the calculated balance
+    """
+    
     df_balance = pd.DataFrame(index=unique_instances, columns=unique_solvers)
 
     # Iterate through each solver
@@ -34,25 +50,24 @@ def __compute_balance(df, df_muToksia, key_answer, key_instance, key_mutoksia, k
 
 def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount):
     """
-    Method to create a table visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
+    Method to create a table visualizing a comparison of the solvers of the given input data frame with the benchmark solver
     
     Parameters:
     - df: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
-    - key_benchmarks: string to access the rows of a specific benchmark dataset
-    - key_exit_with_error: string to access column indicating an error during calculation
+    - key_answer: string to access the answer column
     - key_instance: string to access column indicating the framework of the problem instance solved
-    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_mutoksia: string to access the row of the benchmark-solver
+    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
-    - num_digits_std: number indicating the number of digits displayed for the standard deviation
-    - timeout: number of seconds after which the calculation was aborted
+    - title_balance: string used as a title for the column 'Balance'
+    - title_pct_change: string used as a title for the column 'pct Change'
+    - title_resulting_sum_rt: string used as a title for the column 'sum RT', describing the sum of RT if we add the balance and the sum RT of the benchmark solver
     - title_solver_VBS: string used as a title for the row of the VBS solver
+    - title_vbsCount: string used as a title for the column '#VBS'
     
     Returns:
-    - DataFrame visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
+    - DataFrame visualizing a comparison of the solvers of the given input data frame with the benchmark solver
     """
-
-    # Create the output data frame
 
     # get list of the solvers, wihtout Mu-Toksia
     unique_solvers = sorted(df[key_solvers].unique().tolist())
