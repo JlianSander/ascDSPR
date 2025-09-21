@@ -8,6 +8,7 @@ from analysis_overlap import *
 from analysis_runtime import *
 from analysis_runtime_intersection import *
 from analysis_runtime_comparison import *
+from analysis_balance import *
 
 
 # ---------------- CONSTANTS ---------------
@@ -29,19 +30,20 @@ TITLE_RUNTIME_SUM = "sum RT"
 TITLE_RUNTIME_MEAN_CAPPED = "mean RT*"
 TITLE_RUNTIME_STD_CAPPED = "std RT*"
 TITLE_RUNTIME_SUM_CAPPED = "sum RT*"
-TITLE_RUNTIME_VBS_COUNT = "#VBS"
+TITLE_VBS_COUNT = "#VBS"
 TITLE_SOLVER_VBS = 'VBS'
+TITLE_BALANCE = "Balance"
 
 
 ## ------------- DEBUG ------------- 
-PRINT_APP_YES = True
-PRINT_APP_NO = True
-PRINT_OVERLAP_YES = True
-PRINT_OVERLAP_NO = True
-PRINT_RT_INTERSEC_YES = True
-PRINT_RT_INTERSEC_NO = True
-PRINT_RT_COMP_YES = True
-PRINT_RT_COMP_NO = True
+PRINT_APP_YES = False
+PRINT_APP_NO = False
+PRINT_OVERLAP_YES = False
+PRINT_OVERLAP_NO = False
+PRINT_RT_INTERSEC_YES = False
+PRINT_RT_INTERSEC_NO = False
+PRINT_RT_COMP_YES = False
+PRINT_RT_COMP_NO = False
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -113,112 +115,115 @@ if __name__ == "__main__":
 
     #-------------------------------- creating analysis --------------------------------
 
-    # create the tables for visualizing the number of answers found by each solver
-    df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer,  
-                                      key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
-    df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer,  
-                                      key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
-    if(PRINT_APP_YES):
-        print()
-        print("----------------- applicability YES -----------------")    
-        print(df_tabApplicability_yes)
-    if(PRINT_APP_NO):
-        print()
-        print("----------------- applicability NO -----------------")  
-        print(df_tabApplicability_no)
+    # # create the tables for visualizing the number of answers found by each solver
+    # df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_iccmas, key_number_yes, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer,  
+    #                                   key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
+    # df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_iccmas, key_number_no, NAME_ROW_SOLUTION), dfrow_total_instances, key_answer,  
+    #                                   key_benchmarks, NAME_MUTOSKIA, key_total_number_instances, NAME_COLUMN_PERCENTAGE, NAME_ROW_SOLUTION, key_solvers)
+    # if(PRINT_APP_YES):
+    #     print()
+    #     print("----------------- applicability YES -----------------")    
+    #     print(df_tabApplicability_yes)
+    # if(PRINT_APP_NO):
+    #     print()
+    #     print("----------------- applicability NO -----------------")  
+    #     print(df_tabApplicability_no)
     
-    # create the tables for visualizing the overlap of the applicability of the different solvers
-    df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
-    df_tabOverlap_pct_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
-    df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
+    # # create the tables for visualizing the overlap of the applicability of the different solvers
+    # df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
+    # df_tabOverlap_pct_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
+    # df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
 
-    if(PRINT_OVERLAP_YES):
-        print()
-        print("----------------- overlap YES -----------------")
-        # print(df_tabOverlap_int_yes)
-        # print(df_tabOverlap_pct_yes)
-        print(df_tabOverlap_formatted_yes)
+    # if(PRINT_OVERLAP_YES):
+    #     print()
+    #     print("----------------- overlap YES -----------------")
+    #     # print(df_tabOverlap_int_yes)
+    #     # print(df_tabOverlap_pct_yes)
+    #     print(df_tabOverlap_formatted_yes)
 
-    df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
-    df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
-    df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
+    # df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
+    # df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
+    # df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
 
-    if(PRINT_OVERLAP_NO):
-        print()
-        print("----------------- overlap NO -----------------")
-        # print(df_tabOverlap_int_no)
-        # print(df_tabOverlap_pct_no)
-        print(df_tabOverlap_formatted_no)
+    # if(PRINT_OVERLAP_NO):
+    #     print()
+    #     print("----------------- overlap NO -----------------")
+    #     # print(df_tabOverlap_int_no)
+    #     # print(df_tabOverlap_pct_no)
+    #     print(df_tabOverlap_formatted_no)
 
-    # filter out all rows of the solver 'asc_01'
-    df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
-    # analyze runtime of the intersection of instances of solved instances of solvers
-    df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
-                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_RUNTIME_VBS_COUNT)
-    df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
-                         TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_RUNTIME_VBS_COUNT)
+    # # filter out all rows of the solver 'asc_01'
+    # df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
+    # # analyze runtime of the intersection of instances of solved instances of solvers
+    # df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
+    #                      TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT)
+    # df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
+    #                      TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT)
     
-    if(PRINT_RT_INTERSEC_YES):
-        print()
-        print("----------------- runtime intersection YES -----------------")
-        print(df_tabRuntime_intersect_yes)
+    # if(PRINT_RT_INTERSEC_YES):
+    #     print()
+    #     print("----------------- runtime intersection YES -----------------")
+    #     print(df_tabRuntime_intersect_yes)
 
-    if(PRINT_RT_INTERSEC_NO):
-        print()
-        print("----------------- runtime intersection NO (no asc_01) -----------------")
-        print(df_tabRuntime_intersectNoASC01_no)
+    # if(PRINT_RT_INTERSEC_NO):
+    #     print()
+    #     print("----------------- runtime intersection NO (no asc_01) -----------------")
+    #     print(df_tabRuntime_intersectNoASC01_no)
         
-    df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, timeout, TITLE_SOLVER_VBS)
-    df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, timeout, TITLE_SOLVER_VBS)
+    # df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, timeout, TITLE_SOLVER_VBS)
+    # df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, timeout, TITLE_SOLVER_VBS)
    
 
-    if(PRINT_RT_COMP_YES):
-        print()
-        print("----------------- runtime comparison YES -----------------")
-        print(" - mean -")
-        print(df_tabRuntime_comparisonNo[0])
-        print()
-        print(" - mean difference -")
-        print(df_tabRuntime_comparisonNo[1])
-        print()
-        print(" - std -")
-        print(df_tabRuntime_comparisonNo[3])
-        print()
-        print(" - sum -")
-        print(df_tabRuntime_comparisonNo[4])
-        print()
-        print(" - sum difference -")
-        print(df_tabRuntime_comparisonNo[5])
-        print()
-        print(" - mean/sum procentual -")
-        print(df_tabRuntime_comparisonNo[2])
-        print()
-        print(" - #VBS -")
-        print(df_tabRuntime_comparisonNo[6])
+    # if(PRINT_RT_COMP_YES):
+    #     print()
+    #     print("----------------- runtime comparison YES -----------------")
+    #     print(" - mean -")
+    #     print(df_tabRuntime_comparisonNo[0])
+    #     print()
+    #     print(" - mean difference -")
+    #     print(df_tabRuntime_comparisonNo[1])
+    #     print()
+    #     print(" - std -")
+    #     print(df_tabRuntime_comparisonNo[3])
+    #     print()
+    #     print(" - sum -")
+    #     print(df_tabRuntime_comparisonNo[4])
+    #     print()
+    #     print(" - sum difference -")
+    #     print(df_tabRuntime_comparisonNo[5])
+    #     print()
+    #     print(" - mean/sum procentual -")
+    #     print(df_tabRuntime_comparisonNo[2])
+    #     print()
+    #     print(" - #VBS -")
+    #     print(df_tabRuntime_comparisonNo[6])
 
-    if(PRINT_RT_COMP_NO):
-        print()
-        print("----------------- runtime comparison NO -----------------")
-        print(" - mean -")
-        print(df_tabRuntime_comparisonNo[0])
-        print()
-        print(" - mean difference -")
-        print(df_tabRuntime_comparisonNo[1])
-        print()
-        print(" - std -")
-        print(df_tabRuntime_comparisonNo[3])
-        print()
-        print(" - sum -")
-        print(df_tabRuntime_comparisonNo[4])
-        print()
-        print(" - sum difference -")
-        print(df_tabRuntime_comparisonNo[5])
-        print()
-        print(" - mean/sum procentual -")
-        print(df_tabRuntime_comparisonNo[2])
-        print()
-        print(" - #VBS -")
-        print(df_tabRuntime_comparisonNo[6])
+    # if(PRINT_RT_COMP_NO):
+    #     print()
+    #     print("----------------- runtime comparison NO -----------------")
+    #     print(" - mean -")
+    #     print(df_tabRuntime_comparisonNo[0])
+    #     print()
+    #     print(" - mean difference -")
+    #     print(df_tabRuntime_comparisonNo[1])
+    #     print()
+    #     print(" - std -")
+    #     print(df_tabRuntime_comparisonNo[3])
+    #     print()
+    #     print(" - sum -")
+    #     print(df_tabRuntime_comparisonNo[4])
+    #     print()
+    #     print(" - sum difference -")
+    #     print(df_tabRuntime_comparisonNo[5])
+    #     print()
+    #     print(" - mean/sum procentual -")
+    #     print(df_tabRuntime_comparisonNo[2])
+    #     print()
+    #     print(" - #VBS -")
+    #     print(df_tabRuntime_comparisonNo[6])
+
+
+    create_table_balance_sheet(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
 
 
     # Save table to file
