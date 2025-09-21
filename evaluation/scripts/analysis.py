@@ -248,8 +248,10 @@ if __name__ == "__main__":
     #     print("----------------- Balance only NO -----------------")
     #     print(df_tab_balance_no)
 
+    list_combi = ('asc_01','asc_02','asc_03','asc_04')
+    df_column_balance_combi = create_column_balance_sheet_combination(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, list_combi)
 
-    create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
+    print(df_column_balance_combi)
 
     # Save table to file
     #table_df.to_latex(output_file + '_table.tex', index=False) 
