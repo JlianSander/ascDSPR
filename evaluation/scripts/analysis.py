@@ -20,8 +20,10 @@ NAME_ROW_SOLUTION = 'solution'
 NAME_ANSWER_YES = 'YES'
 NAME_ANSWER_NO = 'NO'
 NUM_DIGITS = 2
+NUM_DIGITS_PCT = 0
+NUM_DIGITS_SUM = 0
+NUM_DIGITS_STD = 3
 NUM_STD_LIMIT = 3
-NUM_STD_DIGITS = 3
 SUFFIX_PERCENTAGE = '_PCT'
 TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
@@ -43,8 +45,12 @@ TITLE_BALANCE_SUM_RT = "sum RT"
 ## ------------- DEBUG ------------- 
 PRINT_APP_YES = False
 PRINT_APP_NO = False
-PRINT_OVERLAP_YES = False
-PRINT_OVERLAP_NO = False
+PRINT_OVERLAP_INT_YES = False
+PRINT_OVERLAP_PCT_YES = False
+PRINT_OVERLAP_FORMATTED_YES = False
+PRINT_OVERLAP_INT_NO = False
+PRINT_OVERLAP_PCT_NO = False
+PRINT_OVERLAP_FORMATTED_NO = False
 PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
@@ -73,13 +79,19 @@ def __read_csv_to_dataframe(file_path):
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def __save_df_to_latex(df, dir_path, filename, num_digits):    
+def __save_df_to_latex(df, dir_path, filename, num_digits, suffix):    
     # Full path to the new file
     file_path = os.path.join(dir_path, filename)
     
     # round all float values to have the given number of digits
     df = df.apply(lambda x: x.round(num_digits) if x.dtype == 'float64' else x)
-    df = df.fillna('')
+    if num_digits == 0:
+        df = df.fillna(0).astype('int')
+    else:
+        df = df.fillna('')
+
+    if suffix is not None:
+        df = df.applymap(lambda x: x.__str__() + "%")
 
     # Convert the DataFrame to LaTeX format
     latex_code = df.to_latex(index=True)  # index=False to exclude the DataFrame index
@@ -170,26 +182,38 @@ if __name__ == "__main__":
         print(df_tabApplicability_no)
     
     # create the tables for visualizing the overlap of the applicability of the different solvers
-    df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
-    df_tabOverlap_pct_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
-    df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
+    df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
+    df_tabOverlap_pct_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
+    df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
 
-    if(PRINT_OVERLAP_YES):
+    if(PRINT_OVERLAP_INT_YES):
         print()
-        print("----------------- overlap YES -----------------")
-        # print(df_tabOverlap_int_yes)
-        # print(df_tabOverlap_pct_yes)
+        print("----------------- overlap INT YES -----------------")
+        print(df_tabOverlap_int_yes)
+    if(PRINT_OVERLAP_PCT_YES):
+        print()
+        print("----------------- overlap PCT YES -----------------")
+        print(df_tabOverlap_pct_yes)
+    if(PRINT_OVERLAP_FORMATTED_YES):
+        print()
+        print("----------------- overlap FORMATTED YES -----------------")
         print(df_tabOverlap_formatted_yes)
 
-    df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
-    df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
-    df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
+    df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
+    df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
+    df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
 
-    if(PRINT_OVERLAP_NO):
+    if(PRINT_OVERLAP_INT_NO):
         print()
-        print("----------------- overlap NO -----------------")
-        # print(df_tabOverlap_int_no)
-        # print(df_tabOverlap_pct_no)
+        print("----------------- overlap INT NO -----------------")
+        print(df_tabOverlap_int_no)
+    if(PRINT_OVERLAP_PCT_NO):
+        print()
+        print("----------------- overlap PCT NO -----------------")
+        print(df_tabOverlap_pct_no)
+    if(PRINT_OVERLAP_FORMATTED_NO):
+        print()
+        print("----------------- overlap FORMATTED NO -----------------")
         print(df_tabOverlap_formatted_no)
 
     # filter out all rows of the solver 'asc_01'
@@ -210,8 +234,8 @@ if __name__ == "__main__":
         print("----------------- runtime intersection NO (no asc_01) -----------------")
         print(df_tabRuntime_intersectNoASC01_no)
         
-    df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, NUM_DIGITS, timeout, TITLE_SOLVER_VBS)
-    df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_STD_DIGITS, NUM_DIGITS, timeout, TITLE_SOLVER_VBS)
+    df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
+    df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
    
 
     if(PRINT_RT_COMP_YES):
@@ -295,41 +319,41 @@ if __name__ == "__main__":
         print("----------------- Balance combinations -----------------")
         print(df_table_balance_combi)
 
-    # Save table to file
+    # Save tables to files
 
-    __save_df_to_latex(df_tabApplicability_yes, output_directory, "Analysis_Applicability_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabApplicability_no, output_directory, "Analysis_Applicability_No.tex", NUM_DIGITS)
+    __save_df_to_latex(df_tabApplicability_yes, output_directory, "Analysis_Applicability_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabApplicability_no, output_directory, "Analysis_Applicability_No.tex", NUM_DIGITS, None)
 
-    __save_df_to_latex(df_tabOverlap_int_yes, output_directory, "Analysis_Overlap_Integer_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabOverlap_pct_yes, output_directory, "Analysis_Overlap_Percentage_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabOverlap_formatted_yes, output_directory, "Analysis_Overlap_Formatted_Yes.tex", NUM_DIGITS)
+    __save_df_to_latex(df_tabOverlap_int_yes, output_directory, "Analysis_Overlap_Integer_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabOverlap_pct_yes, output_directory, "Analysis_Overlap_Percentage_Yes.tex", NUM_DIGITS_PCT, "%")
+    __save_df_to_latex(df_tabOverlap_formatted_yes, output_directory, "Analysis_Overlap_Formatted_Yes.tex", NUM_DIGITS, None)
 
-    __save_df_to_latex(df_tabOverlap_int_no, output_directory, "Analysis_Overlap_Integer_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabOverlap_pct_no, output_directory, "Analysis_Overlap_Percentage_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabOverlap_formatted_no, output_directory, "Analysis_Overlap_Formatted_No.tex", NUM_DIGITS)
+    __save_df_to_latex(df_tabOverlap_int_no, output_directory, "Analysis_Overlap_Integer_No.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabOverlap_pct_no, output_directory, "Analysis_Overlap_Percentage_No.tex", NUM_DIGITS_PCT, "%")
+    __save_df_to_latex(df_tabOverlap_formatted_no, output_directory, "Analysis_Overlap_Formatted_No.tex", NUM_DIGITS, None)
     
-    __save_df_to_latex(df_tabRuntime_intersect_yes, output_directory, "Analysis_Runtime_Intersection_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_intersectNoASC01_no, output_directory, "Analysis_Runtime_Intersection_No.tex", NUM_DIGITS)
+    __save_df_to_latex(df_tabRuntime_intersect_yes, output_directory, "Analysis_Runtime_Intersection_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_intersectNoASC01_no, output_directory, "Analysis_Runtime_Intersection_No.tex", NUM_DIGITS, None)
 
-    __save_df_to_latex(df_tabRuntime_comparisonYes[0], output_directory, "Analysis_Runtime_Comparison_Mean_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonYes[1], output_directory, "Analysis_Runtime_Comparison_MeanDiff_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonYes[2], output_directory, "Analysis_Runtime_Comparison_Percentage_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonYes[3], output_directory, "Analysis_Runtime_Comparison_Std_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonYes[4], output_directory, "Analysis_Runtime_Comparison_Sum_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonYes[5], output_directory, "Analysis_Runtime_Comparison_SumDiff_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonYes[6], output_directory, "Analysis_Runtime_Comparison_VBSCount_Yes.tex", NUM_DIGITS)
+    __save_df_to_latex(df_tabRuntime_comparisonYes[0], output_directory, "Analysis_Runtime_Comparison_Mean_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonYes[1], output_directory, "Analysis_Runtime_Comparison_MeanDiff_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonYes[2], output_directory, "Analysis_Runtime_Comparison_Percentage_Yes.tex", NUM_DIGITS_PCT, "%")
+    __save_df_to_latex(df_tabRuntime_comparisonYes[3], output_directory, "Analysis_Runtime_Comparison_Std_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonYes[4], output_directory, "Analysis_Runtime_Comparison_Sum_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonYes[5], output_directory, "Analysis_Runtime_Comparison_SumDiff_Yes.tex", NUM_DIGITS_SUM, None)
+    __save_df_to_latex(df_tabRuntime_comparisonYes[6], output_directory, "Analysis_Runtime_Comparison_VBSCount_Yes.tex", NUM_DIGITS, None)
     
-    __save_df_to_latex(df_tabRuntime_comparisonNo[0], output_directory, "Analysis_Runtime_Comparison_Mean_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonNo[1], output_directory, "Analysis_Runtime_Comparison_MeanDiff_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonNo[2], output_directory, "Analysis_Runtime_Comparison_Percentage_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonNo[3], output_directory, "Analysis_Runtime_Comparison_Std_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonNo[4], output_directory, "Analysis_Runtime_Comparison_Sum_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonNo[5], output_directory, "Analysis_Runtime_Comparison_SumDiff_No.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tabRuntime_comparisonNo[6], output_directory, "Analysis_Runtime_Comparison_VBSCount_No.tex", NUM_DIGITS)
+    __save_df_to_latex(df_tabRuntime_comparisonNo[0], output_directory, "Analysis_Runtime_Comparison_Mean_No.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonNo[1], output_directory, "Analysis_Runtime_Comparison_MeanDiff_No.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonNo[2], output_directory, "Analysis_Runtime_Comparison_Percentage_No.tex", NUM_DIGITS_PCT, "%")
+    __save_df_to_latex(df_tabRuntime_comparisonNo[3], output_directory, "Analysis_Runtime_Comparison_Std_No.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonNo[4], output_directory, "Analysis_Runtime_Comparison_Sum_No.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tabRuntime_comparisonNo[5], output_directory, "Analysis_Runtime_Comparison_SumDiff_No.tex", NUM_DIGITS_SUM, None)
+    __save_df_to_latex(df_tabRuntime_comparisonNo[6], output_directory, "Analysis_Runtime_Comparison_VBSCount_No.tex", NUM_DIGITS, None)
     
-    __save_df_to_latex(df_tab_balance_all, output_directory, "Analysis_Runtime_Balance_All.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tab_balance_yes, output_directory, "Analysis_Runtime_Balance_Yes.tex", NUM_DIGITS)
-    __save_df_to_latex(df_tab_balance_no, output_directory, "Analysis_Runtime_Balance_No.tex", NUM_DIGITS)
+    __save_df_to_latex(df_tab_balance_all, output_directory, "Analysis_Runtime_Balance_All.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tab_balance_yes, output_directory, "Analysis_Runtime_Balance_Yes.tex", NUM_DIGITS, None)
+    __save_df_to_latex(df_tab_balance_no, output_directory, "Analysis_Runtime_Balance_No.tex", NUM_DIGITS, None)
     
-    __save_df_to_latex(df_table_balance_combi, output_directory, "Analysis_Runtime_Balance_Combi.tex", NUM_DIGITS)
+    __save_df_to_latex(df_table_balance_combi, output_directory, "Analysis_Runtime_Balance_Combi.tex", NUM_DIGITS, None)
     

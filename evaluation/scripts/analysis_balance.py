@@ -89,7 +89,7 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     df_balance[key_mutoksia] = 0
 
     # compute the virtual best solver (VBS)
-    df_balance = df_balance.astype('float')
+    df_balance = df_balance.astype('float64')
     key_contributor = 'contributor'
     df_vbs = compute_vbs(df_balance, key_contributor, title_solver_VBS, True)
 
@@ -106,9 +106,17 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
 
     # create the table
     df_table = pd.DataFrame()
-    df_table[title_balance] = df_vbs.sum()
-    df_table[title_resulting_sum_rt] = (rt_sum_mutoksia + df_table[title_balance])
-    df_table[title_pct_change] = (df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100
+    s_sum = df_vbs.sum()
+    formatted_series_sum = s_sum.apply(lambda x: round(x))
+    df_table[title_balance] = formatted_series_sum
+    df_table[title_balance] = df_table[title_balance].astype('int')
+    s_sum_resulting = (rt_sum_mutoksia + df_table[title_balance])
+    formatted_series_sum_resulting = s_sum_resulting.apply(lambda x: round(x))
+    df_table[title_resulting_sum_rt] = formatted_series_sum_resulting
+    df_table[title_resulting_sum_rt] = df_table[title_resulting_sum_rt].astype('int')
+    s_percentage = ((df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100)
+    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}%")
+    df_table[title_pct_change] = formatted_series_percentage
     df_table[title_vbsCount] = df_table.index.map(s_vbsCount)
 
     # cleaning table data frame

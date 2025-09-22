@@ -68,9 +68,9 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_inst
         if index != key_number_instances:
             row_sum = df_answers_tmp.loc[index].sum()
             percentage = (row_sum / solution_sum) * 100
-            df_answers_tmp.loc[index, key_percentage] = percentage
+            df_answers_tmp.loc[index, key_percentage] = percentage.round(0).astype('int').__str__() + "%"
     
     # format NaN values
-    df_answers_tmp = df_answers_tmp.fillna(0)
-
+    #df_answers_tmp = df_answers_tmp.fillna(0)
+    df_answers_tmp.loc[key_number_instances, key_percentage] = ''
     return df_answers_tmp 

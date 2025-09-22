@@ -133,9 +133,17 @@ def create_table_balance_sheet_combination(df, key_answer, key_instance, key_mut
 
     # create the table
     df_table = pd.DataFrame()
-    df_table[title_balance] = df_balance.sum()
-    df_table[title_resulting_sum_rt] = (rt_sum_mutoksia + df_table[title_balance])
-    df_table[title_pct_change] = (df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100
+    s_sum = df_balance.sum()
+    formatted_series_sum = s_sum.apply(lambda x: round(x))
+    df_table[title_balance] = formatted_series_sum
+    df_table[title_balance] = df_table[title_balance].astype('int')
+    s_sum_resulting = (rt_sum_mutoksia + df_table[title_balance])
+    s_formatted_sum_resulting = s_sum_resulting.apply(lambda x: round(x))
+    df_table[title_resulting_sum_rt] = s_formatted_sum_resulting
+    df_table[title_resulting_sum_rt] = df_table[title_resulting_sum_rt].astype('int')
+    s_percentage = (df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100
+    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}%")
+    df_table[title_pct_change] = formatted_series_percentage
 
     return df_table
     

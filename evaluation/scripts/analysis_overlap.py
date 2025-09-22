@@ -61,7 +61,7 @@ def calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_instance, key_muToksia, key_solvers, suffix_percentage, table_format):
+def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchmarks, key_instance, key_muToksia, key_solvers, num_digits_pct, suffix_percentage, table_format):
     """
     Method to create a table showing the overlap of the applicability between each solver
     
@@ -72,6 +72,7 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_mutoksia: string to access the row of the benchmark-solver
     - key_solvers: string to access the rows of a specific solver
+    - num_digits_pct: number of digits for the percentage value
     - suffix_percentage: string to concatenate after solver name to title the column of percentage values
     
     Returns:
@@ -105,4 +106,4 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
     elif(table_format == "PCT"):
         return populate_tab_overlap_percentage(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value)
     else:
-        return populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, suffix_percentage)
+        return populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, num_digits_pct, suffix_percentage)
