@@ -17,12 +17,13 @@ from analysis_balance_combi import *
 NAME_MUTOSKIA = 'mu-toksia-glucose'
 NAME_ANSWER_YES = 'YES'
 NAME_ANSWER_NO = 'NO'
+NAME_PREFIX_ASC_LATEX = 'Sc'
 NUM_DIGITS = 2
 NUM_DIGITS_PCT = 0
 NUM_DIGITS_SUM = 0
 NUM_DIGITS_STD = 3
 NUM_STD_LIMIT = 3
-SUFFIX_PERCENTAGE = '_PCT'
+SUFFIX_PERCENTAGE = ' %'
 TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
@@ -44,8 +45,8 @@ TITLE_BALANCE_SUM_RT = "sum RT"
 
 
 ## ------------- DEBUG ------------- 
-PRINT_APP_YES = True
-PRINT_APP_NO = True
+PRINT_APP_YES = False
+PRINT_APP_NO = False
 PRINT_OVERLAP_INT_YES = False
 PRINT_OVERLAP_PCT_YES = False
 PRINT_OVERLAP_FORMATTED_YES = False
@@ -62,11 +63,11 @@ PRINT_BL_NO = False
 PRINT_BL_COMBI = False
 
 CALCULATE_APP = True
-CALCULATE_OVERLAP = False
-CALCULATE_RT_INTERSEC = False
-CALCULATE_RT_COMP = False
-CALCULATE_BL = False
-CALCULATE_BL_COMBI = False
+CALCULATE_OVERLAP = True
+CALCULATE_RT_INTERSEC = True
+CALCULATE_RT_COMP = True
+CALCULATE_BL = True
+CALCULATE_BL_COMBI = True
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -89,7 +90,10 @@ def __read_csv_to_dataframe(file_path):
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def __save_df_to_latex(df, dir_path, filename, num_digits, suffix):    
+def __save_df_to_latex(df, dir_path, filename, num_digits, suffix): 
+
+    replace_asc_labels(df, NAME_PREFIX_ASC_LATEX)
+
     # Full path to the new file
     file_path = os.path.join(dir_path, filename)
     
@@ -109,6 +113,7 @@ def __save_df_to_latex(df, dir_path, filename, num_digits, suffix):
     
     # Save the LaTeX code to the file
     with open(file_path, 'w') as f:
+        f.write("\\usepackage\{customCommands\}\n")
         f.write(latex_code)
     
     print(f"LaTeX table saved to: {file_path}")

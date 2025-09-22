@@ -74,3 +74,17 @@ def print_full(df_input):
     pd.set_option('display.max_rows', len(df_input))
     print(df_input)
     pd.reset_option('display.max_rows')
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+# Function to replace 'asc_0x' with '\Sc{x}' for both index and columns
+def replace_asc_labels(df, prefix_replacement):
+    # Update index (row labels)
+    df.index = df.index.to_series().replace(r'asc_0(\d)', rf'\\{prefix_replacement}{{\1}}', regex=True)
+    df.index = df.index.to_series().replace(r'asc_(\d+)', rf'\\{prefix_replacement}{{\1}}', regex=True)
+    
+    # Update column names
+    df.columns = df.columns.to_series().replace(r'asc_0(\d)', rf'\\{prefix_replacement}{{\1}}', regex=True)
+    df.columns = df.columns.to_series().replace(r'asc_(\d+)', rf'\\{prefix_replacement}{{\1}}', regex=True)
+    
+    return df
