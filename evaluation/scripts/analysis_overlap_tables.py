@@ -69,7 +69,7 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
         columns.append(item + suffix_percentage)  # Add the percentage columns
 
     # Initialize the DataFrame with NaN values
-    df_tabOverLap = pd.DataFrame(np.nan, index=unique_solvers, columns=columns)
+    df_tabOverLap = pd.DataFrame(np.nan, index=unique_solvers, columns=columns).astype("string")
 
     # Populate the result dataframe
     for _, row in df_overlap.iterrows():
