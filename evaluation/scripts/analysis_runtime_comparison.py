@@ -81,7 +81,7 @@ def __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2):
+def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, num_digits_sum, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2):
     """
     Method to fill the table to visualize a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
@@ -94,6 +94,7 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
     - df_outputSumDiff: OUTPUT data frame of the differences between the sum of runtimes for each pairwise comparison of solvers
     - df_outputVbsCount: OUTPUT data frame of the number of contribution to the VBS for each solver in each pairwise comparison
     - num_digits_std: number indicating the number of digits displayed for the standard deviation
+    - num_digits_sum: number indicating the number of digits displayed for the sum of runtime
     - df_runtimeMean: data frame of the mean runtime values for the two solver of this comparison
     - df_runtimeStd: data frame of the standard deviation of the runtime values for the two solver of this comparison
     - df_runtimeSum: data frame of the sum of the runtime values for the two solver of this comparison
@@ -123,7 +124,7 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
         df_outputMean[solver1][solver2] = f"{mean_solver2:.{num_digits_std}f}" + "/" + f"{mean_solver1:.{num_digits_std}f}"
         df_outputMeanDiff[solver1][solver2] = mean_diff
         df_outputStd[solver1][solver2] = f"{std_solver2:.{num_digits_std}f}" + "/" + f"{std_solver1:.{num_digits_std}f}"
-        df_outputSum[solver1][solver2] = f"{sum_solver2:.{num_digits_std}f}" + "/" + f"{sum_solver1:.{num_digits_std}f}"
+        df_outputSum[solver1][solver2] = f"{sum_solver2:.{num_digits_sum}f}" + "/" + f"{sum_solver1:.{num_digits_sum}f}"
         df_outputSumDiff[solver1][solver2] = sum_diff
 
     df_outputVbsCount[solver1][solver2] = vbsCount_solver2.__str__() + "/" + vbsCount_sum.__str__()     
@@ -143,7 +144,7 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, timeout, title_solver_VBS):
+def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, num_digits_sum, timeout, title_solver_VBS):
     """
     Method to create a table visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
@@ -156,6 +157,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
     - key_mutoksia: string to access the row of the benchmark-solver
     - key_solvers: string to access the rows of a specific solver
     - num_digits_std: number indicating the number of digits displayed for the standard deviation
+    - num_digits_sum: number indicating the number of digits displayed for the sum of runtime
     - timeout: number of seconds after which the calculation was aborted
     - title_solver_VBS: string used as a title for the row of the VBS solver
     
@@ -172,8 +174,8 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
     
     #initialize output dataframe
     df_outputMean = pd.DataFrame(index=solvers, columns=solvers)
-    df_outputMeanDiff = pd.DataFrame(index=solvers, columns=solvers)
-    df_outputMeanSumPct = pd.DataFrame(index=solvers, columns=solvers)
+    df_outputMeanDiff = pd.DataFrame(index=solvers, columns=solvers).astype('float64')
+    df_outputMeanSumPct = pd.DataFrame(index=solvers, columns=solvers).astype('float64')
     df_outputStd = pd.DataFrame(index=solvers, columns=solvers)
     df_outputSum = pd.DataFrame(index=solvers, columns=solvers)
     df_outputSumDiff = pd.DataFrame(index=solvers, columns=solvers)
@@ -220,7 +222,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
             #     return
             # # ------------- DEBUG ------------- 
 
-            __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2)
+            __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, num_digits_sum, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2)
 
             
     df_outputMean = df_outputMean.drop(columns=[key_mutoksia])
@@ -229,13 +231,16 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
     df_outputSum = df_outputSum.drop(columns=[key_mutoksia])
     df_outputSumDiff = df_outputSumDiff.drop(columns=[key_mutoksia])
 
-    df_outputMean = df_outputMean.fillna('')
-    df_outputMeanDiff = df_outputMeanDiff.fillna('')
-    df_outputMeanSumPct = df_outputMeanSumPct.fillna('')
-    df_outputStd = df_outputStd.fillna('')
-    df_outputSum = df_outputSum.fillna('')
-    df_outputSumDiff = df_outputSumDiff.fillna('')
-    df_outputVbsCount = df_outputVbsCount.fillna('')
+    #df_outputMean = df_outputMean.fillna('')
+    #df_outputMeanDiff = df_outputMeanDiff.fillna('')
+    #df_outputMeanSumPct = df_outputMeanSumPct.fillna('')
+    #df_outputStd = df_outputStd.fillna('')
+    #df_outputSum = df_outputSum.fillna('')
+    #df_outputSumDiff = df_outputSumDiff.fillna('')
+    #df_outputVbsCount = df_outputVbsCount.fillna('')
+
+    df_outputMeanSumPct = df_outputMeanSumPct.astype('float64')
+    df_outputSumDiff = df_outputSumDiff.astype('float64')
     
     ## ------------- DEBUG ------------- 
     # print(df_outputMean)
