@@ -47,10 +47,10 @@ PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
-PRINT_BL_ALL = True
+PRINT_BL_ALL = False
 PRINT_BL_YES = False
 PRINT_BL_NO = False
-PRINT_BL_COMBI = True
+PRINT_BL_COMBI = False
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -88,9 +88,9 @@ if __name__ == "__main__":
     key_instance = df_raw.columns[4] #'instance'
     key_solvers = df_raw.columns[0] #'solver_name'
     key_task = df_raw.columns[6] #'task'
-    key_runtime = 'runtime'
-    timeout = df_raw.loc[0,"cut_off"]
-    key_exit_with_error = 'exit_with_error'
+    key_runtime = df_raw.columns[9] #'runtime'
+    timeout = df_raw.loc[0,df_raw.columns[14]] #"cut_off"
+    key_exit_with_error = df_raw.columns[11] #'exit_with_error'
 
     # read data frame from analyzing the .out files of the experiment
     df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
