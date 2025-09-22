@@ -1,4 +1,5 @@
 import sys
+import os
 import pandas as pd
 
 from parser_iccmaInfo import *
@@ -54,7 +55,7 @@ PRINT_BL_COMBI = False
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
-def read_csv_to_dataframe(file_path):
+def __read_csv_to_dataframe(file_path):
     try:
         # Read CSV into a pandas DataFrame
         df = pd.read_csv(file_path)
@@ -66,10 +67,34 @@ def read_csv_to_dataframe(file_path):
         print("An error occurred:", e)
         sys.exit(1)
 
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+
+def __save_df_to_latex(df, dir_path, filename):    
+    # Full path to the new file
+    file_path = os.path.join(dir_path, filename)
+    
+    # Convert the DataFrame to LaTeX format
+    latex_code = df.to_latex(index=False)  # index=False to exclude the DataFrame index
+    #df.to_latex(file_path, index=False) 
+    
+    # Save the LaTeX code to the file
+    with open(file_path, 'w') as f:
+        f.write(latex_code)
+    
+    print(f"LaTeX table saved to: {file_path}")
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
     if len(sys.argv) != 5:
-        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <file_path_iccma_summary> <output_file>")
+        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <file_path_iccma_summary> <output_directory>")
         sys.exit(1)
     
     #-------------------------------- initializing data --------------------------------
@@ -78,10 +103,13 @@ if __name__ == "__main__":
     file_path_raw = sys.argv[1]
     file_path_resultsDetails = sys.argv[2]
     file_path_iccmas = sys.argv[3]
-    output_file = sys.argv[4]
+    output_directory = sys.argv[4]
+    if not os.path.isdir(output_directory):
+        print(f"The path {output_directory} is not a directory.")
+        sys.exit(1)
     
     # read data frame of raw results from probo
-    df_raw = read_csv_to_dataframe(file_path_raw)
+    df_raw = __read_csv_to_dataframe(file_path_raw)
 
     # read keys from input data frames
     key_benchmarks = df_raw.columns[15]  #'benchmark_name'
@@ -93,13 +121,13 @@ if __name__ == "__main__":
     key_exit_with_error = df_raw.columns[11] #'exit_with_error'
 
     # read data frame from analyzing the .out files of the experiment
-    df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
+    df_resDetails = __read_csv_to_dataframe(file_path_resultsDetails)
 
     # read keys from input data frames
     key_answer = df_resDetails.columns[4] #'answer'
 
     # read data frame from the general information about the iccma benchmark datasets
-    df_iccmas = read_csv_to_dataframe(file_path_iccmas)
+    df_iccmas = __read_csv_to_dataframe(file_path_iccmas)
     df_iccmas = df_iccmas.set_index(key_benchmarks)
 
     # read keys from input data frames
@@ -254,14 +282,15 @@ if __name__ == "__main__":
     combi_02 = ('asc_01','asc_02','asc_03','asc_04')
     combi_03 = ('asc_04','asc_01','asc_02','asc_03')
     list_combi = (combi_01, combi_02, combi_03)
-    df_column_balance_combi = create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
+    df_table_balance_combi = create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
                                                                      TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, 
                                                                      single_solvers, list_combi)
     if(PRINT_BL_COMBI):
         print()
         print("----------------- Balance combinations -----------------")
-        print(df_column_balance_combi)
+        print(df_table_balance_combi)
 
     # Save table to file
-    #table_df.to_latex(output_file + '_table.tex', index=False) 
+
+    __save_df_to_latex(df_tabApplicability_yes, output_directory, "Analysis_Applicability_Yes.tex")
     

@@ -77,6 +77,10 @@ def __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_
 
     return (df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount)
 
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+
 def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2):
     """
     Method to fill the table to visualize a pairwise comparison of the solvers runtimes on the intersection of their solved instances
@@ -134,6 +138,10 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
     #     print(df_outputSumDiff)
     #     return
     # # ------------- DEBUG ------------- 
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+
 
 def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, timeout, title_solver_VBS):
     """

@@ -39,6 +39,10 @@ def populate_tab_overlap_int(df_overlap, s_rowSumsAnswers, key_solverPair_key, k
     df_tabOverLap = df_tabOverLap.fillna(0).astype('int')
     return df_tabOverLap
 
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+
 def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, suffix_percentage):
     """
     Method to create a table showing the overlap of the applicability between each solver as a formatted string
@@ -86,6 +90,10 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
 
     df_tabOverLap = df_tabOverLap.fillna(' ')
     return df_tabOverLap
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+
 
 def populate_tab_overlap_percentage(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value):
     """

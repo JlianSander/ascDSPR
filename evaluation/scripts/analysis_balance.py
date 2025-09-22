@@ -48,6 +48,9 @@ def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_
     return df_balance
 
 
+#---------------------------------------------------------------------------------------------------------------------------
+
+
 def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount):
     """
     Method to create a table visualizing a comparison of all solvers with the benchmark solver

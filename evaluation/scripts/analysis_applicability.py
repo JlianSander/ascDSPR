@@ -21,6 +21,10 @@ def count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers):
     df_answers = df_answers.fillna(0).astype('int')
     return df_answers
 
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+
 def create_table_number_answers(df_rawAnswered, dfrow_solution, dfrow_total_instances, key_answer, key_benchmarks, key_mutoksia, key_number_instances, key_percentage, key_solution, key_solvers):
     """
     Method to create a table counting the answers of a given type for each solver

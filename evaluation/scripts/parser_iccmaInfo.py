@@ -16,6 +16,10 @@ def extract_total_number_instances(df_iccmas, keyColumn):
     dfrow_num_instances = pd.DataFrame(s_total_instances).T  # .T transposes the series to match the row format
     return dfrow_num_instances
 
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+
 def extract_solution_data(df_iccmas, key_answerType, indexName):
     """
     Method to extract the number of instances with a given answer for each benchmark as a row

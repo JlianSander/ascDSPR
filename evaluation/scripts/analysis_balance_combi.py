@@ -83,6 +83,10 @@ def compute_balance_combi(df, df_muToksia, key_answer, key_instance, key_runtime
 
     return df_balance
 
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+
 def create_table_balance_sheet_combination(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, 
                                            single_solvers, lists_cascading_solvers):
     """
