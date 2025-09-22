@@ -2,5 +2,5 @@ benchmark_name,number_instances,number_yes,number_no
 iccma15,192,14,178
 iccma17,350,36,293
 iccma19,326,39,287
-iccma21,480,99,999
+iccma21,480,0,377
 iccma23,329,32,273
