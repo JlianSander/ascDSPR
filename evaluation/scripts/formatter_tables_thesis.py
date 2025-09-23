@@ -19,10 +19,21 @@ def replace_asc_labels(latex_code, prefix_replacement):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
+# Function to unify the alignment for each table
+def get_alignment(df):
+    alignments = []
+    for i, col in enumerate(df.columns):
+        if(i == 0):
+            alignments.append('l')  # Left alignment for the first column
+        else:
+            alignments.append('r')  # Right alignment all other columns
+
+    return ''.join(alignments)
+
+#---------------------------------------------------------------------------------------------------------------------------
 
 def create_general_latex(df, num_digits, suffix, asc_label_prefix): 
-    
-    
+        
     # round all float values to have the given number of digits
     df = df.apply(lambda x: x.round(num_digits) if x.dtype == 'float64' else x)
     if num_digits == 0:
@@ -35,8 +46,9 @@ def create_general_latex(df, num_digits, suffix, asc_label_prefix):
         df = df.applymap(lambda x: x.__str__() + "%")
 
     # Convert the DataFrame to LaTeX format
-    latex_code = df.to_latex(index=True)  # index=False to exclude the DataFrame index
-    #df.to_latex(file_path, index=False) 
+    # clean the alignment of the table to create
+    alignment = get_alignment(df)
+    latex_code = df.to_latex(index=True, column_format=alignment) 
     
     # Replace names of shortcuts with the custom command of the thesis
     updated_latex_table = replace_asc_labels(latex_code, asc_label_prefix)
