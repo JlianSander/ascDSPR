@@ -55,6 +55,7 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, key_answer, key_
     
     # Add row for total number of instances and row of the solutions to the dataframe
     df_answers_tmp = pd.concat([df_answers_tmp, dfrow_solution])
+    df_answers_tmp = df_answers_tmp.fillna(0).astype('int')
     
     
     # Calculate the sum of the 'solution' row 
