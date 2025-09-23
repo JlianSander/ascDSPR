@@ -84,12 +84,11 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
         df_tabOverLap.at[solver2, solver1] = pair_count.__str__() + '/' + s_rowSumsAnswers[solver1].__str__()
         pct_slv2 = pair_count / s_rowSumsAnswers[solver1] * 100
         df_tabOverLap.at[solver2, solver1 + suffix_percentage] = f"{pct_slv2:.{num_digits_pct}f}%" 
-        df_tabOverLap.at[solver1, solver1] = ' '
-        df_tabOverLap.at[solver1, solver1 + suffix_percentage] = ' '
-        df_tabOverLap.at[solver2, solver2] = ' '
-        df_tabOverLap.at[solver2, solver2 + suffix_percentage] = ' '
+        df_tabOverLap.at[solver1, solver1] = '-'
+        df_tabOverLap.at[solver1, solver1 + suffix_percentage] = '-'
+        df_tabOverLap.at[solver2, solver2] = '-'
+        df_tabOverLap.at[solver2, solver2 + suffix_percentage] = '-'
 
-    df_tabOverLap = df_tabOverLap.fillna(' ')
     return df_tabOverLap
 
 
