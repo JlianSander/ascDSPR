@@ -1,7 +1,6 @@
 import sys
 import os
 import pandas as pd
-import re
 
 from parser_iccmaInfo import *
 from analysis_util import *
@@ -12,6 +11,7 @@ from analysis_runtime_intersection import *
 from analysis_runtime_comparison import *
 from analysis_balance import *
 from analysis_balance_combi import *
+from formatter_tables_thesis import *
 
 
 # ---------------- CONSTANTS ---------------
@@ -87,44 +87,18 @@ def __read_csv_to_dataframe(file_path):
         sys.exit(1)
 
 
-
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def __save_df_to_latex(df, dir_path, filename, num_digits, suffix): 
+def __save_latex_file(dir_path, filename, latex_code):
     # Full path to the new file
     file_path = os.path.join(dir_path, filename)
-    
-    # round all float values to have the given number of digits
-    df = df.apply(lambda x: x.round(num_digits) if x.dtype == 'float64' else x)
-    if num_digits == 0:
-        df = df.fillna(0).astype('int')
-    else:
-        df = df.fillna('')
-
-    if suffix is not None:
-        df = df.applymap(lambda x: x.__str__() + "%")
-
-    # Convert the DataFrame to LaTeX format
-    latex_code = df.to_latex(index=True)  # index=False to exclude the DataFrame index
-    #df.to_latex(file_path, index=False) 
-    
-    # Replace names of shortcuts with the custom command of the thesis
-    # Regular expression to find 'asc_0x' where x is a number from 1 to 9
-    pattern = r'asc\\_0([1-9])'
-    pattern_10 = r'asc\\_(\d+)'
-
-    # Function to replace 'asc_0x' with '\Sc{x}'
-    updated_latex_table = re.sub(pattern, rf'\\{NAME_PREFIX_ASC_LATEX}{{\1}}', latex_code)
-    updated_latex_table = re.sub(pattern_10, rf'\\{NAME_PREFIX_ASC_LATEX}{{\1}}', updated_latex_table)
 
     # Save the LaTeX code to the file
     with open(file_path, 'w') as f:
-        f.write(updated_latex_table)
+        f.write(latex_code)
     
     print(f"LaTeX table saved to: {file_path}")
-
-
 
 #---------------------------------------------------------------------------------------------------------------------------
 
@@ -203,8 +177,13 @@ if __name__ == "__main__":
             print(df_tabApplicability_no)
 
         if(SAVE_LATEX):
-            __save_df_to_latex(df_tabApplicability_yes, output_directory, "Analysis_Applicability_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabApplicability_no, output_directory, "Analysis_Applicability_No.tex", NUM_DIGITS, None)
+            latex_code = create_general_latex(df_tabApplicability_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            latex_code = add_midrule_above_pattern(latex_code, "solution")
+            __save_latex_file(output_directory, "Analysis_Applicability_Yes.tex", latex_code)
+
+            latex_code = create_general_latex(df_tabApplicability_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            latex_code = add_midrule_above_pattern(latex_code, "solution")
+            __save_latex_file(output_directory, "Analysis_Applicability_No.tex", latex_code)
         
         
     if(CALCULATE_OVERLAP):
@@ -245,14 +224,19 @@ if __name__ == "__main__":
             print(df_tabOverlap_formatted_no)
 
         if(SAVE_LATEX):
-
-            __save_df_to_latex(df_tabOverlap_int_yes, output_directory, "Analysis_Overlap_Integer_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabOverlap_pct_yes, output_directory, "Analysis_Overlap_Percentage_Yes.tex", NUM_DIGITS_PCT, "%")
-            __save_df_to_latex(df_tabOverlap_formatted_yes, output_directory, "Analysis_Overlap_Formatted_Yes.tex", NUM_DIGITS, None)
-
-            __save_df_to_latex(df_tabOverlap_int_no, output_directory, "Analysis_Overlap_Integer_No.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabOverlap_pct_no, output_directory, "Analysis_Overlap_Percentage_No.tex", NUM_DIGITS_PCT, "%")
-            __save_df_to_latex(df_tabOverlap_formatted_no, output_directory, "Analysis_Overlap_Formatted_No.tex", NUM_DIGITS, None)
+            latex_code = create_general_latex(df_tabOverlap_int_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Overlap_Integer_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabOverlap_pct_yes, NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Overlap_Percentage_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabOverlap_formatted_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Overlap_Formatted_Yes.tex", latex_code)
+            
+            latex_code = create_general_latex(df_tabOverlap_int_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Overlap_Integer_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabOverlap_pct_no, NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Overlap_Percentage_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabOverlap_formatted_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Overlap_Formatted_No.tex", latex_code)
 
     if(CALCULATE_RT_INTERSEC):
         #-------------------------------- RUNTIME INTERSECTION --------------------------------
@@ -275,8 +259,10 @@ if __name__ == "__main__":
             print(df_tabRuntime_intersectNoASC01_no)
 
         if(SAVE_LATEX):
-            __save_df_to_latex(df_tabRuntime_intersect_yes, output_directory, "Analysis_Runtime_Intersection_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_intersectNoASC01_no, output_directory, "Analysis_Runtime_Intersection_No.tex", NUM_DIGITS, None)
+            latex_code = create_general_latex(df_tabRuntime_intersect_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Intersection_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_intersectNoASC01_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Intersection_No.tex", latex_code)
         
     if(CALCULATE_RT_COMP):
         #-------------------------------- RUNTIME COMPARISON --------------------------------
@@ -332,21 +318,36 @@ if __name__ == "__main__":
             print(df_tabRuntime_comparisonNo[6])
 
         if(SAVE_LATEX):
-            __save_df_to_latex(df_tabRuntime_comparisonYes[0], output_directory, "Analysis_Runtime_Comparison_Mean_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonYes[1], output_directory, "Analysis_Runtime_Comparison_MeanDiff_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonYes[2], output_directory, "Analysis_Runtime_Comparison_Percentage_Yes.tex", NUM_DIGITS_PCT, "%")
-            __save_df_to_latex(df_tabRuntime_comparisonYes[3], output_directory, "Analysis_Runtime_Comparison_Std_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonYes[4], output_directory, "Analysis_Runtime_Comparison_Sum_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonYes[5], output_directory, "Analysis_Runtime_Comparison_SumDiff_Yes.tex", NUM_DIGITS_SUM, None)
-            __save_df_to_latex(df_tabRuntime_comparisonYes[6], output_directory, "Analysis_Runtime_Comparison_VBSCount_Yes.tex", NUM_DIGITS, None)
-            
-            __save_df_to_latex(df_tabRuntime_comparisonNo[0], output_directory, "Analysis_Runtime_Comparison_Mean_No.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonNo[1], output_directory, "Analysis_Runtime_Comparison_MeanDiff_No.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonNo[2], output_directory, "Analysis_Runtime_Comparison_Percentage_No.tex", NUM_DIGITS_PCT, "%")
-            __save_df_to_latex(df_tabRuntime_comparisonNo[3], output_directory, "Analysis_Runtime_Comparison_Std_No.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonNo[4], output_directory, "Analysis_Runtime_Comparison_Sum_No.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tabRuntime_comparisonNo[5], output_directory, "Analysis_Runtime_Comparison_SumDiff_No.tex", NUM_DIGITS_SUM, None)
-            __save_df_to_latex(df_tabRuntime_comparisonNo[6], output_directory, "Analysis_Runtime_Comparison_VBSCount_No.tex", NUM_DIGITS, None)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[0], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Mean_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[1], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_MeanDiff_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[2], NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Percentage_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[3], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Std_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Sum_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[5], NUM_DIGITS_SUM, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_SumDiff_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_VBSCount_Yes.tex", latex_code)
+
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[0], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Mean_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[1], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_MeanDiff_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[2], NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Percentage_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[3], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Std_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Sum_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[5], NUM_DIGITS_SUM, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_SumDiff_No.tex", latex_code)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_VBSCount_No.tex", latex_code)
+
 
     if(CALCULATE_BL):
         #-------------------------------- BALANCE --------------------------------
@@ -369,10 +370,13 @@ if __name__ == "__main__":
             print("----------------- Balance only NO -----------------")
             print(df_tab_balance_no)
 
-        if(SAVE_LATEX):        
-            __save_df_to_latex(df_tab_balance_all, output_directory, "Analysis_Runtime_Balance_All.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tab_balance_yes, output_directory, "Analysis_Runtime_Balance_Yes.tex", NUM_DIGITS, None)
-            __save_df_to_latex(df_tab_balance_no, output_directory, "Analysis_Runtime_Balance_No.tex", NUM_DIGITS, None)
+        if(SAVE_LATEX):   
+            latex_code = create_general_latex(df_tab_balance_all, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Balance_All.tex", latex_code)
+            latex_code = create_general_latex(df_tab_balance_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Balance_Yes.tex", latex_code)
+            latex_code = create_general_latex(df_tab_balance_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Balance_No.tex", latex_code)
 
 
     if(CALCULATE_BL_COMBI):
@@ -391,5 +395,6 @@ if __name__ == "__main__":
             print(df_table_balance_combi)
 
         if(SAVE_LATEX):
-            __save_df_to_latex(df_table_balance_combi, output_directory, "Analysis_Runtime_Balance_Combi.tex", NUM_DIGITS, None)
+            latex_code = create_general_latex(df_table_balance_combi, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Balance_Combi.tex", latex_code)
     
