@@ -1,6 +1,7 @@
 import sys
 import os
 import pandas as pd
+import re
 
 from parser_iccmaInfo import *
 from analysis_util import *
@@ -91,9 +92,6 @@ def __read_csv_to_dataframe(file_path):
 
 
 def __save_df_to_latex(df, dir_path, filename, num_digits, suffix): 
-
-    replace_asc_labels(df, NAME_PREFIX_ASC_LATEX)
-
     # Full path to the new file
     file_path = os.path.join(dir_path, filename)
     
@@ -111,10 +109,18 @@ def __save_df_to_latex(df, dir_path, filename, num_digits, suffix):
     latex_code = df.to_latex(index=True)  # index=False to exclude the DataFrame index
     #df.to_latex(file_path, index=False) 
     
+    # Replace names of shortcuts with the custom command of the thesis
+    # Regular expression to find 'asc_0x' where x is a number from 1 to 9
+    pattern = r'asc\\_0([1-9])'
+    pattern_10 = r'asc\\_(\d+)'
+
+    # Function to replace 'asc_0x' with '\Sc{x}'
+    updated_latex_table = re.sub(pattern, rf'\\{NAME_PREFIX_ASC_LATEX}{{\1}}', latex_code)
+    updated_latex_table = re.sub(pattern_10, rf'\\{NAME_PREFIX_ASC_LATEX}{{\1}}', updated_latex_table)
+
     # Save the LaTeX code to the file
     with open(file_path, 'w') as f:
-        f.write("\\usepackage\{customCommands\}\n")
-        f.write(latex_code)
+        f.write(updated_latex_table)
     
     print(f"LaTeX table saved to: {file_path}")
 
