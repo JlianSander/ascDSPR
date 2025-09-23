@@ -9,7 +9,7 @@ from analysis_runtime_comparison import *
 #---------------------------------------------------------------------------------------------------------------------------
 
 def __fill_table(df_output, df_runtimeSum, num_digits_pct, num_digits_sum, 
-                  key_mutoksia, s_vbsCount, solver1, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct):
+                  key_mutoksia, s_vbsCount, solver1, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct, num_total_instances_VBS):
     """
     Method to fill the table to visualize a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
@@ -25,6 +25,7 @@ def __fill_table(df_output, df_runtimeSum, num_digits_pct, num_digits_sum,
     - title_column_sum_pct: string used as a title for the column 'sum %'
     - title_colum_vbs: string used as a title for the column '#VBS'
     - title_column_vbsCount_pct: string used as a title for the column '#VBS %'
+    - num_total_instances_VBS: number of instances compared for the VBS
 
     Returns:
     void
@@ -35,7 +36,8 @@ def __fill_table(df_output, df_runtimeSum, num_digits_pct, num_digits_sum,
     sum_muToksia = df_runtimeSum.loc[key_mutoksia]
     sum_pct = (sum_solver1 / sum_muToksia) * 100
     vbsCount_solver1 = s_vbsCount.loc[solver1]
-    vbsCount_sum = s_vbsCount.sum()
+    
+    vbsCount_sum = num_total_instances_VBS
     vbsCount_pct = (vbsCount_solver1 / vbsCount_sum) * 100
 
     # fill the cells of the table
@@ -94,8 +96,9 @@ def create_table_runtime_comparison_mutoksia(df_input, key_answer, key_benchmark
 
         df_runtimeSum = res[2]
         s_vbsCount = res[3]
+        num_total_instances_VBS = res[4]
 
         __fill_table(df_output, df_runtimeSum, num_digits_pct, num_digits_sum, 
-                  key_mutoksia, s_vbsCount, solver1, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct)
+                  key_mutoksia, s_vbsCount, solver1, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct, num_total_instances_VBS)
 
     return df_output

@@ -29,6 +29,7 @@ def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_wi
     - df_runtimeStd: data frame of the standard deviation of the runtime values for the two solver of this comparison
     - df_runtimeSum: data frame of the sum of the runtime values for the two solver of this comparison
     - s_vbsCount: series of the number of contributions to the vbs for each solver of this comparison
+    - num_total_instances_VBS: number of instances compared for the VBS
     """
 
     # Filter the dataframe for rows where solver_name is either solver1 or solver2
@@ -49,6 +50,7 @@ def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_wi
 
     # count contribution to the VBS
     s_vbsCount = count_vbsContribution_with_delta(df_contribution)
+    num_total_instances_VBS = df_contribution.shape[0]
 
     if(df_intersectionVBS.empty):
         return ()
@@ -58,13 +60,15 @@ def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_wi
     df_runtimeStd = df_intersectionVBS.std()
     df_runtimeSum = df_intersectionVBS.sum()
 
-    return (df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount)
+    return (df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, num_total_instances_VBS)
 
 
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, num_digits_sum, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2):
+def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, num_digits_sum, 
+                 df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, num_total_instances_VBS,
+                 is_under_diagonale, solver1, solver2):
     """
     Method to fill the table to visualize a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
@@ -82,6 +86,7 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
     - df_runtimeStd: data frame of the standard deviation of the runtime values for the two solver of this comparison
     - df_runtimeSum: data frame of the sum of the runtime values for the two solver of this comparison
     - s_vbsCount: series of the number of contributions to the vbs for each solver of this comparison
+    - num_total_instances_VBS: number of instances compared for the VBS
     - is_under_diagonale: if 'True' the values are written under the diagonal of the table
     - solver1: first solver of this comparison
     - solver2: second solver of this comparison
@@ -100,7 +105,7 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
     sum_solver2 = df_runtimeSum.loc[solver2]
     sum_diff = sum_solver2 - sum_solver1
     vbsCount_solver2 = s_vbsCount.loc[solver2]
-    vbsCount_sum =  s_vbsCount.sum()
+    vbsCount_sum =  num_total_instances_VBS
 
     # fill cells in data frame
     if(is_under_diagonale):
@@ -195,7 +200,8 @@ def create_table_runtime_comparison(df_rawAnswered, key_answer, key_benchmarks, 
             df_runtimeMean = res[0]
             df_runtimeStd = res[1]
             df_runtimeSum = res[2]
-            s_vbsCount = res[3]            
+            s_vbsCount = res[3]
+            num_total_instances_VBS = res[4]        
 
             # # ------------- DEBUG ------------- 
             # if(print_debug):
@@ -206,7 +212,9 @@ def create_table_runtime_comparison(df_rawAnswered, key_answer, key_benchmarks, 
             #     return
             # # ------------- DEBUG ------------- 
 
-            __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, num_digits_sum, df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, is_under_diagonale, solver1, solver2)
+            __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outputStd, df_outputSum, df_outputSumDiff, df_outputVbsCount, num_digits_std, num_digits_sum, 
+                         df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount, num_total_instances_VBS,
+                         is_under_diagonale, solver1, solver2)
 
             
     df_outputMean = df_outputMean.drop(columns=[key_mutoksia])

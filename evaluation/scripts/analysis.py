@@ -76,7 +76,7 @@ CALCULATE_RT_COMP = False
 CALCULATE_BL = False
 CALCULATE_BL_COMBI = False
 
-SAVE_LATEX = False
+SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
