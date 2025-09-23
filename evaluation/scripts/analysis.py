@@ -16,6 +16,7 @@ from formatter_tables_thesis import *
 
 
 # ---------------- CONSTANTS ---------------
+DELTA_PERCENTAGE = 0.05
 NAME_MUTOSKIA = 'mu-toksia-glucose'
 NAME_ANSWER_YES = 'YES'
 NAME_ANSWER_NO = 'NO'
@@ -57,8 +58,8 @@ PRINT_OVERLAP_FORMATTED_YES = False
 PRINT_OVERLAP_INT_NO = False
 PRINT_OVERLAP_PCT_NO = False
 PRINT_OVERLAP_FORMATTED_NO = False
-PRINT_RT_INTERSEC_YES = False
-PRINT_RT_INTERSEC_NO = False
+PRINT_RT_INTERSEC_YES = True
+PRINT_RT_INTERSEC_NO = True
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
 PRINT_RT_COMP_MUTOKSIA = False
@@ -67,15 +68,15 @@ PRINT_BL_YES = False
 PRINT_BL_NO = False
 PRINT_BL_COMBI = False
 
-CALCULATE_APP = True
+CALCULATE_APP = False
 CALCULATE_OVERLAP = False
-CALCULATE_RT_INTERSEC = False
+CALCULATE_RT_INTERSEC = True
 CACLCULATE_RT_COMP_MUTOKSIA = False
 CALCULATE_RT_COMP = False
-CALCULATE_BL = True
+CALCULATE_BL = False
 CALCULATE_BL_COMBI = False
 
-SAVE_LATEX = True
+SAVE_LATEX = False
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -249,9 +250,9 @@ if __name__ == "__main__":
         df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
         # analyze runtime of the intersection of instances of solved instances of solvers
         df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
-                            TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT)
+                            TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT, DELTA_PERCENTAGE)
         df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
-                            TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT)
+                            TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT, DELTA_PERCENTAGE)
         
         if(PRINT_RT_INTERSEC_YES):
             print()

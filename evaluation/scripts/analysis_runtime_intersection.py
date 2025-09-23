@@ -6,7 +6,7 @@ from analysis_runtime import *
 from analysis_util import *
 
 def create_table_runtime_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_muToksia, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
-                         title_solver_VBS, title_instances, title_mean, title_std, title_sum, title_meanCapped, title_stdCapped, title_sumCapped, title_vbsCount):
+                         title_solver_VBS, title_instances, title_mean, title_std, title_sum, title_meanCapped, title_stdCapped, title_sumCapped, title_vbsCount, delta_percentage):
     """
     Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
     
@@ -31,12 +31,12 @@ def create_table_runtime_intersection(df_rawAnswered, key_answer, key_benchmarks
     - title_stdCapped: string used as a title for the column 'std RT capped'
     - title_sumCapped: string used as a title for the column 'sum RT capped'
     - title_vbsCount: string used as a title for the column '#VBS'
+    - delta_percentage: the percentage that defines the delta around the minimum runtime, within which a values counts as contribution to the VBS
     
     Returns:
     - DataFrame visualizing the runtimes of all solvers for instances with the given answerType solution
     """
 
-    key_contributor = 'contributor'
     key_VBS = title_solver_VBS
 
     # initialize output dataframe
@@ -50,21 +50,21 @@ def create_table_runtime_intersection(df_rawAnswered, key_answer, key_benchmarks
     df_IntersectionAllRunTime = df_IntersectionAllRunTime[[col for col in df_IntersectionAllRunTime.columns if col != key_muToksia] + [key_muToksia]]
     
     # compute the virtual best solver
-    df_IntersectionAllRunTimeVBS = compute_vbs(df_IntersectionAllRunTime, key_contributor, key_VBS, True)
+    res = compute_vbs_with_delta(df_IntersectionAllRunTime, key_VBS, True, delta_percentage)
+    df_IntersectionAllRunTimeVBS = res[0]
+    df_contribution = res[1]
 
     # count contribution to the VBS
-    s_vbsCount = count_vbsContribution(df_IntersectionAllRunTimeVBS, key_contributor)
+    s_vbsCount = count_vbsContribution_with_delta(df_contribution)
 
-    # prepare dataframe to compute statistical values for each solver
-    df_IntersectionAllRunTimeVBS_stripped = df_IntersectionAllRunTimeVBS.drop(columns=[key_contributor])
-    
-    df_output[title_instances] = df_IntersectionAllRunTimeVBS_stripped.count()
-    df_output[title_mean] = df_IntersectionAllRunTimeVBS_stripped.mean()
-    df_output[title_std] = df_IntersectionAllRunTimeVBS_stripped.std()
-    df_output[title_sum] = df_IntersectionAllRunTimeVBS_stripped.sum()
+    # compute statistical values for each solver    
+    df_output[title_instances] = df_IntersectionAllRunTimeVBS.count()
+    df_output[title_mean] = df_IntersectionAllRunTimeVBS.mean()
+    df_output[title_std] = df_IntersectionAllRunTimeVBS.std()
+    df_output[title_sum] = df_IntersectionAllRunTimeVBS.sum()
 
     if(show_capped):
-        df_IntersectionAllRunTimeVBSCapped = limit_outliers(df_IntersectionAllRunTimeVBS_stripped, num_stdLimit)
+        df_IntersectionAllRunTimeVBSCapped = limit_outliers(df_IntersectionAllRunTimeVBS, num_stdLimit)
         df_output[title_meanCapped] = df_IntersectionAllRunTimeVBSCapped.mean()
         df_output[title_stdCapped] = df_IntersectionAllRunTimeVBSCapped.std()
         df_output[title_sumCapped] = df_IntersectionAllRunTimeVBSCapped.sum()
