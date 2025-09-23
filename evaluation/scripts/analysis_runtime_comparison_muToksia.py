@@ -49,7 +49,7 @@ def __fill_table(df_output, df_runtimeSum, num_digits_pct, num_digits_sum,
 
 
 def create_table_runtime_comparison_mutoksia(df_input, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_pct, num_digits_sum, timeout, 
-                                             title_solver_VBS, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct):
+                                             title_solver_VBS, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct, delta_percentage):
     """
     Method to create a table visualizing a pairwise comparison of the runtimes of each solver with the benchmark solver on the intersection of their solved instances
     
@@ -70,6 +70,7 @@ def create_table_runtime_comparison_mutoksia(df_input, key_answer, key_benchmark
     - title_column_sum_pct: string used as a title for the column 'sum %'
     - title_colum_vbs: string used as a title for the column '#VBS'
     - title_column_vbsCount_pct: string used as a title for the column '#VBS %'
+    - delta_percentage: the percentage that defines the delta around the minimum runtime, within which a values counts as contribution to the VBS
     
     Returns:
     - DataFrame visualizing a pairwise comparison of the runtimes of each solver with the benchmark solver on the intersection of their solved instances
@@ -86,7 +87,7 @@ def create_table_runtime_comparison_mutoksia(df_input, key_answer, key_benchmark
     # analyse the intersections of solved problem instances with each of the solvers
     for solver1 in solvers:
         list_solversForIntersection = [solver1, key_mutoksia]
-        res = analyse_intersection(df_input, key_answer, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_solver_VBS)
+        res = analyse_intersection(df_input, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_solver_VBS, delta_percentage)
 
         if(len(res) == 0):
             continue

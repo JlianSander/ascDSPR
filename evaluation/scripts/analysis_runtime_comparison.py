@@ -6,7 +6,7 @@ from analysis_runtime import *
 from analysis_util import *
 
 
-def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solvers, timeout, title_solver_VBS):
+def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solvers, timeout, title_solver_VBS, delta_percentage):
     """
     Method to compare the solvers runtimes on the intersection of their solved instances
     
@@ -14,7 +14,6 @@ def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_contrib
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
-    - key_contributor: string to access column of contributors in the data frame of the VBS contributions
     - key_exit_with_error: string to access column indicating an error during calculation
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
@@ -22,6 +21,7 @@ def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_contrib
     - list_solvers: list of solvers which runtimes are to be compared
     - timeout: number of seconds after which the calculation was aborted
     - title_solver_VBS: string used as a title for the row of the VBS solver
+    - delta_percentage: the percentage that defines the delta around the minimum runtime, within which a values counts as contribution to the VBS
     
     Returns:
     (df_runtimeMean, df_runtimeStd, df_runtimeSum, s_vbsCount):
@@ -36,41 +36,22 @@ def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_contrib
 
     # keep only those rows which are in the intersection of solved rows by each of the two solvers
     df_intersection = filter_intersection(df_filtered, key_answer, key_benchmarks, key_instance, key_solvers)
-    df_intersection = df_intersection.loc[:, [key_solvers, key_runtime]]
-
-    # # ------------- DEBUG ------------- 
-    # df_intersection = df_intersection.loc[:, [key_solvers, key_instance, key_runtime]]
-    # # ------------- DEBUG ------------- 
+    df_intersection = df_intersection.loc[:, [key_solvers, key_runtime]] 
 
     # calculate VBS for this intersection
     df_intersectionVBS = df_intersection.astype({key_runtime: 'float'})
     df_intersectionVBS = sanitize_dataframe(df_intersectionVBS, key_exit_with_error, key_runtime, timeout)
     df_intersectionVBS = pivot_dataframe(df_intersectionVBS, key_solvers, key_runtime)
-    df_intersectionVBS = compute_vbs(df_intersectionVBS, key_contributor, title_solver_VBS, True)
+    res = compute_vbs_with_delta(df_intersectionVBS, title_solver_VBS, True, delta_percentage)
+    
+    df_intersectionVBS = res[0]
+    df_contribution = res[1]
 
     # count contribution to the VBS
-    s_vbsCount = count_vbsContribution(df_intersectionVBS, key_contributor)
-    s_vbsCount[title_solver_VBS] = 0 
-
-    # prepare dataframe to compute statistical values for each solver
-    df_intersectionVBS = df_intersectionVBS.drop(columns=[key_contributor])
-
-    # # ------------- DEBUG ------------- 
-    # if(print_debug):
-    #     print(df_intersectionVBS)
-    # # ------------- DEBUG ------------- 
+    s_vbsCount = count_vbsContribution_with_delta(df_contribution)
 
     if(df_intersectionVBS.empty):
-        # # ------------- DEBUG -------------
-        # print("Sovler1: " + solver1.__str__())
-        # print("Sovler2: " + solver2.__str__())
-        # # ------------- DEBUG -------------
         return ()
-            
-    # # ------------- DEBUG ------------- 
-    # if(print_debug):
-    #     print_full(df_intersectionVBS)
-    # # ------------- DEBUG ------------- 
 
     # calculate mean and std values of the runtimes on these filtered instances
     df_runtimeMean = df_intersectionVBS.mean()
@@ -146,7 +127,7 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_runtime_comparison(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, num_digits_sum, timeout, title_solver_VBS):
+def create_table_runtime_comparison(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, num_digits_sum, timeout, title_solver_VBS, delta_percentage):
     """
     Method to create a table visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
@@ -163,12 +144,12 @@ def create_table_runtime_comparison(df_rawAnswered, key_answer, key_benchmarks, 
     - num_digits_sum: number indicating the number of digits displayed for the sum of runtime
     - timeout: number of seconds after which the calculation was aborted
     - title_solver_VBS: string used as a title for the row of the VBS solver
+    - delta_percentage: the percentage that defines the delta around the minimum runtime, within which a values counts as contribution to the VBS
     
     Returns:
     - DataFrame visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     """
 
-    key_contributor = 'contributor'
     solvers = sorted(df_rawAnswered[key_solvers].unique().tolist())
 
     ## ------------- DEBUG ------------- 
@@ -206,7 +187,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_answer, key_benchmarks, 
             # # ------------- DEBUG ------------- 
 
             list_solversForIntersection = [solver1, solver2]
-            res = analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_solver_VBS)
+            res = analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_solver_VBS, delta_percentage)
 
             if(len(res) == 0):
                 continue

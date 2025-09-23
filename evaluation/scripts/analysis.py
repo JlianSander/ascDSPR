@@ -58,11 +58,11 @@ PRINT_OVERLAP_FORMATTED_YES = False
 PRINT_OVERLAP_INT_NO = False
 PRINT_OVERLAP_PCT_NO = False
 PRINT_OVERLAP_FORMATTED_NO = False
-PRINT_RT_INTERSEC_YES = True
-PRINT_RT_INTERSEC_NO = True
-PRINT_RT_COMP_YES = False
-PRINT_RT_COMP_NO = False
-PRINT_RT_COMP_MUTOKSIA = False
+PRINT_RT_INTERSEC_YES = False
+PRINT_RT_INTERSEC_NO = False
+PRINT_RT_COMP_YES = True
+PRINT_RT_COMP_NO = True
+PRINT_RT_COMP_MUTOKSIA = True
 PRINT_BL_ALL = False
 PRINT_BL_YES = False
 PRINT_BL_NO = False
@@ -70,9 +70,9 @@ PRINT_BL_COMBI = False
 
 CALCULATE_APP = False
 CALCULATE_OVERLAP = False
-CALCULATE_RT_INTERSEC = True
-CACLCULATE_RT_COMP_MUTOKSIA = False
-CALCULATE_RT_COMP = False
+CALCULATE_RT_INTERSEC = False
+CACLCULATE_RT_COMP_MUTOKSIA = True
+CALCULATE_RT_COMP = True
 CALCULATE_BL = False
 CALCULATE_BL_COMBI = False
 
@@ -272,7 +272,7 @@ if __name__ == "__main__":
         
     if(CACLCULATE_RT_COMP_MUTOKSIA):
         df_tabRuntime_comparison_muToksia = create_table_runtime_comparison_mutoksia(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 1, timeout, 
-                                                                                     TITLE_SOLVER_VBS, TITLE_RUNTIME_SUM, TITLE_RUNTIME_SUM_PCT, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT)
+                                                                                     TITLE_SOLVER_VBS, TITLE_RUNTIME_SUM, TITLE_RUNTIME_SUM_PCT, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
         if(PRINT_RT_COMP_MUTOKSIA):
             print()
             print("----------------- runtime comparison MuToksia -----------------")
@@ -284,8 +284,10 @@ if __name__ == "__main__":
 
     if(CALCULATE_RT_COMP):
         #-------------------------------- RUNTIME COMPARISON --------------------------------
-        df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
-        df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
+        df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, 
+                                                                      NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
+        df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
+                                                                     NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
         
 
         if(PRINT_RT_COMP_YES):
