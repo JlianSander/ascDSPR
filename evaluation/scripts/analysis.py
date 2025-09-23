@@ -45,7 +45,7 @@ TITLE_VBS_COUNT = "#VBS"
 TITLE_VBS_COUNT_PCT = "%"
 TITLE_SOLVER_VBS = 'VBS'
 TITLE_BALANCE = "Balance"
-TITLE_BALANCE_PCT_CHANGE = "pct change"
+TITLE_BALANCE_PCT_CHANGE = " %"
 TITLE_BALANCE_SUM_RT = "sum RT"
 
 
@@ -60,9 +60,9 @@ PRINT_OVERLAP_PCT_NO = False
 PRINT_OVERLAP_FORMATTED_NO = False
 PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
-PRINT_RT_COMP_YES = True
-PRINT_RT_COMP_NO = True
-PRINT_RT_COMP_MUTOKSIA = True
+PRINT_RT_COMP_YES = False
+PRINT_RT_COMP_NO = False
+PRINT_RT_COMP_MUTOKSIA = False
 PRINT_BL_ALL = False
 PRINT_BL_YES = False
 PRINT_BL_NO = False
@@ -71,8 +71,8 @@ PRINT_BL_COMBI = False
 CALCULATE_APP = False
 CALCULATE_OVERLAP = False
 CALCULATE_RT_INTERSEC = False
-CACLCULATE_RT_COMP_MUTOKSIA = True
-CALCULATE_RT_COMP = True
+CACLCULATE_RT_COMP_MUTOKSIA = False
+CALCULATE_RT_COMP = False
 CALCULATE_BL = False
 CALCULATE_BL_COMBI = False
 
@@ -372,9 +372,12 @@ if __name__ == "__main__":
 
     if(CALCULATE_BL):
         #-------------------------------- BALANCE --------------------------------
-        df_tab_balance_all = create_table_balance_sheet(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
-        df_tab_balance_yes = create_table_balance_sheet(df_answeredYES, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
-        df_tab_balance_no = create_table_balance_sheet(df_answeredNO, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT)
+        df_tab_balance_all = create_table_balance_sheet(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
+                                                        TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
+        df_tab_balance_yes = create_table_balance_sheet(df_answeredYES, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
+                                                        TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
+        df_tab_balance_no = create_table_balance_sheet(df_answeredNO, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
+                                                       TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
 
         if(PRINT_BL_ALL):
             print()

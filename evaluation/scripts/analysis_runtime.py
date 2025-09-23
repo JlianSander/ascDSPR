@@ -66,8 +66,8 @@ def compute_vbs_with_delta(df_input: pd.DataFrame, key_VBS, search_for_min, delt
 
     # Function to check if value is within the range
     def is_in_range(value, vbs, delta_percentage):
-        lower_bound = (1 - delta_percentage) * vbs
-        upper_bound = (1 + delta_percentage) * vbs
+        lower_bound = vbs - delta_percentage * abs(vbs)
+        upper_bound = vbs + delta_percentage * abs(vbs)
         return lower_bound <= value <= upper_bound
 
     # Apply the function to each column of interest

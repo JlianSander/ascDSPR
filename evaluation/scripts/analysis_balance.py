@@ -51,7 +51,7 @@ def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount):
+def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_pct, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage):
     """
     Method to create a table visualizing a comparison of all solvers with the benchmark solver
     
@@ -62,11 +62,14 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     - key_mutoksia: string to access the row of the benchmark-solver
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
+    - num_digits_pct: number of digits for the percentage values
     - title_balance: string used as a title for the column 'Balance'
     - title_pct_change: string used as a title for the column 'pct Change'
     - title_resulting_sum_rt: string used as a title for the column 'sum RT', describing the sum of RT if we add the balance and the sum RT of the benchmark solver
     - title_solver_VBS: string used as a title for the row of the VBS solver
     - title_vbsCount: string used as a title for the column '#VBS'
+    - title_vbsCount_pct: string ued as title for the colum '#VBS %'
+    - delta_percentage: the percentage that defines the delta around the minimum runtime, within which a values counts as contribution to the VBS
     
     Returns:
     - DataFrame visualizing a comparison of all solvers with the benchmark solver
@@ -90,14 +93,17 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
 
     # compute the virtual best solver (VBS)
     df_balance = df_balance.astype('float64')
-    key_contributor = 'contributor'
-    df_vbs = compute_vbs(df_balance, key_contributor, title_solver_VBS, True)
+    res = compute_vbs_with_delta(df_balance, title_solver_VBS, True, delta_percentage)
+    df_vbs  = res[0]
+    df_contribution = res[1]
 
     # count the number of contributions to the VBS
-    s_vbsCount = count_vbsContribution(df_vbs, key_contributor)
-
-    # prepare dataframe to compute statistical values for each solver
-    df_vbs = df_vbs.drop(columns=[key_contributor])
+    s_vbsCount = count_vbsContribution_with_delta(df_contribution)
+    s_vbsCount.fillna(0).astype('int')
+    num_vbs_total = df_contribution.shape[0]
+    s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}/{num_vbs_total}")
+    s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}%")
+    
 
     # calculate sum of runtime of Mu-Toksia for comparison
     df_muToksia = df_muToksia.drop(columns=[key_instance])
@@ -117,10 +123,11 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     s_percentage = ((df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100)
     formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}%")
     df_table[title_pct_change] = formatted_series_percentage
-    df_table[title_vbsCount] = df_table.index.map(s_vbsCount)
+    df_table[title_vbsCount] = df_table.index.map(s_vbsCount_formatted)
+    df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)
 
     # cleaning table data frame
-    df_table[title_vbsCount] = df_table[title_vbsCount].fillna(0).astype('int')
     df_table.loc[title_solver_VBS, title_vbsCount] = ""
+    df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
     
     return df_table
