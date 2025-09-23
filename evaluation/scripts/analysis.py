@@ -67,12 +67,12 @@ PRINT_BL_YES = False
 PRINT_BL_NO = False
 PRINT_BL_COMBI = False
 
-CALCULATE_APP = False
+CALCULATE_APP = True
 CALCULATE_OVERLAP = False
 CALCULATE_RT_INTERSEC = False
 CACLCULATE_RT_COMP_MUTOKSIA = False
 CALCULATE_RT_COMP = False
-CALCULATE_BL = False
+CALCULATE_BL = True
 CALCULATE_BL_COMBI = False
 
 SAVE_LATEX = True
@@ -270,7 +270,7 @@ if __name__ == "__main__":
             __save_latex_file(output_directory, "Analysis_Runtime_Intersection_No.tex", latex_code)
         
     if(CACLCULATE_RT_COMP_MUTOKSIA):
-        df_tabRuntime_comparison_muToksia = create_table_runtime_comparison_mutoksia(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, NUM_DIGITS_SUM, timeout, 
+        df_tabRuntime_comparison_muToksia = create_table_runtime_comparison_mutoksia(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 1, timeout, 
                                                                                      TITLE_SOLVER_VBS, TITLE_RUNTIME_SUM, TITLE_RUNTIME_SUM_PCT, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT)
         if(PRINT_RT_COMP_MUTOKSIA):
             print()
@@ -390,6 +390,7 @@ if __name__ == "__main__":
 
         if(SAVE_LATEX):   
             latex_code = create_general_latex(df_tab_balance_all, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            latex_code = add_midrule_above_pattern(latex_code, TITLE_SOLVER_VBS)
             __save_latex_file(output_directory, "Analysis_Runtime_Balance_All.tex", latex_code)
             latex_code = create_general_latex(df_tab_balance_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Balance_Yes.tex", latex_code)

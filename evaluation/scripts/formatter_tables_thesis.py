@@ -48,7 +48,15 @@ def create_general_latex(df, num_digits, suffix, asc_label_prefix):
  
 def add_midrule_above_pattern(latex_code, pattern):
     
+    #ensure find only single words
+    pattern_single_word = "\b"+pattern+"(\b|\n)?"
+
     # Function to replace 'asc_0x' with '\Sc{x}'
-    updated_latex_table = re.sub(pattern, rf'\\midrule\n{pattern}', latex_code)
+    updated_latex_table = re.sub(pattern_single_word, rf'\\midrule\n{pattern}', latex_code)
+
+    #if word was first in row
+    pattern_single_word = "\n"+pattern+"(\b|\n)?"
+
+    updated_latex_table = re.sub(pattern_single_word, rf'\n\\midrule\n{pattern}', latex_code)
     
     return updated_latex_table
