@@ -5,13 +5,14 @@ import numpy as np
 from analysis_runtime import *
 from analysis_util import *
 
-def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_muToksia, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
+def create_table_runtime_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_muToksia, key_runtime, key_solvers, timeout, num_stdLimit, show_capped,
                          title_solver_VBS, title_instances, title_mean, title_std, title_sum, title_meanCapped, title_stdCapped, title_sumCapped, title_vbsCount):
     """
     Method to create a table visualizing the runtimes of all solvers for instances with the given answerType solution
     
     Parameters:
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_exit_with_error: string to access column indicating an error during calculation
     - key_instance: string to access column indicating the framework of the problem instance solved
@@ -42,7 +43,7 @@ def create_table_runtime_intersection(df_rawAnswered, key_benchmarks, key_exit_w
     df_output = pd.DataFrame()
 
     # prepare data frame
-    df_IntersectionAll = filter_intersection(df_rawAnswered, key_benchmarks, key_instance, key_solvers)
+    df_IntersectionAll = filter_intersection(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_solvers)
     df_IntersectionAll = df_IntersectionAll.astype({key_runtime: 'float'})
     df_IntersectionAllRunTime = sanitize_dataframe(df_IntersectionAll, key_exit_with_error, key_runtime, timeout)
     df_IntersectionAllRunTime = pivot_dataframe(df_IntersectionAllRunTime, key_solvers, key_runtime)

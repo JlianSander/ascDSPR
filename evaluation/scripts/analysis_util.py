@@ -1,5 +1,6 @@
 import sys
 import pandas as pd
+import numpy as np
 
 """
     Based on work of Lars Bengel, published as: 
@@ -28,11 +29,12 @@ def filter_by_answer(df_rawAnswered, key_answer, key_answerType):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def filter_intersection(df_input, key_benchmarks, key_instance, key_solvers):
+def filter_intersection(df_input, key_answer, key_benchmarks, key_instance, key_solvers):
     """
     Method to filter the given data frame to those rows which instance has been solved by all solvers
     Parameters:
     - df_input: data frame with columns 'key_solvers','key_benchmarks','key_instance'
+    - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_solvers: string to access the rows of a specific solver
@@ -41,11 +43,14 @@ def filter_intersection(df_input, key_benchmarks, key_instance, key_solvers):
     - Data frame containing only those rows which instance has been solved by all solvers
     """
 
+    # filter data frame to keep only those rows which answer is not NaN
+    df_input_filtered = df_input[df_input[key_answer].notna()]
+
     # Create a set of unique pairs of ('benchmark_name', 'instance') for each 'solver_name'
-    s_solvedInstances = df_input.groupby(key_solvers).apply(lambda x: set(zip(x[key_benchmarks], x[key_instance])))
+    s_solvedInstances = df_input_filtered.groupby(key_solvers).apply(lambda x: set(zip(x[key_benchmarks], x[key_instance])))
     # get the list of solvers
     solvers = df_input[key_solvers].unique().tolist()
-
+    
     # check for each row if the created pair of the row is contained in the dictionairies of all solvers
     def check_row(row):
         benchmark_instance_pair = (row[key_benchmarks], row[key_instance])

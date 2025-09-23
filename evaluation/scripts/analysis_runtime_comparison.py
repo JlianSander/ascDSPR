@@ -6,12 +6,13 @@ from analysis_runtime import *
 from analysis_util import *
 
 
-def __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solvers, timeout, title_solver_VBS):
+def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solvers, timeout, title_solver_VBS):
     """
     Method to compare the solvers runtimes on the intersection of their solved instances
     
     Parameters:
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_contributor: string to access column of contributors in the data frame of the VBS contributions
     - key_exit_with_error: string to access column indicating an error during calculation
@@ -34,8 +35,9 @@ def __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_
     df_filtered = df_rawAnswered[df_rawAnswered[key_solvers].isin(list_solvers)]
 
     # keep only those rows which are in the intersection of solved rows by each of the two solvers
-    df_intersection = filter_intersection(df_filtered, key_benchmarks, key_instance, key_solvers)
+    df_intersection = filter_intersection(df_filtered, key_answer, key_benchmarks, key_instance, key_solvers)
     df_intersection = df_intersection.loc[:, [key_solvers, key_runtime]]
+
     # # ------------- DEBUG ------------- 
     # df_intersection = df_intersection.loc[:, [key_solvers, key_instance, key_runtime]]
     # # ------------- DEBUG ------------- 
@@ -144,12 +146,13 @@ def __fill_table(df_outputMean, df_outputMeanDiff, df_outputMeanSumPct, df_outpu
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, num_digits_sum, timeout, title_solver_VBS):
+def create_table_runtime_comparison(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_std, num_digits_sum, timeout, title_solver_VBS):
     """
     Method to create a table visualizing a pairwise comparison of the solvers runtimes on the intersection of their solved instances
     
     Parameters:
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_exit_with_error: string to access column indicating an error during calculation
     - key_instance: string to access column indicating the framework of the problem instance solved
@@ -203,7 +206,7 @@ def create_table_runtime_comparison(df_rawAnswered, key_benchmarks, key_exit_wit
             # # ------------- DEBUG ------------- 
 
             list_solversForIntersection = [solver1, solver2]
-            res = __analyse_intersection(df_rawAnswered, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_solver_VBS)
+            res = analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_contributor, key_exit_with_error, key_instance, key_runtime, key_solvers, list_solversForIntersection, timeout, title_solver_VBS)
 
             if(len(res) == 0):
                 continue

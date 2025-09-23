@@ -9,6 +9,7 @@ from analysis_overlap import *
 from analysis_runtime import *
 from analysis_runtime_intersection import *
 from analysis_runtime_comparison import *
+from analysis_runtime_comparison_muToksia import *
 from analysis_balance import *
 from analysis_balance_combi import *
 from formatter_tables_thesis import *
@@ -35,10 +36,12 @@ TITLE_INSTANCES = '#AF'
 TITLE_RUNTIME_MEAN = "mean RT"
 TITLE_RUNTIME_STD = "std RT"
 TITLE_RUNTIME_SUM = "sum RT"
+TITLE_RUNTIME_SUM_PCT = " %"
 TITLE_RUNTIME_MEAN_CAPPED = "mean RT*"
 TITLE_RUNTIME_STD_CAPPED = "std RT*"
 TITLE_RUNTIME_SUM_CAPPED = "sum RT*"
 TITLE_VBS_COUNT = "#VBS"
+TITLE_VBS_COUNT_PCT = "%"
 TITLE_SOLVER_VBS = 'VBS'
 TITLE_BALANCE = "Balance"
 TITLE_BALANCE_PCT_CHANGE = "pct change"
@@ -58,14 +61,16 @@ PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
+PRINT_RT_COMP_MUTOKSIA = False
 PRINT_BL_ALL = False
 PRINT_BL_YES = False
 PRINT_BL_NO = False
 PRINT_BL_COMBI = False
 
 CALCULATE_APP = False
-CALCULATE_OVERLAP = True
+CALCULATE_OVERLAP = False
 CALCULATE_RT_INTERSEC = False
+CACLCULATE_RT_COMP_MUTOKSIA = False
 CALCULATE_RT_COMP = False
 CALCULATE_BL = False
 CALCULATE_BL_COMBI = False
@@ -243,9 +248,9 @@ if __name__ == "__main__":
         # filter out all rows of the solver 'asc_01'
         df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
         # analyze runtime of the intersection of instances of solved instances of solvers
-        df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
+        df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
                             TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT)
-        df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
+        df_tabRuntime_intersectNoASC01_no = create_table_runtime_intersection(df_rawAnsweredNoASC01, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, True,
                             TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT)
         
         if(PRINT_RT_INTERSEC_YES):
@@ -264,34 +269,47 @@ if __name__ == "__main__":
             latex_code = create_general_latex(df_tabRuntime_intersectNoASC01_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Intersection_No.tex", latex_code)
         
+    if(CACLCULATE_RT_COMP_MUTOKSIA):
+        df_tabRuntime_comparison_muToksia = create_table_runtime_comparison_mutoksia(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, NUM_DIGITS_SUM, timeout, 
+                                                                                     TITLE_SOLVER_VBS, TITLE_RUNTIME_SUM, TITLE_RUNTIME_SUM_PCT, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT)
+        if(PRINT_RT_COMP_MUTOKSIA):
+            print()
+            print("----------------- runtime comparison MuToksia -----------------")
+            print(df_tabRuntime_comparison_muToksia)
+
+        if(SAVE_LATEX):
+            latex_code = create_general_latex(df_tabRuntime_comparison_muToksia, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
+            __save_latex_file(output_directory, "Analysis_Runtime_Comparison_MuToksia.tex", latex_code)
+
     if(CALCULATE_RT_COMP):
         #-------------------------------- RUNTIME COMPARISON --------------------------------
-        df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
-        df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
-    
+        df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
+        df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS)
+        
+
         if(PRINT_RT_COMP_YES):
             print()
             print("----------------- runtime comparison YES -----------------")
             print(" - mean -")
-            print(df_tabRuntime_comparisonNo[0])
+            print(df_tabRuntime_comparisonYes[0])
             print()
             print(" - mean difference -")
-            print(df_tabRuntime_comparisonNo[1])
+            print(df_tabRuntime_comparisonYes[1])
             print()
             print(" - std -")
-            print(df_tabRuntime_comparisonNo[3])
+            print(df_tabRuntime_comparisonYes[3])
             print()
             print(" - sum -")
-            print(df_tabRuntime_comparisonNo[4])
+            print(df_tabRuntime_comparisonYes[4])
             print()
             print(" - sum difference -")
-            print(df_tabRuntime_comparisonNo[5])
+            print(df_tabRuntime_comparisonYes[5])
             print()
             print(" - mean/sum procentual -")
-            print(df_tabRuntime_comparisonNo[2])
+            print(df_tabRuntime_comparisonYes[2])
             print()
             print(" - #VBS -")
-            print(df_tabRuntime_comparisonNo[6])
+            print(df_tabRuntime_comparisonYes[6])
 
         if(PRINT_RT_COMP_NO):
             print()
