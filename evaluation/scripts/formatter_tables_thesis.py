@@ -22,11 +22,9 @@ def replace_asc_labels(latex_code, prefix_replacement):
 # Function to unify the alignment for each table
 def get_alignment(df):
     alignments = []
-    for i, col in enumerate(df.columns):
-        if(i == 0):
-            alignments.append('l')  # Left alignment for the first column
-        else:
-            alignments.append('r')  # Right alignment all other columns
+    alignments.append('l')  # Left alignment for the indexes
+    for col in df.columns:
+        alignments.append('r')  # Right alignment all other columns
 
     return ''.join(alignments)
 
