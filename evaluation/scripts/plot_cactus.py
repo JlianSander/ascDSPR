@@ -16,9 +16,38 @@ from plot import *
     Conference on Principles of Knowledge Representation and Reasoning, KR 2025, 2025.
 """
 
+names = {
+    'reducto': r'\texttt{reducto}',
+    'mu-toksia-glucose': r'$\mu$-\textsc{toksia} (\textsc{Glucose})',
+    'asc_01': r'S\textsf{1}',
+    'asc_02': r'S\textsf{2}',
+    'asc_03': r'S\textsf{3}',
+    'asc_04': r'S\textsf{4}',
+    'asc_05': r'S\textsf{5}',
+    'asc_06': r'S\textsf{6}',
+    'asc_07': r'S\textsf{7}',
+    'asc_08': r'S\textsf{8}',
+    'asc_09': r'S\textsf{9}',
+    'asc_10': r'S\textsf{10}',
+}
+
+style_map = [
+    {'marker': '*', 'linestyle': '-'},
+    {'marker': 'P', 'linestyle': '--'},
+    {'marker': '^', 'linestyle': '-.'},
+    {'marker': 'D', 'linestyle': ':'},
+    {'marker': 'o', 'linestyle': '-'},
+    {'marker': 'x', 'linestyle': '--'},
+    {'marker': 'v', 'linestyle': '-.'},
+    {'marker': 's', 'linestyle': ':'},
+    {'marker': '.', 'linestyle': '-'},
+    {'marker': '1', 'linestyle': '--'},
+    {'marker': '>', 'linestyle': '-.'}
+]
+
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, solver1, solver2):
+def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers):
     """
     Method to preprocess the data, so that it can be used to create a scatter plot
     
@@ -29,33 +58,31 @@ def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
-    - solver1: solver on the x-axis of the plot to create
-    - solver2: solver on the y-axis of the plot to create
     
     Returns:
         Data frame with two columns, each containing the runtimes of one solver for each instance
     """
 
-    # Filter the dataframe for rows where solver_name is either solver1 or solver2
-    list_solvers = (solver1, solver2)
-    df_filtered = df_rawAnswered[df_rawAnswered[key_solvers].isin(list_solvers)]
-
-    # keep only those rows which are in the intersection of solved rows by each of the two solvers
-    df_intersection = filter_intersection(df_filtered, key_answer, key_benchmarks, key_instance, key_solvers)
-    df_intersection = df_intersection.loc[:, [key_instance, key_solvers, key_runtime]]
+    df_data = df_rawAnswered.copy()
 
     # Add a counter to make 'instance' unique for each combination of 'instance' and 'solver_name'
-    df_intersection[key_instance] = df_intersection.groupby([key_instance, key_solvers]).cumcount().astype(str) + '_' + df_intersection[key_instance]
+    df_data[key_instance] = df_data.groupby([key_instance, key_solvers]).cumcount().astype(str) + '_' + df_data[key_instance]
 
-    # pivot data
-    df_intersection_pivoted = df_intersection.pivot(columns=key_solvers, index=key_instance, values=key_runtime)
-    df_intersection_pivoted = df_intersection_pivoted.reset_index(drop=True)
-    return df_intersection_pivoted
+    # filter data frame to keep only those rows which answer is not NaN
+    df_data_filtered = df_data[df_data[key_answer].notna()]
+
+    # focus on columns of interest
+    df_data_filtered = df_data_filtered.loc[:, [key_instance, key_solvers, key_runtime]]
+    
+    # Group by solver
+    df_rawAnswered_grouped = df_data_filtered.groupby(key_solvers)
+
+    return df_rawAnswered_grouped
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def save_plot_scatter(output_directory, save_pgf, save_png, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, solver1, solver2, 
-                      title_file, title_label):
+def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 
+                      title_file, title_label_x, title_label_y):
     """
     Method to create and save a scatter plot of the two given solvers
     
@@ -70,20 +97,16 @@ def save_plot_scatter(output_directory, save_pgf, save_png, df_rawAnswered, key_
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
     - timeout: number of seconds after which the calculation was aborted
-    - solver1: solver on the x-axis of the plot to create
-    - solver2: solver on the y-axis of the plot to create
     - title_file: string used as name of the file to create
-    - title_label: string set in front of solver name as label
+    - title_label_x: string set as label on axis x
+    - title_label_y: string set as label on axis y
     
     Returns:
         void
     """
 
-
     # preprocess data
-    df_data = __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, solver1, solver2)
-    s1 = df_data[solver1]
-    s2 = df_data[solver2]
+    df_data = __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers)
 
     # Set up Matplotlib for producing .tex output
     plt.rcParams.update({
@@ -93,59 +116,27 @@ def save_plot_scatter(output_directory, save_pgf, save_png, df_rawAnswered, key_
         'pgf.preamble': r'\usepackage{amsmath}\usepackage[utf8x]{inputenc}\usepackage[T1]{fontenc}'
     })
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-    
-    # SCALE 
-    # set exponential scale at labels
-    ax.set_yscale("log")
-    ax.set_xscale("log")
-    all_vals = np.concatenate([s1.tolist(), s2.tolist()])
-    min_val = 10 ** np.floor(np.log10(all_vals.min()))
-    max_val = 10 ** np.ceil(np.log10(all_vals.max()))
+     # Create figure and axis objects
+    fig, ax = plt.subplots(figsize=(10, 10))
 
-    # Extend range by one order in both directions
-    x_min = min_val# / 10
-    x_max = max_val# * 10
-    
-    ax.set_xlim(x_min, x_max)
-    ax.set_ylim(x_min, x_max)
+    # PLOT
+    for i, (name, group) in enumerate(df_data):
+        group = group.sort_values(by="runtime")
+        group = group.reset_index(drop=True)
+        ax.plot(group["runtime"], group.index, marker=style_map[i]['marker'], markersize=4, markerfacecolor='white',markeredgewidth=0.75, linewidth=0.75, linestyle=style_map[i]['linestyle'],alpha=0.7, label=names[name])
+
+
+    # LABELS + TITLES
+    ax.set_xlabel(title_label_x,fontsize=16)
+    ax.set_ylabel(title_label_y,fontsize=16)
+    legend = ax.legend(loc='lower right', fontsize=13, markerscale=1.75, handlelength=2, handletextpad=0.65,borderpad=0.75,borderaxespad=0.35,fancybox=True)
 
     # AUX LINES
-    # auxiliary lines and areas (trends and limits)
-    x_vals = np.logspace(np.log10(min_val), np.log10(max_val), 100)
-
-    # Fill between x/10 and x*10
-    plt.fill_between(
-        x_vals,
-        x_vals * 0.1,
-        x_vals * 10,
-        color='gray',
-        alpha=0.2,
-        label='±1 order of magnitude'
-    )
-
-    # draw diagonal line
-    ax.plot([min_val, max_val], [min_val, max_val],
-         linestyle=':', color='gray', label='Equal Runtime')
-    
-    # draw timeout limit lines
-    ax.axvline(x=timeout, color='r', linestyle='--', label=None,linewidth=1)
-    ax.axhline(y=timeout, color='r', linestyle='--', label=None,linewidth=1)
-
-    # PLOT DATA
-    ax.scatter(s1, s2, marker="o",s=11,linewidths=0.75,facecolors='red',edgecolors='black',alpha=0.7)
-
-    # FORMAT
-    majorFormatter = plt.LogFormatterMathtext(base=10)
-    ax.xaxis.set_major_formatter(majorFormatter)
-    ax.yaxis.set_major_formatter(majorFormatter)
-
-    # LABELS
-    ax.set_xlabel(title_label + get_name(solver1), fontsize=16)
-    ax.set_ylabel(title_label + get_name(solver2), fontsize=16)
-    ax.tick_params(axis='both', which='major',labelsize=14)
+    ax.axvline(x=timeout, color='r', linestyle='--', label=None)
+    ax.set_ylim(0, None)
+    ax.tick_params(axis='both', which='major',labelsize=13)
     ax.grid(True, color='gray', ls=':', lw=1, zorder=1,alpha=0.5)
-
+    
     plt.tight_layout()
 
     # save as files
@@ -158,3 +149,4 @@ def save_plot_scatter(output_directory, save_pgf, save_png, df_rawAnswered, key_
         path_png = output_directory + title_file + ".png"
         file_output = open(path_png, "wb")
         plt.savefig(file_output, format='png')
+

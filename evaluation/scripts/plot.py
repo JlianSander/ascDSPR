@@ -7,6 +7,12 @@ from analysis import *
 from analysis_util import *
 from analysis_runtime import *
 from plot_scatter import *
+from plot_cactus import *
+
+# ---------------- CONTROLS ---------------
+
+SAVE_PLOT_PGF = True
+SAVE_PLOT_PNG = True
 
 # ---------------- CONSTANTS ---------------
 NAME_MUTOSKIA = 'mu-toksia-glucose'
@@ -27,6 +33,20 @@ names = {
     'asc_09': r'S\textsf{9}',
     'asc_10': r'S\textsf{10}',
 }
+
+style_map = [
+    {'marker': '*', 'linestyle': '-'},
+    {'marker': 'P', 'linestyle': '--'},
+    {'marker': '^', 'linestyle': '-.'},
+    {'marker': 'D', 'linestyle': ':'},
+    {'marker': 'o', 'linestyle': '-'},
+    {'marker': 'x', 'linestyle': '--'},
+    {'marker': 'v', 'linestyle': '-.'},
+    {'marker': 's', 'linestyle': ':'}
+]
+
+def get_style(index):
+    return style_map[index]
 
 def get_name(solver):
     if solver in names:
@@ -93,4 +113,9 @@ if __name__ == "__main__":
     df_answeredNO = filter_by_answer(df_rawAnswered, key_answer, NAME_ANSWER_NO)
 
 
-    save_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 'asc_05', 'scatter_muToksia_asc05', 'runtime[s] ')
+    # save_plot_scatter(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 
+    #                   'asc_05', 'scatter_muToksia_asc05', 'runtime[s] ')
+    
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_all', "runtime~$(s)$", "instances~solved")
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredYES, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_yes', "runtime~$(s)$", "instances~solved")
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredNO, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_no', "runtime~$(s)$", "instances~solved")
