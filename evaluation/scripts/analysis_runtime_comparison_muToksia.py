@@ -42,9 +42,9 @@ def __fill_table(df_output, df_runtimeSum, num_digits_pct, num_digits_sum,
 
     # fill the cells of the table
     df_output[title_column_sum][solver1] = f"{sum_solver1:.{num_digits_sum}f}" + "/" + f"{sum_muToksia:.{num_digits_sum}f}"
-    df_output[title_column_sum_pct][solver1] = f"{sum_pct:.{num_digits_pct}f}%"
+    df_output[title_column_sum_pct][solver1] = f"{sum_pct:.{num_digits_pct}f}\%"
     df_output[title_colum_vbs][solver1] = vbsCount_solver1.__str__() + "/" + vbsCount_sum.__str__()    
-    df_output[title_column_vbsCount_pct][solver1] = f"{vbsCount_pct:.{num_digits_pct}f}%" 
+    df_output[title_column_vbsCount_pct][solver1] = f"{vbsCount_pct:.{num_digits_pct}f}\%" 
 
 
 #---------------------------------------------------------------------------------------------------------------------------

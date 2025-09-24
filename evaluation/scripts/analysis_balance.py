@@ -102,7 +102,7 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     s_vbsCount.fillna(0).astype('int')
     num_vbs_total = df_contribution.shape[0]
     s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}/{num_vbs_total}")
-    s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}%")
+    s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}\%")
     
 
     # calculate sum of runtime of Mu-Toksia for comparison
@@ -121,7 +121,7 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     df_table[title_resulting_sum_rt] = formatted_series_sum_resulting
     df_table[title_resulting_sum_rt] = df_table[title_resulting_sum_rt].astype('int')
     s_percentage = ((df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100)
-    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}%")
+    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
     df_table[title_pct_change] = formatted_series_percentage
     df_table[title_vbsCount] = df_table.index.map(s_vbsCount_formatted)
     df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)

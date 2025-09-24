@@ -70,6 +70,6 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, key_answer, key_
         row_sum = df_answers_tmp.loc[index].sum()
         df_answers_tmp.loc[index, title_total] = row_sum
         percentage = (row_sum / solution_sum) * 100
-        df_answers_tmp.loc[index, title_percentage] = percentage.round(0).astype('int').__str__() + "%"
+        df_answers_tmp.loc[index, title_percentage] = percentage.round(0).astype('int').__str__() + "\%"
     
     return df_answers_tmp 

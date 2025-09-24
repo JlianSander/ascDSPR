@@ -12,7 +12,7 @@ from plot_cactus import *
 # ---------------- CONTROLS ---------------
 
 SAVE_PLOT_PGF = True
-SAVE_PLOT_PNG = True
+SAVE_PLOT_PNG = False
 
 # ---------------- CONSTANTS ---------------
 NAME_MUTOSKIA = 'mu-toksia-glucose'

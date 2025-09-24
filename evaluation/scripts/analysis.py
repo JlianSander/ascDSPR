@@ -26,7 +26,7 @@ NUM_DIGITS_PCT = 0
 NUM_DIGITS_SUM = 0
 NUM_DIGITS_STD = 3
 NUM_STD_LIMIT = 3
-SUFFIX_PERCENTAGE = ' %'
+SUFFIX_PERCENTAGE = ' \%'
 TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
@@ -37,15 +37,15 @@ TITLE_INSTANCES = '#AF'
 TITLE_RUNTIME_MEAN = "mean RT"
 TITLE_RUNTIME_STD = "std RT"
 TITLE_RUNTIME_SUM = "sum RT"
-TITLE_RUNTIME_SUM_PCT = " %"
+TITLE_RUNTIME_SUM_PCT = " \%"
 TITLE_RUNTIME_MEAN_CAPPED = "mean RT*"
 TITLE_RUNTIME_STD_CAPPED = "std RT*"
 TITLE_RUNTIME_SUM_CAPPED = "sum RT*"
 TITLE_VBS_COUNT = "#VBS"
-TITLE_VBS_COUNT_PCT = "%"
+TITLE_VBS_COUNT_PCT = "\%"
 TITLE_SOLVER_VBS = 'VBS'
 TITLE_BALANCE = "Balance"
-TITLE_BALANCE_PCT_CHANGE = " %"
+TITLE_BALANCE_PCT_CHANGE = " \%"
 TITLE_BALANCE_SUM_RT = "sum RT"
 
 
@@ -349,7 +349,7 @@ if __name__ == "__main__":
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Std_Yes.tex", latex_code)
             latex_code = create_general_latex(df_tabRuntime_comparisonYes[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Sum_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[5], NUM_DIGITS_SUM, None, NAME_PREFIX_ASC_LATEX)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[5], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_SumDiff_Yes.tex", latex_code)
             latex_code = create_general_latex(df_tabRuntime_comparisonYes[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_VBSCount_Yes.tex", latex_code)
@@ -364,7 +364,7 @@ if __name__ == "__main__":
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Std_No.tex", latex_code)
             latex_code = create_general_latex(df_tabRuntime_comparisonNo[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Sum_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[5], NUM_DIGITS_SUM, None, NAME_PREFIX_ASC_LATEX)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[5], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_SumDiff_No.tex", latex_code)
             latex_code = create_general_latex(df_tabRuntime_comparisonNo[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_VBSCount_No.tex", latex_code)

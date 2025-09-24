@@ -30,18 +30,19 @@ def get_alignment(df):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def create_general_latex(df, num_digits, suffix, asc_label_prefix): 
+def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix): 
         
     # round all float values to have the given number of digits
-    df = df.apply(lambda x: x.round(num_digits) if x.dtype == 'float64' else x)
+    df = df.apply(lambda col: col.apply(lambda val: f"{val:.{num_digits}f}" if not pd.isna(val) else val) if col.dtype == 'float64' else col)
     if num_digits == 0:
         df = df.fillna(0).astype('int')
     else:
         df = df.fillna('')
+        
 
     # add the given suffix to all values of the data frame
     if suffix is not None:
-        df = df.applymap(lambda x: x.__str__() + "%")
+        df = df.applymap(lambda x: x.__str__() + "\%")
 
     # Convert the DataFrame to LaTeX format
     # clean the alignment of the table to create

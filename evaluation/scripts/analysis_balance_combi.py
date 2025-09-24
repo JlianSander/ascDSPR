@@ -142,7 +142,7 @@ def create_table_balance_sheet_combination(df, key_answer, key_instance, key_mut
     df_table[title_resulting_sum_rt] = s_formatted_sum_resulting
     df_table[title_resulting_sum_rt] = df_table[title_resulting_sum_rt].astype('int')
     s_percentage = (df_table[title_resulting_sum_rt] / rt_sum_mutoksia - 1) * 100
-    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}%")
+    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
     df_table[title_pct_change] = formatted_series_percentage
 
     return df_table
