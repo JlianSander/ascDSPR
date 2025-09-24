@@ -15,6 +15,7 @@ sat/**
 !*/ipasir.h
 
 build/
+env/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

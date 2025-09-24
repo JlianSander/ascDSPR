@@ -9,6 +9,11 @@ import numpy as np
     Conference on Principles of Knowledge Representation and Reasoning, KR 2025, 2025.
 """
 
+names = {
+    'reducto': '\reducto',
+    'mu-toksia-glucose': '$\muToksiaGlucose',
+}
+
 #---------------------------------------------------------------------------------------------------------------------------
 
 
@@ -63,6 +68,14 @@ def filter_intersection(df_input, key_answer, key_benchmarks, key_instance, key_
     df_input.apply(check_row, axis=1)
     filtered_df = df_input[df_input.apply(check_row, axis=1)]
     return filtered_df
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+def get_name(solver):
+    if solver in names:
+        return names[solver]
+    else:
+        return solver
 
 #---------------------------------------------------------------------------------------------------------------------------
 

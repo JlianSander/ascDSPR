@@ -80,7 +80,7 @@ SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
-def __read_csv_to_dataframe(file_path):
+def read_csv_to_dataframe(file_path):
     try:
         # Read CSV into a pandas DataFrame
         df = pd.read_csv(file_path)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     # read data frame of raw results from probo
-    df_raw = __read_csv_to_dataframe(file_path_raw)
+    df_raw = read_csv_to_dataframe(file_path_raw)
 
     # read keys from input data frames
     key_benchmarks = df_raw.columns[15]  #'benchmark_name'
@@ -139,13 +139,13 @@ if __name__ == "__main__":
     key_exit_with_error = df_raw.columns[11] #'exit_with_error'
 
     # read data frame from analyzing the .out files of the experiment
-    df_resDetails = __read_csv_to_dataframe(file_path_resultsDetails)
+    df_resDetails = read_csv_to_dataframe(file_path_resultsDetails)
 
     # read keys from input data frames
     key_answer = df_resDetails.columns[4] #'answer'
 
     # read data frame from the general information about the iccma benchmark datasets
-    df_iccmas = __read_csv_to_dataframe(file_path_iccmas)
+    df_iccmas = read_csv_to_dataframe(file_path_iccmas)
     df_iccmas = df_iccmas.set_index(key_benchmarks)
 
     # read keys from input data frames
