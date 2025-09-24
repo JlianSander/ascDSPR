@@ -48,9 +48,12 @@ def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix
     # clean the alignment of the table to create
     alignment = get_alignment(df)
     latex_code = df.to_latex(index=True, column_format=alignment) 
+
+    # replace invalid symbols
+    updated_latex_table = re.sub("_", '\_', latex_code)
     
     # Replace names of shortcuts with the custom command of the thesis
-    updated_latex_table = replace_asc_labels(latex_code, asc_label_prefix)
+    updated_latex_table = replace_asc_labels(updated_latex_table, asc_label_prefix)
 
     return updated_latex_table
 
