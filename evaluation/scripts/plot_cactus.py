@@ -146,11 +146,11 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
         path_pgf = output_directory + title_file + ".pgf"
         file_output = open(path_pgf, "w")
         plt.savefig(file_output, format='pgf')
-        print(f"pgf graphic saved to: {file_output}")
+        print(f"pgf graphic saved to: {path_pgf}")
 
     if(save_png):
         path_png = output_directory + title_file + ".png"
         file_output = open(path_png, "wb")
         plt.savefig(file_output, format='png')
-        print(f"png graphic saved to: {file_output}")
+        print(f"png graphic saved to: {path_png}")
 
