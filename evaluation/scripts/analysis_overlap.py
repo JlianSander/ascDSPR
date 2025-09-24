@@ -28,8 +28,6 @@ def calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
 
     # Iterate over all unique pairs of solvers (solver_temp1, solver_temp2)
     for i, solver_temp1 in enumerate(unique_solvers):
-        # filter out the benchmark solver
-        if(solver_temp1 == key_muToksia): continue
         for solver_temp2 in unique_solvers[i+1:]:
             if(solver_temp2 == key_muToksia): continue
             # Filter the dataframe for rows where solver_name is either solver_temp1 or solver_temp2
@@ -88,8 +86,8 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
     # count answers for each solver and each benchmark
     df_answers = count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers)
     #df_answers = df_answers.xs(key_answerType, level=key_answer)
-    # drop the answers of the benchmark solver
-    df_answers = df_answers.drop(index=df_answers[df_answers.index.get_level_values(key_solvers) == key_muToksia].index)
+    # # drop the answers of the benchmark solver
+    # df_answers = df_answers.drop(index=df_answers[df_answers.index.get_level_values(key_solvers) == key_muToksia].index)
 
     # sum up the number of answers over all benchmark datasets
     s_rowSumsAnswers = df_answers.sum(axis=1)
