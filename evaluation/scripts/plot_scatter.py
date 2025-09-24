@@ -37,11 +37,9 @@ def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
     """
 
     # Filter the dataframe for rows where solver_name is either solver1 or solver2
-    list_solvers = (solver1, solver2)
-    df_filtered = df_rawAnswered[df_rawAnswered[key_solvers].isin(list_solvers)]
+    df_intersection = filter_intersection_pair(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_solvers, solver1 , solver2)
 
-    # keep only those rows which are in the intersection of solved rows by each of the two solvers
-    df_intersection = filter_intersection(df_filtered, key_answer, key_benchmarks, key_instance, key_solvers)
+    # keep only columns of interest
     df_intersection = df_intersection.loc[:, [key_instance, key_solvers, key_runtime]]
 
     # Add a counter to make 'instance' unique for each combination of 'instance' and 'solver_name'

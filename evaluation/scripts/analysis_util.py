@@ -66,6 +66,31 @@ def filter_intersection(df_input, key_answer, key_benchmarks, key_instance, key_
 
 #---------------------------------------------------------------------------------------------------------------------------
 
+def filter_intersection_pair(df_input, key_answer, key_benchmarks, key_instance, key_solvers, solver1 , solver2):
+    """
+    Method to filter the given data frame to those rows which instance has been solved by both given solvers
+    Parameters:
+    - df_input: data frame with columns 'key_solvers','key_benchmarks','key_instance'
+    - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_solvers: string to access the rows of a specific solver
+    - solver1 : solver in the given dataframe
+    - solver2 : solver in the given dataframe
+    
+    Returns:
+    - Data frame containing only those rows which instance has been solved by both given solvers
+    """
+
+    # Filter the dataframe for rows where solver_name is either solver1 or solver2
+    list_solvers = (solver1, solver2)
+    df_filtered = df_input[df_input[key_solvers].isin(list_solvers)]
+
+    # keep only those rows which are in the intersection of solved rows by each of the two solvers
+    return filter_intersection(df_filtered, key_answer, key_benchmarks, key_instance, key_solvers)
+
+#---------------------------------------------------------------------------------------------------------------------------
+
 def print_full(df_input):
     """
     Method to print all rows of the given data frame

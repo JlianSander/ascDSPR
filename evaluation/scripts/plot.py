@@ -121,3 +121,14 @@ if __name__ == "__main__":
     save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_all', "runtime~$(s)$", "instances~solved", True)
     save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredYES, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_yes', "runtime~$(s)$", "instances~solved", False)
     save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredNO, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_no', "runtime~$(s)$", "instances~solved", True)
+
+
+    # plot intersection between Mu-Toksia and ASC_05
+    df_intersection = filter_intersection_pair(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_solvers, 
+                                               NAME_MUTOSKIA, 'asc_05')
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_intersection, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_intersection_asc05', "runtime~$(s)$", "instances~solved", True)
+
+    # plot intersection between Mu-Toksia and ASC_05
+    df_intersection = filter_intersection_pair(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_solvers, 
+                                               NAME_MUTOSKIA, 'asc_10')
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_intersection, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_intersection_asc10', "runtime~$(s)$", "instances~solved", False)
