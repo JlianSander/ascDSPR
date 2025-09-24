@@ -16,25 +16,28 @@ from plot import *
     Conference on Principles of Knowledge Representation and Reasoning, KR 2025, 2025.
 """
 
-
 SAVE_PLOT_PGF = True
 SAVE_PLOT_PNG = True
 
-
-style_map = [
-    {'marker': 'x', 'linestyle': '-'},
-    {'marker': 'o', 'linestyle': '--'},
-    {'marker': '^', 'linestyle': '-.'},
-    {'marker': 'D', 'linestyle': ':'},
-    {'marker': 'P', 'linestyle': '-'},
-    {'marker': '*', 'linestyle': '--'},
-    {'marker': 'v', 'linestyle': '-.'},
-    {'marker': 's', 'linestyle': ':'}
-]
-
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, solver1, solver2):
+def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, solver1, solver2):
+    """
+    Method to preprocess the data, so that it can be used to create a scatter plot
+    
+    Parameters:
+    - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
+    - key_solvers: string to access the rows of a specific solver
+    - solver1: solver on the x-axis of the plot to create
+    - solver2: solver on the y-axis of the plot to create
+    
+    Returns:
+        Data frame with two columns, each containing the runtimes of one solver for each instance
+    """
 
     # Filter the dataframe for rows where solver_name is either solver1 or solver2
     list_solvers = (solver1, solver2)
@@ -54,10 +57,29 @@ def preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, ke
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def create_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, solver1, solver2, title_file, title_label):
+def save_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, solver1, solver2, title_file, title_label):
+    """
+    Method to create and save a scatter plot of the two given solvers
     
+    Parameters:
+    - output_directory: string indicating the path to the output folder, where the plots are saved to
+    - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
+    - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_instance: string to access column indicating the framework of the problem instance solved
+    - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
+    - key_solvers: string to access the rows of a specific solver
+    - timeout: number of seconds after which the calculation was aborted
+    - solver1: solver on the x-axis of the plot to create
+    - solver2: solver on the y-axis of the plot to create
+    
+    Returns:
+        void
+    """
+
+
     # preprocess data
-    df_data = preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, solver1, solver2)
+    df_data = __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, solver1, solver2)
     s1 = df_data[solver1]
     s2 = df_data[solver2]
 
@@ -116,14 +138,14 @@ def create_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchm
     ax.yaxis.set_major_formatter(majorFormatter)
 
     # SETUP - LABELS
-    ax.set_xlabel(get_name(solver1), fontsize=16)
-    ax.set_ylabel(get_name(solver2), fontsize=16)
+    ax.set_xlabel(title_label + get_name(solver1), fontsize=16)
+    ax.set_ylabel(title_label + get_name(solver2), fontsize=16)
     ax.tick_params(axis='both', which='major',labelsize=14)
     ax.grid(True, color='gray', ls=':', lw=1, zorder=1,alpha=0.5)
 
     plt.tight_layout()
 
-    # save as pgf file
+    # save as files
     if(SAVE_PLOT_PGF):
         path_pgf = output_directory + title_file + ".pgf"
         file_output = open(path_pgf, "w")

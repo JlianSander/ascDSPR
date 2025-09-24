@@ -93,4 +93,4 @@ if __name__ == "__main__":
     df_answeredNO = filter_by_answer(df_rawAnswered, key_answer, NAME_ANSWER_NO)
 
 
-    create_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 'asc_05', 'test', 'runtime[s] ')
+    save_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 'asc_05', 'scatter_muToksia_asc05', 'runtime[s] ')
