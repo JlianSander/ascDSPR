@@ -113,9 +113,11 @@ if __name__ == "__main__":
     df_answeredNO = filter_by_answer(df_rawAnswered, key_answer, NAME_ANSWER_NO)
 
 
-    # save_plot_scatter(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 
-    #                   'asc_05', 'scatter_muToksia_asc05', 'runtime[s] ')
+    save_plot_scatter(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 
+                      'asc_05', 'scatter_muToksia_asc05', 'runtime[s] ')
+    save_plot_scatter(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 
+                      'asc_10', 'scatter_muToksia_asc10', 'runtime[s] ')
     
-    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_all', "runtime~$(s)$", "instances~solved")
-    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredYES, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_yes', "runtime~$(s)$", "instances~solved")
-    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredNO, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_no', "runtime~$(s)$", "instances~solved")
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_all', "runtime~$(s)$", "instances~solved", True)
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredYES, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_yes', "runtime~$(s)$", "instances~solved", False)
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_answeredNO, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 'cactus_no', "runtime~$(s)$", "instances~solved", True)

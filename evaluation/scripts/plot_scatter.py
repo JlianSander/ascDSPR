@@ -97,8 +97,8 @@ def save_plot_scatter(output_directory, save_pgf, save_png, df_rawAnswered, key_
     
     # SCALE 
     # set exponential scale at labels
-    ax.set_yscale("log")
     ax.set_xscale("log")
+    ax.set_yscale("log")
     all_vals = np.concatenate([s1.tolist(), s2.tolist()])
     min_val = 10 ** np.floor(np.log10(all_vals.min()))
     max_val = 10 ** np.ceil(np.log10(all_vals.max()))

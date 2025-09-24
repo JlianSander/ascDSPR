@@ -82,7 +82,7 @@ def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
 #----------------------------------------------------------------------------------------------------------------------------------
 
 def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 
-                      title_file, title_label_x, title_label_y):
+                      title_file, title_label_x, title_label_y, draw_timeout_limit):
     """
     Method to create and save a scatter plot of the two given solvers
     
@@ -100,6 +100,7 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
     - title_file: string used as name of the file to create
     - title_label_x: string set as label on axis x
     - title_label_y: string set as label on axis y
+    - draw_timeout_limit: if 'True' a limit line for the timeout is drawn
     
     Returns:
         void
@@ -132,7 +133,8 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
     legend = ax.legend(loc='lower right', fontsize=13, markerscale=1.75, handlelength=2, handletextpad=0.65,borderpad=0.75,borderaxespad=0.35,fancybox=True)
 
     # AUX LINES
-    ax.axvline(x=timeout, color='r', linestyle='--', label=None)
+    if(draw_timeout_limit):
+        ax.axvline(x=timeout, color='r', linestyle='--', label=None)
     ax.set_ylim(0, None)
     ax.tick_params(axis='both', which='major',labelsize=13)
     ax.grid(True, color='gray', ls=':', lw=1, zorder=1,alpha=0.5)
