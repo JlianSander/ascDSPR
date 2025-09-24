@@ -16,6 +16,16 @@ NAME_ANSWER_NO = 'NO'
 names = {
     'reducto': r'\texttt{reducto}',
     'mu-toksia-glucose': r'$\mu$-\textsc{toksia} (\textsc{Glucose})',
+    'asc_01': r'S\textsf{1}',
+    'asc_02': r'S\textsf{2}',
+    'asc_03': r'S\textsf{3}',
+    'asc_04': r'S\textsf{4}',
+    'asc_05': r'S\textsf{5}',
+    'asc_06': r'S\textsf{6}',
+    'asc_07': r'S\textsf{7}',
+    'asc_08': r'S\textsf{8}',
+    'asc_09': r'S\textsf{9}',
+    'asc_10': r'S\textsf{10}',
 }
 
 def get_name(solver):
