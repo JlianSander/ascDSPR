@@ -13,6 +13,19 @@ NAME_MUTOSKIA = 'mu-toksia-glucose'
 NAME_ANSWER_YES = 'YES'
 NAME_ANSWER_NO = 'NO'
 
+names = {
+    'reducto': r'\texttt{reducto}',
+    'mu-toksia-glucose': r'$\mu$-\textsc{toksia} (\textsc{Glucose})',
+}
+
+def get_name(solver):
+    if solver in names:
+        return names[solver]
+    else:
+        return solver
+
+#---------------------------------------------------------------------------------------------------------------------------
+
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
     if len(sys.argv) != 5:

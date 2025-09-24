@@ -1,10 +1,20 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 from analysis import *
 from analysis_util import *
 from analysis_runtime import *
+
+from plot import *
+
+"""
+    Based on work of Lars Bengel, published as: 
+    Lars Bengel, Julian Sander, and Matthias Thimm. A reduct-based approach to skeptical
+    preferred reasoning in abstract argumentation. In Proceedings of the 22th International 
+    Conference on Principles of Knowledge Representation and Reasoning, KR 2025, 2025.
+"""
 
 
 SAVE_PLOT_PGF = True
@@ -55,15 +65,13 @@ def create_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchm
     plt.rcParams.update({
         "backend": "pdf",
         "pgf.texsystem": "pdflatex",
-        "text.usetex": True,
         "font.family": "serif",
-        #"font.sans-serif": ['Helvetica', "Tahoma"],
         'pgf.preamble': r'\usepackage{amsmath}\usepackage[utf8x]{inputenc}\usepackage[T1]{fontenc}'
-        #"pgf.preamble": r"\usepackage{amsmath}\usepackage{courier}\usepackage{textcomp}"#\setmonofont{Fira Mono}"#\renewcommand{\familydefault}{\ttdefault}"
     })
 
-    # Create figure and axis objects
     fig, ax = plt.subplots(figsize=(8, 5))
+    # SETUP - SCALE - 
+    # set exponential scale at labels
     ax.set_yscale("log")
     ax.set_xscale("log")
     all_vals = np.concatenate([s1.tolist(), s2.tolist()])
@@ -77,7 +85,8 @@ def create_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchm
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(x_min, x_max)
 
-    # PLOT DATA
+    # SETUP - AUX - 
+    # auxiliary lines and areas (trends and limits)
     x_vals = np.logspace(np.log10(min_val), np.log10(max_val), 100)
 
     # Fill between x/10 and x*10
@@ -90,44 +99,29 @@ def create_plot_scatter(output_directory, df_rawAnswered, key_answer, key_benchm
         label='±1 order of magnitude'
     )
 
+    # draw diagonal line
     ax.plot([min_val, max_val], [min_val, max_val],
          linestyle=':', color='gray', label='Equal Runtime')
     
-    
+    # draw timeout limit lines
     ax.axvline(x=timeout, color='r', linestyle='--', label=None,linewidth=1)
     ax.axhline(y=timeout, color='r', linestyle='--', label=None,linewidth=1)
 
+    # PLOT DATA
     ax.scatter(s1, s2, marker="o",s=11,linewidths=0.75,facecolors='red',edgecolors='black',alpha=0.7)
-    
 
-    # CREATE TICKS
-    ticks = [1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4]
-    #ax.set_xticks(ticks)
-    #ax.set_yticks(ticks)
-    
-    #ax.set_xticklabels(ax.get_xticks(), f_props)
-    #ax.set_yticklabels(ax.get_yticks(), f_props)
-
+    # SETUP -  FORMAT
     majorFormatter = plt.LogFormatterMathtext(base=10)
     ax.xaxis.set_major_formatter(majorFormatter)
     ax.yaxis.set_major_formatter(majorFormatter)
 
- 
-    # LABELS
-    ax.set_ylabel(get_name(solver1), fontsize=16)
-    ax.set_xlabel(get_name(solver2), fontsize=16)
+    # SETUP - LABELS
+    ax.set_xlabel(get_name(solver1), fontsize=16)
+    ax.set_ylabel(get_name(solver2), fontsize=16)
     ax.tick_params(axis='both', which='major',labelsize=14)
-    #ax.grid(True, linestyle=":",linewidth=0.75)
     ax.grid(True, color='gray', ls=':', lw=1, zorder=1,alpha=0.5)
 
-
-
-    # OUTPUT
     plt.tight_layout()
-
-    # df_data.plot(kind = 'scatter', x = solver1, y = solver2)
-    # plt.xlabel(title_label + solver1)
-    # plt.ylabel(title_label + solver2)
 
     # save as pgf file
     if(SAVE_PLOT_PGF):
