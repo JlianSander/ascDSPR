@@ -32,7 +32,9 @@ TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
 TITLE_APPLICABILITY_PERCENTAGE = 'percentage'
 TITLE_APPLICABILITY_ROW_SOLUTION = 'solution'
-TITLE_APPLICABILITY_TOTAL = "total"
+TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES = "solving approaches"
+TITLE_APPLICABILITY_COLUMN_TIMEOUTS = "#TO"
+TITLE_APPLICABILITY_COLUMN_TOTAL = "total"
 TITLE_INSTANCES = '#AF'
 TITLE_RUNTIME_MEAN = "mean RT"
 TITLE_RUNTIME_STD = "std RT"
@@ -51,7 +53,7 @@ TITLE_BALANCE_SUM_RT = "sum RT"
 
 ## ------------- DEBUG ------------- 
 PRINT_APP_YES = False
-PRINT_APP_NO = False
+PRINT_APP_NO = True
 PRINT_OVERLAP_INT_YES = False
 PRINT_OVERLAP_PCT_YES = False
 PRINT_OVERLAP_FORMATTED_YES = False
@@ -69,14 +71,14 @@ PRINT_BL_NO = False
 PRINT_BL_COMBI = False
 
 CALCULATE_APP = True
-CALCULATE_OVERLAP = True
-CALCULATE_RT_INTERSEC = True
-CACLCULATE_RT_COMP_MUTOKSIA = True
-CALCULATE_RT_COMP = True
-CALCULATE_BL = True
-CALCULATE_BL_COMBI = True
+CALCULATE_OVERLAP = False
+CALCULATE_RT_INTERSEC = False
+CACLCULATE_RT_COMP_MUTOKSIA = False
+CALCULATE_RT_COMP = False
+CALCULATE_BL = False
+CALCULATE_BL_COMBI = False
 
-SAVE_LATEX = True
+SAVE_LATEX = False
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -133,6 +135,7 @@ if __name__ == "__main__":
     key_benchmarks = df_raw.columns[15]  #'benchmark_name'
     key_instance = df_raw.columns[4] #'instance'
     key_solvers = df_raw.columns[0] #'solver_name'
+    key_timedout = df_raw.columns[7] #timed_out
     key_task = df_raw.columns[6] #'task'
     key_runtime = df_raw.columns[9] #'runtime'
     timeout = df_raw.loc[0,df_raw.columns[14]] #"cut_off"
@@ -169,10 +172,13 @@ if __name__ == "__main__":
     if(CALCULATE_APP):
         #-------------------------------- APPLICABILITY --------------------------------
         # create the tables for visualizing the number of answers found by each solver
-        df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_iccmas, key_number_yes, TITLE_APPLICABILITY_ROW_SOLUTION), key_answer,  
-                                        key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_TOTAL)
-        df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_iccmas, key_number_no, TITLE_APPLICABILITY_ROW_SOLUTION), key_answer,  
-                                        key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_TOTAL)
+        s_timeouts = get_series_timeouts(df_raw, key_solvers, key_timedout)
+        df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_iccmas, key_number_yes, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
+                                                              key_answer, key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
+                                                              TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
+        df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_iccmas, key_number_no, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
+                                                             key_answer, key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
+                                                             TITLE_APPLICABILITY_PERCENTAGE,TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
         if(PRINT_APP_YES):
             print()
             print("----------------- applicability YES -----------------")    

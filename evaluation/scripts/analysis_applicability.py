@@ -25,13 +25,14 @@ def count_answers(df_rawAnswered, key_answer, key_benchmarks, key_solvers):
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_number_answers(df_rawAnswered, dfrow_solution, key_answer, key_benchmarks, key_mutoksia, key_solution, key_solvers, title_percentage, title_total):
+def create_table_number_answers(df_rawAnswered, dfrow_solution, s_timeOuts, key_answer, key_benchmarks, key_mutoksia, key_solution, key_solvers, title_percentage, title_solving_approaches, title_timeouts, title_total):
     """
     Method to create a table counting the answers of a given type for each solver
     
     Parameters:
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - dfrow_solution: Row containing the number of NO-solutions
+    - s_timeOuts: series of the number of timeouts indexed per data set
     - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_mutoksia: string to access the row of the benchmark-solver
@@ -39,6 +40,8 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, key_answer, key_
     - key_solution: string to access the row of answers from the solutions
     - key_solvers: string to access the rows of a specific solver
     - title_percentage: string used as title for the new column to create
+    - title_sovling_approaches: string used as title for the column 'solving approaches'
+    - title_timeouts: string used as title for the column '#TO'
     - title_total: string used as title for the new column to create
     
     Returns:
@@ -61,15 +64,22 @@ def create_table_number_answers(df_rawAnswered, dfrow_solution, key_answer, key_
     # Calculate the sum of the 'solution' row 
     solution_sum = df_answers_tmp.loc[key_solution].sum()
     
-    # Add an empty column 'percentage'
+    # Add empty columns
     df_answers_tmp[title_total] = None
     df_answers_tmp[title_percentage] = None
+    df_answers_tmp[title_timeouts] = None
     
     # Calculate the percentage for each row
-    for index in df_answers_tmp.index:
-        row_sum = df_answers_tmp.loc[index].sum()
-        df_answers_tmp.loc[index, title_total] = row_sum
+    for solver in df_answers_tmp.index:
+        row_sum = df_answers_tmp.loc[solver].sum()
+        df_answers_tmp.loc[solver, title_total] = row_sum
+        if(solver == key_solution):
+            df_answers_tmp.loc[solver, title_timeouts] = 0
+        else:    
+            df_answers_tmp.loc[solver, title_timeouts] = s_timeOuts[solver]
         percentage = (row_sum / solution_sum) * 100
-        df_answers_tmp.loc[index, title_percentage] = percentage.round(0).astype('int').__str__() + "\%"
-    
+        df_answers_tmp.loc[solver, title_percentage] = percentage.round(0).astype('int').__str__() + "\%"
+
+    df_answers_tmp.columns.name = title_solving_approaches
+
     return df_answers_tmp 

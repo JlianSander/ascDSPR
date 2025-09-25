@@ -91,6 +91,27 @@ def filter_intersection_pair(df_input, key_answer, key_benchmarks, key_instance,
 
 #---------------------------------------------------------------------------------------------------------------------------
 
+def get_series_timeouts(df_input, key_solvers, key_timedout):
+    """
+    Method to count the number of timeouts for each solver
+    Parameters:
+    - df_input: data frame with columns 'key_solvers'and 'key_timedout'
+    - key_solvers: string to access the column of the solver names
+    - key_timedout: string to access the column timeouts
+    
+    Returns:
+    - Series of the number of timeouts, indexed by the solver names
+    """
+
+    solvers = df_input[key_solvers].unique()
+    df_filtered = df_input[df_input[key_timedout] == True]
+    s_counted = df_filtered[key_solvers].value_counts()
+    s_counted = s_counted.reindex(solvers, fill_value=0)
+    return s_counted
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+
 def print_full(df_input):
     """
     Method to print all rows of the given data frame
