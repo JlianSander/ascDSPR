@@ -74,8 +74,8 @@ CALCULATE_OVERLAP = False
 CALCULATE_RT_INTERSEC = False
 CACLCULATE_RT_COMP_MUTOKSIA = False
 CALCULATE_RT_COMP = False
-CALCULATE_BL = True
-CALCULATE_BL_COMBI = False
+CALCULATE_BL = False
+CALCULATE_BL_COMBI = True
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -397,6 +397,7 @@ if __name__ == "__main__":
         df_table_balance_combi = create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
                                                                         TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, 
                                                                         single_solvers, list_combi)
+        
         if(PRINT_BL_COMBI):
             print()
             print("----------------- Balance combinations -----------------")

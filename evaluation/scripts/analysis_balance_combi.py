@@ -6,7 +6,7 @@ from analysis_runtime import *
 from analysis_util import *
 from analysis_balance import *
 
-def compute_balance_combi(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, cascading_solvers, title_combination):
+def compute_balance_combi(df, df_muToksia, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_balance, title_combination):
     """
     Method to create a series containing for each instance, the balance of the given combination of cascading solvers
     
@@ -14,11 +14,12 @@ def compute_balance_combi(df, df_muToksia, key_answer, key_instance, key_runtime
     - df: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - df_muToksia: subset of the dataframe df, containing only the rows of Mu-Toksia being the solver
     - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
-    - unique_instances: list of all instances in the data frame
     - cascading_solvers: list of cascading solvers, which are subsequently called to solve the problem
+    - title_balance: string used as a title for the column 'Balance'
     - title_combination: name of the combination of solvers
     
     Returns:
@@ -26,62 +27,76 @@ def compute_balance_combi(df, df_muToksia, key_answer, key_instance, key_runtime
     """
 
 
-    df_balance = pd.DataFrame([[0]], index = unique_instances, columns=[title_combination])
+    df_balance = pd.DataFrame(columns=[key_solvers, key_benchmarks, key_instance, title_balance])
+
+    combi = title_combination
 
     #counter_Prints = 0#DEBUG
 
-    # Iterate through each instance
-    for instanceX in unique_instances:
+    # iterate through benchmarks
+    for benchmarkX in df[key_benchmarks].unique():
+        
+        # iterate through each instance of the benchmark
+        for instanceX in df.loc[df[key_benchmarks] == benchmarkX, key_instance].unique():
 
-        skip_successive_solvers = False
+            skip_successive_solvers = False
 
-        # Filter out the rows of this instance
-        df_rows_instanceX = df[df[key_instance] == instanceX]
-        # print("--- new instance ---")#DEBUG
-        # print_debug = False#DEBUG
-        # print_1 = "NaN"#DEBUG
-        # print_2 = "NaN"#DEBUG
-        # print_3 = "NaN"#DEBUG
-        # print_1 = df_balance.loc[instanceX].__str__()#DEBUG
-        for solverX in cascading_solvers:
+            # Filter out the rows of this instance in this benchmark
+            df_rows_instanceX = df[(df[key_benchmarks] == benchmarkX) & (df[key_instance] == instanceX)]
+            # print("--- new instance ---")#DEBUG
+            # print_debug = False#DEBUG
+            # print_1 = "NaN"#DEBUG
+            # print_2 = "NaN"#DEBUG
+            # print_3 = "NaN"#DEBUG
+            # print_1 = df_balance.loc[instanceX].__str__()#DEBUG
+            for solverX in cascading_solvers:
 
-            # if the problem was already solved by preceding solver, then the runtime of this does not need to be accounted
-            if(skip_successive_solvers):
-                continue
+                # if the problem was already solved by preceding solver, then the runtime of this does not need to be accounted
+                if(skip_successive_solvers):
+                    continue
 
-            # Filter out the rows of this solver
-            rowX = df_rows_instanceX[df_rows_instanceX[key_solvers] == solverX]
-            rowX = rowX.reset_index()
-            # set runtime of solver as negative number in the corresponding cell
-            df_balance.loc[instanceX] += rowX.loc[0, key_runtime]
-            # print_2 = df_balance.loc[instanceX].__str__()#DEBUG
+                # Filter out the rows of this solver
+                rowX = df_rows_instanceX[df_rows_instanceX[key_solvers] == solverX]
+                rowX = rowX.reset_index()
+                # check if there is already a corresponding cell in df_balance
+                exists = ((df_balance[key_solvers] == combi) & (df_balance[key_benchmarks] == benchmarkX) & (df_balance[key_instance] == instanceX)).any()
+                if(exists):
+                    # add value to existing cell
+                    df_balance.loc[(df_balance[key_solvers] == combi) & (df_balance[key_benchmarks] == benchmarkX) & (df_balance[key_instance] == instanceX), title_balance] += rowX.loc[0, key_runtime]
+                else:
+                    # add new row to data frame
+                    new_row = pd.DataFrame({key_solvers: [combi], key_benchmarks: [benchmarkX], key_instance: [instanceX], title_balance: [rowX.loc[0, key_runtime]]})
+                    df_balance = pd.concat([df_balance, new_row], ignore_index=True)
 
-            if pd.notna(rowX.loc[0, key_answer]):
-                # this solver solved the problem, therefore ignore all subsequent solvers
-                skip_successive_solvers = True
+                # print_2 = df_balance.loc[instanceX].__str__()#DEBUG
 
-                # Find the corresponding instance solved by Mu_Toksia
-                row_muToksia = df_muToksia[(df_muToksia[key_instance] == instanceX)]
+                if pd.notna(rowX.loc[0, key_answer]):
+                    # this solver solved the problem, therefore ignore all subsequent solvers
+                    skip_successive_solvers = True
 
-                if not row_muToksia.empty:
-                    # Add the runtime of Mu-Toksia
-                    runtime_muToksia = row_muToksia.iloc[0][key_runtime]
-                    df_balance.loc[instanceX] -= runtime_muToksia 
-                    # print_3 = df_balance.loc[instanceX].__str__()#DEBUG
-                    # if(print_debug):#DEBUG
-                    #     counter_Prints += 1#DEBUG
-        #     else:#DEBUG
-        #         print_debug = True#DEBUG
+                    # Find the corresponding instance solved by Mu_Toksia
+                    row_muToksia = df_muToksia[(df_muToksia[key_benchmarks] == benchmarkX) & (df_muToksia[key_instance] == instanceX)]
 
-        #     if(print_debug):#DEBUG
-        #         print(print_1)#DEBUG
-        #         print(print_2)#DEBUG
-        #         print(print_3)#DEBUG
+                    if not row_muToksia.empty:
+                        # Subtract the runtime of Mu-Toksia
+                        runtime_muToksia = row_muToksia.iloc[0][key_runtime]
+                        df_balance.loc[(df_balance[key_solvers] == combi) & (df_balance[key_benchmarks] == benchmarkX) & (df_balance[key_instance] == instanceX), title_balance] -= runtime_muToksia
+                        # print_3 = df_balance.loc[instanceX].__str__()#DEBUG
+                        # if(print_debug):#DEBUG
+                        #     counter_Prints += 1#DEBUG
+            #     else:#DEBUG
+            #         print_debug = True#DEBUG
 
-        # if(counter_Prints > 4):#DEBUG
-        #     return#DEBUG
+            #     if(print_debug):#DEBUG
+            #         print(print_1)#DEBUG
+            #         print(print_2)#DEBUG
+            #         print(print_3)#DEBUG
 
-    return df_balance
+            # if(counter_Prints > 4):#DEBUG
+            #     return#DEBUG
+
+    df_balance_pivoted = df_balance.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_balance)
+    return df_balance_pivoted
 
 
 #---------------------------------------------------------------------------------------------------------------------------
@@ -115,14 +130,14 @@ def create_table_balance_sheet_combination(df, key_answer, key_benchmarks, key_i
 
     # get only those rows of Mu-Toksia
     df_muToksia = df[(df[key_solvers] == key_mutoksia)]
-    df_muToksia = df_muToksia[[key_instance, key_runtime]]
+    df_muToksia = df_muToksia[[key_benchmarks, key_instance, key_runtime]]
 
     # compute a dataframe of balances of the single solvers
-    df_balance = compute_balance(df, df_muToksia, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, unique_instances, single_solvers)
+    df_balance = compute_balance(df, df_muToksia, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, single_solvers, title_balance)
 
     # compute the balance for the combination of cascading solvers
     for cascading_solvers in lists_cascading_solvers:
-        df_balance[cascading_solvers.__str__()] = compute_balance_combi(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, cascading_solvers, cascading_solvers.__str__())
+        df_balance[cascading_solvers.__str__()] = compute_balance_combi(df, df_muToksia, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_balance, cascading_solvers.__str__())
 
     # add Mu-Toksia as a column with only '0' as entry, since it is compared to itself
     df_balance[key_mutoksia] = 0
