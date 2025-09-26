@@ -152,9 +152,9 @@ if __name__ == "__main__":
     df_iccmas = df_iccmas.set_index(key_benchmarks)
 
     # read keys from input data frames
-    key_number_no = df_iccmas.columns[2] #'number_no'
-    key_number_yes = df_iccmas.columns[1] #'number_yes'
-    key_total_number_instances = df_iccmas.columns[0] #'number_instances'
+    key_number_no = df_iccmas.columns[5] #'number_no'
+    key_number_yes = df_iccmas.columns[4] #'number_yes'
+    key_total_number_instances = df_iccmas.columns[2] #'number_instances'
 
 
     #-------------------------------- preprocessing data --------------------------------
