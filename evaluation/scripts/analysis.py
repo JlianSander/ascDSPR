@@ -114,7 +114,7 @@ def __save_latex_file(dir_path, filename, latex_code):
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
     if len(sys.argv) != 5:
-        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <file_path_iccma_summary> <output_directory>")
+        print("Usage: python3 analysis.py <file_path_raw> <file_path_resultsDetails> <file_path_solution_details> <output_directory>")
         sys.exit(1)
     
     #-------------------------------- initializing data --------------------------------
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     # read paths to data
     file_path_raw = sys.argv[1]
     file_path_resultsDetails = sys.argv[2]
-    file_path_iccmas = sys.argv[3]
+    file_path_solutions = sys.argv[3]
     output_directory = sys.argv[4]
     if not os.path.isdir(output_directory):
         print(f"The path {output_directory} is not a directory.")
@@ -148,19 +148,13 @@ if __name__ == "__main__":
     key_answer = df_resDetails.columns[4] #'answer'
 
     # read data frame from the general information about the iccma benchmark datasets
-    df_iccmas = read_csv_to_dataframe(file_path_iccmas)
-    df_iccmas = df_iccmas.set_index(key_benchmarks)
-
-    # read keys from input data frames
-    key_number_no = df_iccmas.columns[5] #'number_no'
-    key_number_yes = df_iccmas.columns[4] #'number_yes'
-    key_total_number_instances = df_iccmas.columns[2] #'number_instances'
-
+    df_solutions = read_csv_to_dataframe(file_path_solutions)
+    df_solutions = df_solutions.set_index(key_benchmarks)
 
     #-------------------------------- preprocessing data --------------------------------
     
     # get the total number of instances as a row
-    dfrow_total_instances = extract_total_number_instances(df_iccmas, key_total_number_instances)
+    dfrow_total_instances = extract_number_instances(df_solutions, key_benchmarks, key_instance)
 
     # merge answers with raw data
     df_rawAnswered = pd.merge(df_raw, df_resDetails, on=[key_solvers,key_task,key_benchmarks,key_instance], how='left')
@@ -173,10 +167,10 @@ if __name__ == "__main__":
         #-------------------------------- APPLICABILITY --------------------------------
         # create the tables for visualizing the number of answers found by each solver
         s_timeouts = get_series_timeouts(df_raw, key_solvers, key_timedout)
-        df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_iccmas, key_number_yes, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
+        df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_solutions, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
                                                               key_answer, key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
                                                               TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
-        df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_iccmas, key_number_no, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
+        df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_solutions, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
                                                              key_answer, key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
                                                              TITLE_APPLICABILITY_PERCENTAGE,TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
         if(PRINT_APP_YES):
