@@ -33,6 +33,7 @@ TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
 TITLE_APPLICABILITY_PERCENTAGE = 'percentage'
 TITLE_APPLICABILITY_ROW_SOLUTION = 'solution'
 TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES = "solving approaches"
+TITLE_APPLICABILITY_COLUMN_OVERLAP = "found"
 TITLE_APPLICABILITY_COLUMN_TIMEOUTS = "#TO"
 TITLE_APPLICABILITY_COLUMN_TOTAL = "total"
 TITLE_INSTANCES = '#AF'
@@ -149,10 +150,9 @@ if __name__ == "__main__":
 
     # read data frame from the general information about the iccma benchmark datasets
     df_solutions = read_csv_to_dataframe(file_path_solutions)
-    df_solutions = df_solutions.set_index(key_benchmarks)
 
     #-------------------------------- preprocessing data --------------------------------
-    
+
     # get the total number of instances as a row
     dfrow_total_instances = extract_number_instances(df_solutions, key_benchmarks, key_instance)
 
@@ -163,16 +163,19 @@ if __name__ == "__main__":
     df_answeredYES = filter_by_answer(df_rawAnswered, key_answer, NAME_ANSWER_YES)
     df_answeredNO = filter_by_answer(df_rawAnswered, key_answer, NAME_ANSWER_NO)
 
+    df_solutionsYes = filter_by_answer(df_solutions, key_answer, NAME_ANSWER_YES)
+    df_solutionsNo = filter_by_answer(df_solutions, key_answer, NAME_ANSWER_NO)
+
     if(CALCULATE_APP):
         #-------------------------------- APPLICABILITY --------------------------------
         # create the tables for visualizing the number of answers found by each solver
         s_timeouts = get_series_timeouts(df_raw, key_solvers, key_timedout)
-        df_tabApplicability_yes = create_table_number_answers(df_answeredYES, extract_solution_data(df_solutions, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
-                                                              key_answer, key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
-                                                              TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
-        df_tabApplicability_no = create_table_number_answers(df_answeredNO, extract_solution_data(df_solutions, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, TITLE_APPLICABILITY_ROW_SOLUTION), s_timeouts,
-                                                             key_answer, key_benchmarks, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
-                                                             TITLE_APPLICABILITY_PERCENTAGE,TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
+        df_tabApplicability_yes = create_table_number_answers(df_answeredYES, df_solutionsYes, s_timeouts,
+                                                              key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
+                                                              TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_COLUMN_OVERLAP, TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
+        df_tabApplicability_no = create_table_number_answers(df_answeredNO, df_solutionsNo, s_timeouts,
+                                                             key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
+                                                             TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_COLUMN_OVERLAP,TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
         if(PRINT_APP_YES):
             print()
             print("----------------- applicability YES -----------------")    
