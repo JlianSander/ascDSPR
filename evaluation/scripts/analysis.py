@@ -67,17 +67,15 @@ PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
 PRINT_RT_COMP_MUTOKSIA = False
 PRINT_BL_ALL = False
-PRINT_BL_YES = False
-PRINT_BL_NO = False
 PRINT_BL_COMBI = False
 
-CALCULATE_APP = True
-CALCULATE_OVERLAP = True
-CALCULATE_RT_INTERSEC = True
-CACLCULATE_RT_COMP_MUTOKSIA = True
-CALCULATE_RT_COMP = True
+CALCULATE_APP = False
+CALCULATE_OVERLAP = False
+CALCULATE_RT_INTERSEC = False
+CACLCULATE_RT_COMP_MUTOKSIA = False
+CALCULATE_RT_COMP = False
 CALCULATE_BL = True
-CALCULATE_BL_COMBI = True
+CALCULATE_BL_COMBI = False
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -375,36 +373,18 @@ if __name__ == "__main__":
 
     if(CALCULATE_BL):
         #-------------------------------- BALANCE --------------------------------
-        df_tab_balance_all = create_table_balance_sheet(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
+        df_tab_balance_all = create_table_balance_sheet(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
                                                         TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
-        df_tab_balance_yes = create_table_balance_sheet(df_answeredYES, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
-                                                        TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
-        df_tab_balance_no = create_table_balance_sheet(df_answeredNO, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
-                                                       TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
 
         if(PRINT_BL_ALL):
             print()
             print("----------------- Balance all -----------------")
             print(df_tab_balance_all)
 
-        if(PRINT_BL_YES):
-            print()
-            print("----------------- Balance only YES -----------------")
-            print(df_tab_balance_yes)
-
-        if(PRINT_BL_NO):
-            print()
-            print("----------------- Balance only NO -----------------")
-            print(df_tab_balance_no)
-
         if(SAVE_LATEX):   
             latex_code = create_general_latex(df_tab_balance_all, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             latex_code = add_midrule_above_pattern(latex_code, TITLE_SOLVER_VBS)
             __save_latex_file(output_directory, "Analysis_Runtime_Balance_All.tex", latex_code)
-            latex_code = create_general_latex(df_tab_balance_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
-            __save_latex_file(output_directory, "Analysis_Runtime_Balance_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tab_balance_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
-            __save_latex_file(output_directory, "Analysis_Runtime_Balance_No.tex", latex_code)
 
 
     if(CALCULATE_BL_COMBI):
@@ -414,7 +394,7 @@ if __name__ == "__main__":
         combi_02 = ('asc_01','asc_02','asc_03','asc_04')
         combi_03 = ('asc_04','asc_01','asc_02','asc_03')
         list_combi = (combi_01, combi_02, combi_03)
-        df_table_balance_combi = create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
+        df_table_balance_combi = create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
                                                                         TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, 
                                                                         single_solvers, list_combi)
         if(PRINT_BL_COMBI):

@@ -87,7 +87,7 @@ def compute_balance_combi(df, df_muToksia, key_answer, key_instance, key_runtime
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_balance_sheet_combination(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, 
+def create_table_balance_sheet_combination(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, 
                                            single_solvers, lists_cascading_solvers):
     """
     Method to create a table visualizing a comparison of given single solvers and the given combinations of cascading solvers with the benchmark solver
@@ -95,6 +95,7 @@ def create_table_balance_sheet_combination(df, key_answer, key_instance, key_mut
     Parameters:
     - df: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_mutoksia: string to access the row of the benchmark-solver
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
@@ -117,7 +118,7 @@ def create_table_balance_sheet_combination(df, key_answer, key_instance, key_mut
     df_muToksia = df_muToksia[[key_instance, key_runtime]]
 
     # compute a dataframe of balances of the single solvers
-    df_balance = compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, single_solvers)
+    df_balance = compute_balance(df, df_muToksia, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, unique_instances, single_solvers)
 
     # compute the balance for the combination of cascading solvers
     for cascading_solvers in lists_cascading_solvers:

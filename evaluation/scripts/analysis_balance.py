@@ -5,7 +5,7 @@ import numpy as np
 from analysis_runtime import *
 from analysis_util import *
 
-def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers):
+def compute_balance(df, df_muToksia, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, unique_solvers, title_balance):
     """
     Method to create the data frame containing for each instance and each solver the calculated balance
     
@@ -13,6 +13,7 @@ def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_
     - df: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - df_muToksia: subset of the dataframe df, containing only the rows of Mu-Toksia being the solver
     - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
@@ -20,10 +21,10 @@ def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_
     - unique_solvers: list of all solvers in the data frame
     
     Returns:
-    - DataFrame containing for each instance and each solver the calculated balance
+    - DataFrame (benchmark, instance)[asc_01, asc_02, ...] indexed by benchmark and instance contains balance for each solver as a column
     """
     
-    df_balance = pd.DataFrame(index=unique_instances, columns=unique_solvers)
+    df_balance = pd.DataFrame(columns=[key_solvers, key_benchmarks, key_instance, title_balance])
 
     # Iterate through each solver
     for solverX in unique_solvers:
@@ -32,32 +33,39 @@ def compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_
         solver_rows = df[df[key_solvers] == solverX]
 
         for _, rowX in solver_rows.iterrows():
-            # set runtime of solver as negative number in the corresponding cell
+            # set runtime of solver in the corresponding cell
             instanceX = rowX[key_instance]
-            df_balance.loc[instanceX, solverX] = rowX[key_runtime]
+            benchmarkX = rowX[key_benchmarks]
+
+            new_row = pd.DataFrame({key_solvers: [solverX], key_benchmarks: [benchmarkX], key_instance: [instanceX], title_balance: [rowX[key_runtime]]})
+
+            df_balance = pd.concat([df_balance, new_row], ignore_index=True)
             
             # Check if answer of the solver for this instance was NaN, if not add Mu-Toksia's runtime for this instance
             if pd.notna(rowX[key_answer]):
                 # Find the corresponding instance solved by Mu_Toksia
-                row_muToksia = df_muToksia[(df_muToksia[key_instance] == instanceX)]
+                row_muToksia = df_muToksia[(df_muToksia[key_benchmarks] == benchmarkX) & (df_muToksia[key_instance] == instanceX)]
 
                 if not row_muToksia.empty:
                     # Add the runtime of Mu-Toksia
-                    df_balance.loc[instanceX, solverX] -= row_muToksia.iloc[0][key_runtime]
+                    df_balance.loc[(df_balance[key_solvers]== solverX) & (df_balance[key_benchmarks]== benchmarkX) & (df_balance[key_instance]== instanceX), title_balance] -= row_muToksia.iloc[0][key_runtime]
+    
+    df_balance_pivoted = df_balance.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_balance)
 
-    return df_balance
+    return df_balance_pivoted
 
 
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_pct, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage):
+def create_table_balance_sheet(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_pct, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage):
     """
     Method to create a table visualizing a comparison of all solvers with the benchmark solver
     
     Parameters:
     - df: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - key_answer: string to access the answer column
+    - key_benchmarks: string to access the rows of a specific benchmark dataset
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_mutoksia: string to access the row of the benchmark-solver
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
@@ -79,15 +87,12 @@ def create_table_balance_sheet(df, key_answer, key_instance, key_mutoksia, key_r
     unique_solvers = sorted(df[key_solvers].unique().tolist())
     unique_solvers = [solver for solver in unique_solvers if solver != key_mutoksia]
 
-    # get a list of all instances
-    unique_instances = df[key_instance].unique()
-
     # get only those rows of Mu-Toksia
     df_muToksia = df[(df[key_solvers] == key_mutoksia)]
-    df_muToksia = df_muToksia[[key_instance, key_runtime]]
+    df_muToksia = df_muToksia[[key_benchmarks, key_instance, key_runtime]]
 
     # compute a dataframe for each instance [rows] and each solver [columns] the calculated balance
-    df_balance = compute_balance(df, df_muToksia, key_answer, key_instance, key_runtime, key_solvers, unique_instances, unique_solvers)
+    df_balance = compute_balance(df, df_muToksia, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, unique_solvers, title_balance)
     # add Mu-Toksia as a column with only '0' as entry, since it is compared to itself
     df_balance[key_mutoksia] = 0
 
