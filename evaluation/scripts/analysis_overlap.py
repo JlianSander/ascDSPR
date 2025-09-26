@@ -30,22 +30,15 @@ def calculate_overlap(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
     for i, solver_temp1 in enumerate(unique_solvers):
         for solver_temp2 in unique_solvers[i+1:]:
             if(solver_temp2 == key_muToksia): continue
-            # Filter the dataframe for rows where solver_name is either solver_temp1 or solver_temp2
-            df_filtered = df_rawAnswered[df_rawAnswered[key_solvers].isin([solver_temp1, solver_temp2])]
 
-            # prune data frame to contain only columns of interest
-            df_pruned = df_filtered[[key_benchmarks, key_instance, key_solvers, key_answer]]
-            df_pruned = df_pruned.groupby([key_benchmarks, key_instance, key_answer])
+            # filter to keep only rows of instances solved by both solvers
+            df_intersection = filter_intersection_pair(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_solvers, solver_temp1 , solver_temp2)  
 
-            # Count the number of rows in each group
-            counts = df_pruned.size()
-
-            # Filter out groups with only one row (no pairs)
-            # The result is a Series where the index is the group and the value is the count of rows
-            s_pairs = counts[counts == 2]
+            # filter to keep only rows solved by solver 1
+            df_intersection = df_intersection[df_intersection[key_solvers] == solver_temp1]
 
             # Count the row for each benchmark data set and sum the number up
-            group_sizes = s_pairs.groupby(level=key_benchmarks).size()
+            group_sizes = df_intersection.groupby(key_benchmarks).size()
             num_rowsInstanceBoth = group_sizes.sum()
             
             # Store the result in the dictionary
