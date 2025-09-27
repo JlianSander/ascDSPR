@@ -10,12 +10,6 @@ acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query
         return acceptance_result::unknown;
     }
 
-    // check if query argument is attacking itself
-    if(framework.self_attack[query_argument])
-    {
-        return acceptance_result::unknown;
-    }
-
     // check if each attacker of q has at least one defender
     if (!check_each_attacker_has_defender(framework, query_argument))
     {
