@@ -110,13 +110,12 @@ def create_df_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, title_balance, title_pct_change, title_runtime_sum,
-                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage):
-    
+def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_digit_par, title_balance, title_pct_change, title_runtime_sum,
+                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, title_num_to, title_par, delta_percentage, timeout, num_par_x, print_row_VBS):
     # compute the virtual best solver (VBS)
     df_runtimes = df_runtimes.astype('float64')
     res = compute_vbs_with_delta(df_runtimes, title_solver_VBS, True, delta_percentage)
-    df_vbs  = res[0]
+    df_runtimes  = res[0]
     df_contribution = res[1]
 
     # count the number of contributions to the VBS
@@ -128,7 +127,7 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, title
     
     # create the table
     df_table = pd.DataFrame()
-    s_sum = df_vbs.sum()
+    s_sum = df_runtimes.sum()
     key_muToksia = (key_mutoksia,).__str__()
     sum_muToksia = s_sum[key_muToksia]
     formatted_series_sum = s_sum.apply(lambda x: round(x))
@@ -142,17 +141,39 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, title
     s_percentage = ((df_table[title_balance] / sum_muToksia) * 100)
     formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
     df_table[title_pct_change] = formatted_series_percentage
+
+    # ensure that for all instances and solvers it holds that runtime <= timeout
+    df_clipped = df_runtimes.clip(upper=timeout)
+    s_count_to = (df_clipped >= timeout).sum().astype('int')
+    df_table[title_num_to] = s_count_to
+
+    # calculat the PAR score for each solver
+    s_par_punishment = s_count_to * (num_par_x - 1) * timeout
+    s_sum_par = df_clipped.sum() + s_par_punishment
+    num_rows = df_clipped.shape[0]
+    s_par_value = s_sum_par / num_rows
+    formatted_series_par = s_par_value.apply(lambda x: f"{x:.{num_digit_par}f}")
+    df_table[title_par] = formatted_series_par
+
     df_table[title_vbsCount] = df_table.index.map(s_vbsCount_formatted)
     df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)
 
     # cleaning table data frame
-    df_table.loc[title_solver_VBS, title_vbsCount] = ""
-    df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
+
+    if(print_row_VBS):
+        df_table.loc[title_solver_VBS, title_vbsCount] = ""
+        df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
+        # df_table.loc[title_solver_VBS, title_num_to] = ""
+        # df_table.loc[title_solver_VBS, title_par] = ""
+    else:
+        df_table = df_table.drop(title_solver_VBS)
 
     return df_table
 
-def create_table_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_pct, title_balance, title_pct_change, title_runtime_sum,
-                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage):
+def create_table_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, 
+                                 num_digits_pct, num_digit_par, 
+                                 title_balance, title_pct_change, title_runtime_sum,
+                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, title_num_to, title_par, delta_percentage, timeout, num_par_x, print_row_VBS):
     """
     Method to create a table visualizing a comparison of all solvers with the benchmark solver
     
@@ -165,13 +186,19 @@ def create_table_runtimes_combis(df, key_answer, key_benchmarks, key_instance, k
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
     - num_digits_pct: number of digits for the percentage values
+    - num_digit_par: number of digits for the PAR values
     - title_balance: string used as a title for the column 'Balance'
     - title_pct_change: string used as a title for the column 'pct Change'
     - title_runtime_sum: string used as a title for the column 'sum RT', describing the sum of RT if we add the balance and the sum RT of the benchmark solver
     - title_solver_VBS: string used as a title for the row of the VBS solver
     - title_vbsCount: string used as a title for the column '#VBS'
     - title_vbsCount_pct: string ued as title for the colum '#VBS %'
+    - title_num_to: string ued as title for the colum '#TO'
+    - title_par: string ued as title for the colum 'PARX'
     - delta_percentage: the percentage that defines the delta around the minimum runtime, within which a values counts as contribution to the VBS
+    - timeout: number of seconds after which the calculation was aborted
+    - num_par_x: number of the par value e.G. 2 if PAR2 is used
+    - print_row_VBS: if True than the row of the VBS gets shown in the table
     
     Returns:
     - DataFrame visualizing a comparison of all solvers with the benchmark solver
@@ -180,5 +207,5 @@ def create_table_runtimes_combis(df, key_answer, key_benchmarks, key_instance, k
     # calculate runtimes of cascading combinations
     df_runtimes = create_df_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, 'runtime')
 
-    return format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, title_balance, title_pct_change, title_runtime_sum,
-                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage)
+    return format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_digit_par, title_balance, title_pct_change, title_runtime_sum,
+                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, title_num_to, title_par, delta_percentage, timeout, num_par_x, print_row_VBS)

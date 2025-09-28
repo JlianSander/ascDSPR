@@ -31,9 +31,11 @@ def create_df_runtimes_combis_new(df, key_answer, key_benchmarks, key_instance, 
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def create_table_runtimes_combis_new(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_pct, title_balance, title_pct_change, title_runtime_sum, 
-                                           title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage,
-                                           single_solvers, lists_cascading_solvers):
+def create_table_runtimes_combis_new(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, 
+                                     num_digits_pct, num_digit_par, 
+                                     title_balance, title_pct_change, title_runtime_sum, title_solver_VBS, title_vbsCount, title_vbsCount_pct, title_num_to, title_par, 
+                                     delta_percentage, timeout, num_par_x, print_row_VBS,
+                                     single_solvers, lists_cascading_solvers):
     """
     Method to create a table visualizing a comparison of given single solvers and the given combinations of cascading solvers with the benchmark solver
     
@@ -46,13 +48,19 @@ def create_table_runtimes_combis_new(df, key_answer, key_benchmarks, key_instanc
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
     - num_digits_pct: number of digits for the percentage values
+    - num_digit_par: number of digits for the PAR values
     - title_balance: string used as a title for the column 'Balance'
     - title_pct_change: string used as a title for the column 'pct Change'
     - title_runtime_sum: string used as a title for the column 'sum RT', describing the sum of RT if we add the balance and the sum RT of the benchmark solver
     - title_solver_VBS: string used as a title for the row of the VBS solver
     - title_vbsCount: string used as a title for the column '#VBS'
     - title_vbsCount_pct: string ued as title for the colum '#VBS %'
+    - title_num_to: string ued as title for the colum '#TO'
+    - title_par: string ued as title for the colum 'PAR2'
     - delta_percentage: the percentage that defines the delta around the minimum runtime, within which a values counts as contribution to the VBS
+    - timeout: number of seconds after which the calculation was aborted
+    - num_par_x: number of the par value e.G. 2 if PAR2 is used
+    - print_row_VBS: if True than the row of the VBS gets shown in the table
     - single_solvers: list of solvers, which are compared as singles with the benchmark solver
     - lists_cascading_solvers: a list of lists of solvers, each list of solvers describes a cascade of solvers, which are subsequently called to solve the problem
     
@@ -62,7 +70,7 @@ def create_table_runtimes_combis_new(df, key_answer, key_benchmarks, key_instanc
 
     df_runtimes = create_df_runtimes_combis_new(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, 'runtime', single_solvers, lists_cascading_solvers)
 
-    return format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, title_balance, title_pct_change, title_runtime_sum,
-                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage)
+    return format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_digit_par, title_balance, title_pct_change, title_runtime_sum,
+                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, title_num_to, title_par, delta_percentage, timeout, num_par_x, print_row_VBS)
 
     
