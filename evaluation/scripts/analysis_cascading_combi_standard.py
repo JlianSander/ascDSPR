@@ -83,8 +83,7 @@ def compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runt
             # if(counter_Prints > 4):#DEBUG
             #     return#DEBUG
 
-    df_runtimes_pivoted = df_runtimes.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_runtime)
-    return df_runtimes_pivoted
+    return df_runtimes
 
 
 def create_df_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime):
@@ -98,11 +97,13 @@ def create_df_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_
 
     for solver in unique_solvers_no_mu:
         cascading_solvers = (solver, key_mutoksia)
-        df_runtimes[cascading_solvers.__str__()] = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+        df_temp = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+        df_runtimes[cascading_solvers.__str__()] = df_temp.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_runtime)
 
     # calculate runtimes for only MuToksia
     cascading_solvers = (key_mutoksia,)
-    df_runtimes[cascading_solvers.__str__()] = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+    df_temp = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+    df_runtimes[cascading_solvers.__str__()] = df_temp.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_runtime)
 
     return df_runtimes
 

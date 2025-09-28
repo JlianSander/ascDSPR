@@ -6,6 +6,7 @@ import numpy as np
 from analysis import *
 from analysis_util import *
 from analysis_runtime import *
+from analysis_cascading_combi_standard import *
 
 from plot import *
 
@@ -47,7 +48,58 @@ style_map = [
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers):
+def get_name(s_list):
+    # Remove the outer parentheses and quotes
+    mystring_cleaned = s_list[1:-1]  # removes the outermost parentheses and quotes
+
+    # Handle the case with trailing commas by stripping any excess commas at the end
+    mystring_cleaned = mystring_cleaned.rstrip(',')  # Remove any trailing commas
+
+    # Replace the escaped single quotes with a clean backslash
+    mystring_cleaned = re.sub("'", "", mystring_cleaned)
+
+    # Convert the string to a list (split by commas)
+    list_parsed = [item.strip() for item in mystring_cleaned.split(',')]
+
+    name_output ="("
+
+    for i, name_solver in enumerate(list_parsed):
+        if i == 0:
+            name_output = name_output + names[name_solver]
+        else:
+            name_output = name_output + ", " + names[name_solver]
+        
+
+    name_output = name_output + ")"
+    return name_output
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+def create_data(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime):
+     # get list of the solvers
+    unique_solvers = sorted(df[key_solvers].unique().tolist())
+    # get a list wihtout Mu-Toksia
+    unique_solvers_no_mu = [solver for solver in unique_solvers if solver != key_mutoksia]
+
+    # create output data frame
+    df_runtimes = pd.DataFrame()
+
+    for solver in unique_solvers_no_mu:
+        cascading_solvers = (solver, key_mutoksia)
+        df_temp = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+        df_runtimes = pd.concat([df_runtimes, df_temp], ignore_index=True)
+
+    # calculate runtimes for only MuToksia
+    cascading_solvers = (key_mutoksia,)
+    df_temp = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+    df_runtimes = pd.concat([df_runtimes, df_temp], ignore_index=True)
+    
+
+    return df_runtimes
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime):
     """
     Method to preprocess the data, so that it can be used to create a scatter plot
     
@@ -63,16 +115,13 @@ def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
         Data frame with two columns, each containing the runtimes of one solver for each instance
     """
 
-    df_data = df_rawAnswered.copy()
+    df_data = create_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime)
 
     # Add a counter to make 'instance' unique for each combination of 'instance' and 'solver_name'
     df_data[key_instance] = df_data.groupby([key_instance, key_solvers]).cumcount().astype(str) + '_' + df_data[key_instance]
 
-    # filter data frame to keep only those rows which answer is not NaN
-    df_data_filtered = df_data[df_data[key_answer].notna()]
-
     # focus on columns of interest
-    df_data_filtered = df_data_filtered.loc[:, [key_instance, key_solvers, key_runtime]]
+    df_data_filtered = df_data.loc[:, [key_instance, key_solvers, key_runtime]]
     
     # Group by solver
     df_rawAnswered_grouped = df_data_filtered.groupby(key_solvers)
@@ -81,7 +130,7 @@ def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, 
+def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, timeout, 
                       title_file, title_label_x, title_label_y, draw_timeout_limit):
     """
     Method to create and save a scatter plot of the two given solvers
@@ -106,8 +155,10 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
         void
     """
 
+    key_runtime = "runtime"
+
     # preprocess data
-    df_data = __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers)
+    df_data = __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, key_runtime)
 
     # Set up Matplotlib for producing .tex output
     plt.rcParams.update({
@@ -122,10 +173,9 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
 
     # PLOT
     for i, (name, group) in enumerate(df_data):
-        group = group.sort_values(by="runtime")
+        group = group.sort_values(by=key_runtime)
         group = group.reset_index(drop=True)
-        ax.plot(group["runtime"], group.index, marker=style_map[i]['marker'], markersize=4, markerfacecolor='white',markeredgewidth=0.75, linewidth=0.75, linestyle=style_map[i]['linestyle'],alpha=0.7, label=names[name])
-
+        ax.plot(group[key_runtime], group.index, marker=style_map[i]['marker'], markersize=4, markerfacecolor='white',markeredgewidth=0.75, linewidth=0.75, linestyle=style_map[i]['linestyle'],alpha=0.7, label=get_name(name))
 
     # LABELS + TITLES
     ax.set_xlabel(title_label_x,fontsize=16)

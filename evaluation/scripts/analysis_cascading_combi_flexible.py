@@ -13,14 +13,17 @@ def create_df_runtimes_combis_new(df, key_answer, key_benchmarks, key_instance, 
 
     for solver in single_solvers:
         cascading_solvers = (solver,)
-        df_runtimes[cascading_solvers.__str__()] = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+        df_temp = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+        df_runtimes[cascading_solvers.__str__()] = df_temp.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_runtime)
 
     for cascading_solvers in lists_cascading_solvers:
-        df_runtimes[cascading_solvers.__str__()] = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+        df_temp = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+        df_runtimes[cascading_solvers.__str__()] = df_temp.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_runtime)
 
     # calculate runtimes for only MuToksia
     cascading_solvers = (key_mutoksia,)
-    df_runtimes[cascading_solvers.__str__()] = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+    df_temp = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
+    df_runtimes[cascading_solvers.__str__()] = df_temp.pivot_table(index=[key_benchmarks, key_instance], columns=key_solvers, values=title_runtime)
 
     return df_runtimes
 
