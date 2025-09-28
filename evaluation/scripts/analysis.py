@@ -10,9 +10,8 @@ from analysis_runtime import *
 from analysis_runtime_intersection import *
 from analysis_runtime_comparison import *
 from analysis_runtime_comparison_muToksia import *
-from analysis_balance import *
-from analysis_balance_combi import *
-from analysis_cascading_combi import *
+from analysis_cascading_combi_standard import *
+from analysis_cascading_combi_flexible import *
 from formatter_tables_thesis import *
 
 

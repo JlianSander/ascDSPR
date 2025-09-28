@@ -5,8 +5,7 @@ import itertools
 
 from analysis_runtime import *
 from analysis_util import *
-from analysis_balance import *
-from analysis_balance_combi import *
+from analysis_cascading_combi_flexible import *
 
 def create_table_balance_sheet_combination(df, key_answer, key_instance, key_mutoksia, key_runtime, key_solvers, title_balance, title_pct_change, title_resulting_sum_rt, title_solver_VBS, title_vbsCount):
     

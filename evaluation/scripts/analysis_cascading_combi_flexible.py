@@ -4,7 +4,7 @@ import numpy as np
 
 from analysis_runtime import *
 from analysis_util import *
-from analysis_cascading_combi import *
+from analysis_cascading_combi_standard import *
 
 
 def create_df_runtimes_combis_new(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime, single_solvers, lists_cascading_solvers):
