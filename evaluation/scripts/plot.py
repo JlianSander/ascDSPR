@@ -109,4 +109,5 @@ if __name__ == "__main__":
     save_plot_scatter(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, timeout, NAME_MUTOSKIA, 
                      'asc_10', 'scatter_muToksia_asc10', 'runtime[s] ')
     
-    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, 'cactus_all', "runtime~$(s)$", "instances~solved", True)
+    save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, 
+                     NAME_MUTOSKIA, key_runtime, key_solvers, timeout, 'cactus_all', "runtime~$(s)$", "instances~solved", True)

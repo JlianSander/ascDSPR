@@ -99,7 +99,7 @@ def create_data(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime):
+def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime, timeout):
     """
     Method to preprocess the data, so that it can be used to create a scatter plot
     
@@ -107,15 +107,19 @@ def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_exit_with_error: string to access column indicating an error during calculation
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
+    - timeout: number of seconds after which the calculation was aborted
     
     Returns:
         Data frame with two columns, each containing the runtimes of one solver for each instance
     """
 
     df_data = create_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, title_runtime)
+
+    df_data = sanitize_dataframe(df_data, key_exit_with_error, key_runtime, timeout)
 
     # Add a counter to make 'instance' unique for each combination of 'instance' and 'solver_name'
     df_data[key_instance] = df_data.groupby([key_instance, key_solvers]).cumcount().astype(str) + '_' + df_data[key_instance]
@@ -130,7 +134,7 @@ def __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, 
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
-def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, timeout, 
+def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, timeout, 
                       title_file, title_label_x, title_label_y, draw_timeout_limit):
     """
     Method to create and save a scatter plot of the two given solvers
@@ -142,6 +146,7 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
     - df_rawAnswered: DataFrame containing the raw results of the experiment including the answers of each solver for each instance
     - key_answer: string to access the answer column
     - key_benchmarks: string to access the rows of a specific benchmark dataset
+    - key_exit_with_error: string to access column indicating an error during calculation
     - key_instance: string to access column indicating the framework of the problem instance solved
     - key_runtime: string to access column of the runtime used to compute the solution of the problem instance
     - key_solvers: string to access the rows of a specific solver
@@ -158,7 +163,7 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
     key_runtime = "runtime"
 
     # preprocess data
-    df_data = __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, key_runtime)
+    df_data = __preprocess_data(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_mutoksia, key_runtime, key_solvers, key_runtime, timeout)
 
     # Set up Matplotlib for producing .tex output
     plt.rcParams.update({
