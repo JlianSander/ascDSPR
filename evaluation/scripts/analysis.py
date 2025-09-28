@@ -12,6 +12,7 @@ from analysis_runtime_comparison import *
 from analysis_runtime_comparison_muToksia import *
 from analysis_balance import *
 from analysis_balance_combi import *
+from analysis_cascading_combi import *
 from formatter_tables_thesis import *
 
 
@@ -69,15 +70,15 @@ PRINT_RT_COMP_MUTOKSIA = False
 PRINT_BL_ALL = False
 PRINT_BL_COMBI = False
 
-CALCULATE_APP = True
-CALCULATE_OVERLAP = True
-CALCULATE_RT_INTERSEC = True
-CACLCULATE_RT_COMP_MUTOKSIA = True
-CALCULATE_RT_COMP = True
-CALCULATE_BL = True
-CALCULATE_BL_COMBI = True
+CALCULATE_APP = False
+CALCULATE_OVERLAP = False
+CALCULATE_RT_INTERSEC = False
+CACLCULATE_RT_COMP_MUTOKSIA = False
+CALCULATE_RT_COMP = False
+CALCULATE_BL = False
+CALCULATE_BL_COMBI = False
 
-SAVE_LATEX = True
+SAVE_LATEX = False
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -373,7 +374,7 @@ if __name__ == "__main__":
 
     if(CALCULATE_BL):
         #-------------------------------- BALANCE --------------------------------
-        df_tab_balance_all = create_table_balance_sheet(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
+        df_tab_balance_all = create_table_runtimes_combis(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
                                                         TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
 
         if(PRINT_BL_ALL):
