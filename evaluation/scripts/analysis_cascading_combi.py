@@ -97,17 +97,58 @@ def create_df_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_
     df_runtimes = pd.DataFrame()
 
     for solver in unique_solvers_no_mu:
-        cascading_solvers = [solver, key_mutoksia]
+        cascading_solvers = (solver, key_mutoksia)
         df_runtimes[cascading_solvers.__str__()] = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
 
     # calculate runtimes for only MuToksia
-    cascading_solvers = [key_mutoksia]
+    cascading_solvers = (key_mutoksia,)
     df_runtimes[cascading_solvers.__str__()] = compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runtime, key_solvers, cascading_solvers, title_runtime, cascading_solvers.__str__())
 
     return df_runtimes
 
 #---------------------------------------------------------------------------------------------------------------------------
 
+
+def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, title_balance, title_pct_change, title_runtime_sum,
+                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage):
+    
+    # compute the virtual best solver (VBS)
+    df_runtimes = df_runtimes.astype('float64')
+    res = compute_vbs_with_delta(df_runtimes, title_solver_VBS, True, delta_percentage)
+    df_vbs  = res[0]
+    df_contribution = res[1]
+
+    # count the number of contributions to the VBS
+    s_vbsCount = count_vbsContribution_with_delta(df_contribution)
+    s_vbsCount.fillna(0).astype('int')
+    num_vbs_total = df_contribution.shape[0]
+    s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}/{num_vbs_total}")
+    s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}\%")
+    
+    # create the table
+    df_table = pd.DataFrame()
+    s_sum = df_vbs.sum()
+    key_muToksia = (key_mutoksia,).__str__()
+    sum_muToksia = s_sum[key_muToksia]
+    formatted_series_sum = s_sum.apply(lambda x: round(x))
+    df_table[title_runtime_sum] = formatted_series_sum
+    df_table[title_runtime_sum] = df_table[title_runtime_sum].astype('int')
+
+    s_balance = df_table[title_runtime_sum] - sum_muToksia
+    formatted_series_balance = s_balance.apply(lambda x: round(x))
+    df_table[title_balance] = formatted_series_balance
+    
+    s_percentage = ((df_table[title_balance] / sum_muToksia) * 100)
+    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
+    df_table[title_pct_change] = formatted_series_percentage
+    df_table[title_vbsCount] = df_table.index.map(s_vbsCount_formatted)
+    df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)
+
+    # cleaning table data frame
+    df_table.loc[title_solver_VBS, title_vbsCount] = ""
+    df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
+
+    return df_table
 
 def create_table_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, num_digits_pct, title_balance, title_pct_change, title_runtime_sum,
                                  title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage):
@@ -135,43 +176,8 @@ def create_table_runtimes_combis(df, key_answer, key_benchmarks, key_instance, k
     - DataFrame visualizing a comparison of all solvers with the benchmark solver
     """
 
-    # create output data frame
+    # calculate runtimes of cascading combinations
     df_runtimes = create_df_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, 'runtime')
 
-    # compute the virtual best solver (VBS)
-    df_runtimes = df_runtimes.astype('float64')
-    res = compute_vbs_with_delta(df_runtimes, title_solver_VBS, True, delta_percentage)
-    df_vbs  = res[0]
-    df_contribution = res[1]
-
-    # count the number of contributions to the VBS
-    s_vbsCount = count_vbsContribution_with_delta(df_contribution)
-    s_vbsCount.fillna(0).astype('int')
-    num_vbs_total = df_contribution.shape[0]
-    s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}/{num_vbs_total}")
-    s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}\%")
-    
-    # create the table
-    df_table = pd.DataFrame()
-    s_sum = df_vbs.sum()
-    key_muToksia = [key_mutoksia].__str__()
-    sum_muToksia = s_sum[key_muToksia]
-    formatted_series_sum = s_sum.apply(lambda x: round(x))
-    df_table[title_runtime_sum] = formatted_series_sum
-    df_table[title_runtime_sum] = df_table[title_runtime_sum].astype('int')
-
-    s_balance = df_table[title_runtime_sum] - sum_muToksia
-    formatted_series_balance = s_balance.apply(lambda x: round(x))
-    df_table[title_balance] = formatted_series_balance
-    
-    s_percentage = ((df_table[title_balance] / sum_muToksia) * 100)
-    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
-    df_table[title_pct_change] = formatted_series_percentage
-    df_table[title_vbsCount] = df_table.index.map(s_vbsCount_formatted)
-    df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)
-
-    # cleaning table data frame
-    df_table.loc[title_solver_VBS, title_vbsCount] = ""
-    df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
-    
-    return df_table
+    return format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, title_balance, title_pct_change, title_runtime_sum,
+                                 title_solver_VBS, title_vbsCount, title_vbsCount_pct, delta_percentage)

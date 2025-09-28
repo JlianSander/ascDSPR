@@ -48,9 +48,9 @@ TITLE_RUNTIME_SUM_CAPPED = "sum RT*"
 TITLE_VBS_COUNT = "#VBS"
 TITLE_VBS_COUNT_PCT = "\%"
 TITLE_SOLVER_VBS = 'VBS'
-TITLE_BALANCE = "Balance"
-TITLE_BALANCE_PCT_CHANGE = " \%"
-TITLE_BALANCE_SUM_RT = "sum RT"
+TITLE_CAS_COMBI_DIFF = "diff"
+TITLE_CAS_COMBI_DIFF_PCT = " \%"
+TITLE_CAS_COMBI_SUM_RT = "sum RT"
 
 
 ## ------------- DEBUG ------------- 
@@ -67,18 +67,18 @@ PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
 PRINT_RT_COMP_MUTOKSIA = False
-PRINT_BL_ALL = False
-PRINT_BL_COMBI = False
+PRINT_BL_ALL = True
+PRINT_BL_COMBI = True
 
-CALCULATE_APP = False
-CALCULATE_OVERLAP = False
-CALCULATE_RT_INTERSEC = False
-CACLCULATE_RT_COMP_MUTOKSIA = False
-CALCULATE_RT_COMP = False
-CALCULATE_BL = False
-CALCULATE_BL_COMBI = False
+CALCULATE_APP = True
+CALCULATE_OVERLAP = True
+CALCULATE_RT_INTERSEC = True
+CACLCULATE_RT_COMP_MUTOKSIA = True
+CALCULATE_RT_COMP = True
+CALCULATE_BL = True
+CALCULATE_BL_COMBI = True
 
-SAVE_LATEX = False
+SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
 
 # Method to read a dataframe from a csv file
@@ -375,7 +375,7 @@ if __name__ == "__main__":
     if(CALCULATE_BL):
         #-------------------------------- BALANCE --------------------------------
         df_tab_balance_all = create_table_runtimes_combis(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
-                                                        TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
+                                                        TITLE_CAS_COMBI_DIFF, TITLE_CAS_COMBI_DIFF_PCT, TITLE_CAS_COMBI_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
 
         if(PRINT_BL_ALL):
             print()
@@ -390,13 +390,13 @@ if __name__ == "__main__":
 
     if(CALCULATE_BL_COMBI):
         #-------------------------------- BALANCE COMBI --------------------------------
-        single_solvers = ('asc_01','asc_02','asc_03','asc_04')
-        combi_01 = ('asc_01','asc_02')
-        combi_02 = ('asc_01','asc_02','asc_03','asc_04')
-        combi_03 = ('asc_04','asc_01','asc_02','asc_03')
+        single_solvers = ('asc_01','asc_02','asc_03','asc_04', NAME_MUTOSKIA)
+        combi_01 = ('asc_01','asc_02', NAME_MUTOSKIA)
+        combi_02 = ('asc_01','asc_02','asc_03','asc_04', NAME_MUTOSKIA)
+        combi_03 = ('asc_04','asc_01','asc_02','asc_03', NAME_MUTOSKIA)
         list_combi = (combi_01, combi_02, combi_03)
-        df_table_balance_combi = create_table_balance_sheet_combination(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
-                                                                        TITLE_BALANCE, TITLE_BALANCE_PCT_CHANGE, TITLE_BALANCE_SUM_RT, 
+        df_table_balance_combi = create_table_runtimes_combis_new(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
+                                                        TITLE_CAS_COMBI_DIFF, TITLE_CAS_COMBI_DIFF_PCT, TITLE_CAS_COMBI_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE, 
                                                                         single_solvers, list_combi)
         
         if(PRINT_BL_COMBI):
