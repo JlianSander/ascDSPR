@@ -31,7 +31,7 @@ SUFFIX_PERCENTAGE = ' \%'
 TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
-TITLE_APPLICABILITY_PERCENTAGE = 'found %'
+TITLE_APPLICABILITY_PERCENTAGE = 'found \%'
 TITLE_APPLICABILITY_ROW_SOLUTION = 'solution'
 TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES = "solving approaches"
 TITLE_APPLICABILITY_COLUMN_OVERLAP = "found"
@@ -67,8 +67,8 @@ PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
 PRINT_RT_COMP_MUTOKSIA = False
-PRINT_BL_ALL = True
-PRINT_BL_COMBI = True
+PRINT_BL_ALL = False
+PRINT_BL_COMBI = False
 
 CALCULATE_APP = True
 CALCULATE_OVERLAP = True
@@ -385,7 +385,7 @@ if __name__ == "__main__":
         if(SAVE_LATEX):   
             latex_code = create_general_latex(df_tab_balance_all, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
             latex_code = add_midrule_above_pattern(latex_code, TITLE_SOLVER_VBS)
-            __save_latex_file(output_directory, "Analysis_Runtime_Balance_All.tex", latex_code)
+            __save_latex_file(output_directory, "Analysis_Runtime_Combi.tex", latex_code)
 
 
     if(CALCULATE_BL_COMBI):
@@ -406,5 +406,5 @@ if __name__ == "__main__":
 
         if(SAVE_LATEX):
             latex_code = create_general_latex(df_table_balance_combi, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX)
-            __save_latex_file(output_directory, "Analysis_Runtime_Balance_Combi.tex", latex_code)
+            __save_latex_file(output_directory, "Analysis_Runtime_Combi_new.tex", latex_code)
     

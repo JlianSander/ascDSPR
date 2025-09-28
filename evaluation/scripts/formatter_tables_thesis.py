@@ -52,6 +52,9 @@ def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix
     # replace invalid symbols
     updated_latex_table = re.sub("_", '\_', latex_code)
     updated_latex_table = re.sub("#", '\#', updated_latex_table)
+
+    # replace names
+    updated_latex_table = re.sub("mu-toksia-glucose", r"\\muToksia", updated_latex_table)
     
     # Replace names of shortcuts with the custom command of the thesis
     updated_latex_table = replace_asc_labels(updated_latex_table, asc_label_prefix)
