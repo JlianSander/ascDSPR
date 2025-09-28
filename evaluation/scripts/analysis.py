@@ -389,10 +389,10 @@ if __name__ == "__main__":
 
     if(CALCULATE_BL_COMBI):
         #-------------------------------- BALANCE COMBI --------------------------------
-        single_solvers = ('asc_01','asc_02','asc_03','asc_04', NAME_MUTOSKIA)
-        combi_01 = ('asc_01','asc_02', NAME_MUTOSKIA)
-        combi_02 = ('asc_01','asc_02','asc_03','asc_04', NAME_MUTOSKIA)
-        combi_03 = ('asc_04','asc_01','asc_02','asc_03', NAME_MUTOSKIA)
+        single_solvers = list()
+        combi_01 = ('asc_05', NAME_MUTOSKIA)
+        combi_02 = ('asc_05','asc_06', NAME_MUTOSKIA)
+        combi_03 = ('asc_05','asc_06', 'asc_08', NAME_MUTOSKIA)
         list_combi = (combi_01, combi_02, combi_03)
         df_table_balance_combi = create_table_runtimes_combis_new(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 
                                                         TITLE_CAS_COMBI_DIFF, TITLE_CAS_COMBI_DIFF_PCT, TITLE_CAS_COMBI_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE, 
