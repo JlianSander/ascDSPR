@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import re
+from itertools import count
 
 #---------------------------------------------------------------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ def get_alignment(df):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix): 
+def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix, color_row): 
         
     # round all float values to have the given number of digits
     df = df.apply(lambda col: col.apply(lambda val: f"{val:.{num_digits}f}" if not pd.isna(val) else val) if col.dtype == 'float64' else col)
@@ -55,9 +56,13 @@ def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix
 
     # replace names
     updated_latex_table = re.sub("mu-toksia-glucose", r"\\muToksia", updated_latex_table)
-    
+
     # Replace names of shortcuts with the custom command of the thesis
     updated_latex_table = replace_asc_labels(updated_latex_table, asc_label_prefix)
+
+    # Add coloring of every 2nd row
+    c = count(0)
+    updated_latex_table = re.sub(r"\\\\", lambda x: f"\\\\\n\\rowcolor{color_row}" if next(c) % 2 == 1 else x.group(), updated_latex_table)
 
     return updated_latex_table
 
@@ -78,3 +83,12 @@ def add_midrule_above_pattern(latex_code, pattern):
     updated_latex_table = re.sub(pattern_single_word, rf'\n\\midrule\n{pattern}', latex_code)
     
     return updated_latex_table
+
+#---------------------------------------------------------------------------------------------------------------------------
+ 
+def rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
+
+def remove_last_occurence(latex_code, pattern):
+    return rreplace(latex_code, pattern, '', 1)
