@@ -43,7 +43,7 @@ def populate_tab_overlap_int(df_overlap, s_rowSumsAnswers, key_solverPair_key, k
 #---------------------------------------------------------------------------------------------------------------------------
 
 
-def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, num_digits_pct, suffix_percentage):
+def populate_tab_overlap_formatted(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, num_digits_pct, suffix_percentage):
     """
     Method to create a table showing the overlap of the applicability between each solver as a formatted string
     
@@ -67,7 +67,7 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
     columns = []
     for item in unique_solvers:
         columns.append(item)         # Add the original columns
-        columns.append(item + suffix_percentage)  # Add the percentage columns
+        #columns.append(item + suffix_percentage)  # Add the percentage columns
 
     # Initialize the DataFrame with NaN values
     df_tabOverLap = pd.DataFrame(np.nan, index=unique_solvers, columns=columns).astype("string")
@@ -79,15 +79,15 @@ def populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key
 
         # Fill the values
         df_tabOverLap.at[solver1, solver2] = pair_count.__str__() + '/' + s_rowSumsAnswers[solver2].__str__()
-        pct_slv1 = pair_count /s_rowSumsAnswers[solver2] * 100
-        df_tabOverLap.at[solver1, solver2 + suffix_percentage] = f"{pct_slv1:.{num_digits_pct}f}\%"
+        #pct_slv1 = pair_count /s_rowSumsAnswers[solver2] * 100
+        #df_tabOverLap.at[solver1, solver2 + suffix_percentage] = f"{pct_slv1:.{num_digits_pct}f}\%"
         df_tabOverLap.at[solver2, solver1] = pair_count.__str__() + '/' + s_rowSumsAnswers[solver1].__str__()
-        pct_slv2 = pair_count / s_rowSumsAnswers[solver1] * 100
-        df_tabOverLap.at[solver2, solver1 + suffix_percentage] = f"{pct_slv2:.{num_digits_pct}f}\%" 
+        #pct_slv2 = pair_count / s_rowSumsAnswers[solver1] * 100
+        #df_tabOverLap.at[solver2, solver1 + suffix_percentage] = f"{pct_slv2:.{num_digits_pct}f}\%" 
         df_tabOverLap.at[solver1, solver1] = '-'
-        df_tabOverLap.at[solver1, solver1 + suffix_percentage] = '-'
+        #df_tabOverLap.at[solver1, solver1 + suffix_percentage] = '-'
         df_tabOverLap.at[solver2, solver2] = '-'
-        df_tabOverLap.at[solver2, solver2 + suffix_percentage] = '-'
+        #df_tabOverLap.at[solver2, solver2 + suffix_percentage] = '-'
 
     return df_tabOverLap
 

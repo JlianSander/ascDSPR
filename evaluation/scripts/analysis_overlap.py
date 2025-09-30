@@ -97,4 +97,4 @@ def create_table_overlap(df_rawAnswered, key_answer, key_answerType, key_benchma
     elif(table_format == "PCT"):
         return populate_tab_overlap_percentage(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value)
     else:
-        return populate_tab_overlap_string(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, num_digits_pct, suffix_percentage)
+        return populate_tab_overlap_formatted(df_overlap, s_rowSumsAnswers, key_solverPair_key, key_solverPair_value, num_digits_pct, suffix_percentage)
