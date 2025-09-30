@@ -91,7 +91,7 @@ def create_table_runtime_comparison_mutoksia(df_input, key_answer, key_benchmark
     solvers = [solver for solver in solvers if solver != key_mutoksia]
 
     #initialize output dataframe
-    df_output = pd.DataFrame(index=solvers, columns=[title_colmn_insts, title_column_sum, title_colmn_rt_muToksia, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct]) 
+    df_output = pd.DataFrame(index=solvers, columns=[title_colmn_insts, title_colmn_rt_muToksia, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct]) 
 
     # analyse the intersections of solved problem instances with each of the solvers
     for solver1 in solvers:
