@@ -41,13 +41,15 @@ TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION = "found"
 TITLE_APPLICABILITY_COLUMN_TIMEOUTS = "#TO"
 TITLE_APPLICABILITY_COLUMN_TOTAL = "Total"
 TITLE_INSTANCES = '#AF'
+TITLE_RUNTIME_COLUMN_INSTANCES = '\#'
+TITLE_RUNTIME_COLUM_RT_MUTOKSIA = 'RT \mutoksia'
 TITLE_RUNTIME_MEAN = "mean RT"
 TITLE_RUNTIME_STD = "std RT"
-TITLE_RUNTIME_SUM = "sum RT"
+TITLE_RUNTIME_SUM = "RT"
 TITLE_RUNTIME_SUM_PCT = " \%"
 TITLE_RUNTIME_MEAN_CAPPED = "mean RT*"
 TITLE_RUNTIME_STD_CAPPED = "std RT*"
-TITLE_RUNTIME_SUM_CAPPED = "sum RT*"
+TITLE_RUNTIME_SUM_CAPPED = "RT*"
 TITLE_VBS_COUNT = "#VBS"
 TITLE_VBS_COUNT_PCT = "\%"
 TITLE_SOLVER_VBS = 'VBS'
@@ -71,14 +73,14 @@ PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
-PRINT_RT_COMP_MUTOKSIA = False
+PRINT_RT_COMP_MUTOKSIA = True
 PRINT_BL_ALL = False
 PRINT_BL_COMBI = False
 
 CALCULATE_APP = False
-CALCULATE_OVERLAP = True
+CALCULATE_OVERLAP = False
 CALCULATE_RT_INTERSEC = False
-CACLCULATE_RT_COMP_MUTOKSIA = False
+CACLCULATE_RT_COMP_MUTOKSIA = True
 CALCULATE_RT_COMP = False
 CALCULATE_BL = False
 CALCULATE_BL_COMBI = False
@@ -290,7 +292,7 @@ if __name__ == "__main__":
         
     if(CACLCULATE_RT_COMP_MUTOKSIA):
         df_tabRuntime_comparison_muToksia = create_table_runtime_comparison_mutoksia(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 1, timeout, 
-                                                                                     TITLE_SOLVER_VBS, TITLE_RUNTIME_SUM, TITLE_RUNTIME_SUM_PCT, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
+                                                                                     TITLE_RUNTIME_COLUMN_INSTANCES, TITLE_RUNTIME_COLUM_RT_MUTOKSIA, TITLE_SOLVER_VBS, TITLE_RUNTIME_SUM, TITLE_RUNTIME_SUM_PCT, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
         if(PRINT_RT_COMP_MUTOKSIA):
             print()
             print("----------------- runtime comparison MuToksia -----------------")
@@ -303,9 +305,9 @@ if __name__ == "__main__":
     if(CALCULATE_RT_COMP):
         #-------------------------------- RUNTIME COMPARISON --------------------------------
         df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, 
-                                                                      NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
+                                                                      NUM_DIGITS_SUM, timeout, TITLE_RUNTIME_COLUMN_INSTANCES, TITLE_RUNTIME_COLUM_RT_MUTOKSIA, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
         df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
-                                                                     NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
+                                                                     NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_RUNTIME_COLUMN_INSTANCES, TITLE_RUNTIME_COLUM_RT_MUTOKSIA, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
         
 
         if(PRINT_RT_COMP_YES):
