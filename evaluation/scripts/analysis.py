@@ -41,6 +41,7 @@ TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION = "found"
 TITLE_APPLICABILITY_COLUMN_TIMEOUTS = "#TO"
 TITLE_APPLICABILITY_COLUMN_TOTAL = "Total"
 TITLE_INSTANCES = '#AF'
+TITLE_OVERLAP_ROW_NUM_INST = '#'
 TITLE_RUNTIME_COLUMN_INSTANCES = '#'
 TITLE_RUNTIME_COLUM_RT_MUTOKSIA = 'RT \muToksia'
 TITLE_RUNTIME_MEAN = "mean RT"
@@ -68,7 +69,7 @@ PRINT_OVERLAP_PCT_YES = False
 PRINT_OVERLAP_FORMATTED_YES = False
 PRINT_OVERLAP_INT_NO = False
 PRINT_OVERLAP_PCT_NO = False
-PRINT_OVERLAP_FORMATTED_NO = False
+PRINT_OVERLAP_FORMATTED_NO = True
 PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
@@ -77,13 +78,13 @@ PRINT_RT_COMP_MUTOKSIA = False
 PRINT_BL_ALL = False
 PRINT_BL_COMBI = False
 
-CALCULATE_APP = True
+CALCULATE_APP = False
 CALCULATE_OVERLAP = True
-CALCULATE_RT_INTERSEC = True
-CACLCULATE_RT_COMP_MUTOKSIA = True
-CALCULATE_RT_COMP = True
-CALCULATE_BL = True
-CALCULATE_BL_COMBI = True
+CALCULATE_RT_INTERSEC = False
+CACLCULATE_RT_COMP_MUTOKSIA = False
+CALCULATE_RT_COMP = False
+CALCULATE_BL = False
+CALCULATE_BL_COMBI = False
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -215,9 +216,9 @@ if __name__ == "__main__":
     if(CALCULATE_OVERLAP):
         #-------------------------------- OVERLAP --------------------------------
         # create the tables for visualizing the overlap of the applicability of the different solvers
-        df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
-        df_tabOverlap_pct_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
-        df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
+        df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT, TITLE_OVERLAP_ROW_NUM_INST)
+        df_tabOverlap_pct_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT, TITLE_OVERLAP_ROW_NUM_INST)
+        df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED, TITLE_OVERLAP_ROW_NUM_INST)
 
         if(PRINT_OVERLAP_INT_YES):
             print()
@@ -232,9 +233,9 @@ if __name__ == "__main__":
             print("----------------- overlap FORMATTED YES -----------------")
             print(df_tabOverlap_formatted_yes)
 
-        df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT)
-        df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT)
-        df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED)
+        df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT, TITLE_OVERLAP_ROW_NUM_INST)
+        df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT, TITLE_OVERLAP_ROW_NUM_INST)
+        df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED, TITLE_OVERLAP_ROW_NUM_INST)
 
         if(PRINT_OVERLAP_INT_NO):
             print()
