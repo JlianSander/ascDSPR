@@ -33,10 +33,10 @@ SUFFIX_PERCENTAGE = ' \%'
 TABLE_FORMAT_OVERLAP_INT = "INT"
 TABLE_FORMAT_OVERLAP_PCT = "PCT"
 TABLE_FORMAT_OVERLAP_FORMATTED = "STRING"
-TITLE_APPLICABILITY_PERCENTAGE = 'found \%'
+TITLE_APPLICABILITY_FOUND_SOLUTION_PCT = 'found \%'
 TITLE_APPLICABILITY_ROW_SOLUTION = 'solution'
-TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES = "solving approaches"
-TITLE_APPLICABILITY_COLUMN_OVERLAP = "found"
+TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES = "solvers"
+TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION = "found"
 TITLE_APPLICABILITY_COLUMN_TIMEOUTS = "#TO"
 TITLE_APPLICABILITY_COLUMN_TOTAL = "total"
 TITLE_INSTANCES = '#AF'
@@ -59,7 +59,7 @@ TITLE_CAS_COMBI_PAR = "PAR2"
 
 ## ------------- DEBUG ------------- 
 PRINT_APP_YES = False
-PRINT_APP_NO = False
+PRINT_APP_NO = True
 PRINT_OVERLAP_INT_YES = False
 PRINT_OVERLAP_PCT_YES = False
 PRINT_OVERLAP_FORMATTED_YES = False
@@ -75,12 +75,12 @@ PRINT_BL_ALL = False
 PRINT_BL_COMBI = False
 
 CALCULATE_APP = True
-CALCULATE_OVERLAP = True
-CALCULATE_RT_INTERSEC = True
-CACLCULATE_RT_COMP_MUTOKSIA = True
-CALCULATE_RT_COMP = True
-CALCULATE_BL = True
-CALCULATE_BL_COMBI = True
+CALCULATE_OVERLAP = False
+CALCULATE_RT_INTERSEC = False
+CACLCULATE_RT_COMP_MUTOKSIA = False
+CALCULATE_RT_COMP = False
+CALCULATE_BL = False
+CALCULATE_BL_COMBI = False
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -175,10 +175,10 @@ if __name__ == "__main__":
         s_timeouts = get_series_timeouts(df_raw, key_solvers, key_timedout)
         df_tabApplicability_yes = create_table_number_answers(df_answeredYES, df_solutionsYes, s_timeouts,
                                                               key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
-                                                              TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_COLUMN_OVERLAP, TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
+                                                              TITLE_APPLICABILITY_FOUND_SOLUTION_PCT, TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION, TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
         df_tabApplicability_no = create_table_number_answers(df_answeredNO, df_solutionsNo, s_timeouts,
                                                              key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, TITLE_APPLICABILITY_ROW_SOLUTION, key_solvers, 
-                                                             TITLE_APPLICABILITY_PERCENTAGE, TITLE_APPLICABILITY_COLUMN_OVERLAP,TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
+                                                             TITLE_APPLICABILITY_FOUND_SOLUTION_PCT, TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION,TITLE_APPLICABILITY_INDEXNAME_SOLVING_APPROACHES, TITLE_APPLICABILITY_COLUMN_TIMEOUTS, TITLE_APPLICABILITY_COLUMN_TOTAL)
         if(PRINT_APP_YES):
             print()
             print("----------------- applicability YES -----------------")    
@@ -189,6 +189,15 @@ if __name__ == "__main__":
             print(df_tabApplicability_no)
 
         if(SAVE_LATEX):
+
+            # remove columns 'found' and 'found %' from data, kept in data to be visible in print
+
+            df_tabApplicability_yes = df_tabApplicability_yes.drop(TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION, axis=1)
+            df_tabApplicability_yes = df_tabApplicability_yes.drop(TITLE_APPLICABILITY_FOUND_SOLUTION_PCT, axis=1)
+
+            df_tabApplicability_no = df_tabApplicability_no.drop(TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION, axis=1)
+            df_tabApplicability_no = df_tabApplicability_no.drop(TITLE_APPLICABILITY_FOUND_SOLUTION_PCT, axis=1)
+
             latex_code = create_general_latex(df_tabApplicability_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW)
             latex_code = add_midrule_above_pattern(latex_code, "solution")
             latex_code = remove_last_occurence(latex_code, "\\rowcolor{gray!30}\n")
