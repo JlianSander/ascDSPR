@@ -31,7 +31,7 @@ def get_alignment(df):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix, color_row): 
+def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix, color_row, label_iccma): 
         
     # round all float values to have the given number of digits
     df = df.apply(lambda col: col.apply(lambda val: f"{val:.{num_digits}f}" if not pd.isna(val) else val) if col.dtype == 'float64' else col)
@@ -59,6 +59,9 @@ def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix
 
     # Replace names of shortcuts with the custom command of the thesis
     updated_latex_table = replace_asc_labels(updated_latex_table, asc_label_prefix)
+
+    # replace 'iccma' with correct formatting
+    updated_latex_table = re.sub("iccma", label_iccma, updated_latex_table)
 
     # Add coloring of every 2nd row
     c = count(0)
