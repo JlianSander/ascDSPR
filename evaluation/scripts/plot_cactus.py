@@ -180,7 +180,19 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
     for i, (name, group) in enumerate(df_data):
         group = group.sort_values(by=key_runtime)
         group = group.reset_index(drop=True)
-        ax.plot(group[key_runtime], group.index, marker=style_map[i]['marker'], markersize=4, markerfacecolor='white',markeredgewidth=0.75, linewidth=0.75, linestyle=style_map[i]['linestyle'],alpha=0.7, label=get_name(name))
+
+        # Filter out data points with runtime >= timeout
+        group = group[group[key_runtime] < timeout]
+
+        ax.plot(group[key_runtime], group.index, 
+                marker=style_map[i]['marker'], 
+                markersize=4, 
+                markerfacecolor='white', 
+                markeredgewidth=0.75, 
+                linewidth=0.75, 
+                linestyle=style_map[i]['linestyle'], 
+                alpha=0.7, 
+                label=get_name(name))
 
     # LABELS + TITLES
     ax.set_xlabel(title_label_x,fontsize=16)
@@ -190,7 +202,8 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
     # AUX LINES
     if(draw_timeout_limit):
         ax.axvline(x=timeout, color='r', linestyle='--', label=None)
-    ax.set_ylim(0, None)
+    ax.set_ylim(800, None)
+
     ax.tick_params(axis='both', which='major',labelsize=13)
     ax.grid(True, color='gray', ls=':', lw=1, zorder=1,alpha=0.5)
     
