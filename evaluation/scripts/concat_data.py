@@ -19,44 +19,40 @@ def read_csv_to_dataframe(file_path):
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
     if len(sys.argv) != 4:
-        print("Usage: python3 integrate_data.py <file_path_raw> <file_path_raw_new_data> <file_path_output_raw>")
+        print("Usage: python3 concatenate_data.py <file_path_raw_up> <file_path_raw_below> <file_path_output_raw>")
         sys.exit(1)
     
     #-------------------------------- initializing data --------------------------------
 
     # read paths to data
-    file_path_raw = sys.argv[1]
-    file_path_newData = sys.argv[2]
+    file_path_raw_first = sys.argv[1]
+    file_path_raw_second = sys.argv[2]
     file_path_output = sys.argv[3]
     
     # read data frame of raw results from probo
-    df_raw = read_csv_to_dataframe(file_path_raw)
-    df_newData = read_csv_to_dataframe(file_path_newData)
+    df_raw_first = read_csv_to_dataframe(file_path_raw_first)
+    df_raw_second = read_csv_to_dataframe(file_path_raw_second)
 
     print()
     print("-----------------------------------------------------------------")
-    print("df_raw:")
-    print(df_raw)
+    print("df_raw_first:")
+    print(df_raw_first)
 
     print()
     print("-----------------------------------------------------------------")
-    print("df_newData:")
-    print(df_newData)
+    print("df_raw_second:")
+    print(df_raw_second)
 
     # read keys from input data frames
-    key_benchmarks = df_raw.columns[15]  #'benchmark_name'
-    key_instance = df_raw.columns[4] #'instance'
-    key_solvers = df_raw.columns[0] #'solver_name'
+    key_benchmarks = df_raw_first.columns[15]  #'benchmark_name'
+    key_instance = df_raw_first.columns[4] #'instance'
+    key_solvers = df_raw_first.columns[0] #'solver_name'
 
-    # delete rows of solvers in old data
-    for solver in df_newData[key_solvers].unique():
-        df_raw = df_raw[df_raw[key_solvers] != solver]
-
-    df_raw = pd.concat([df_raw, df_newData], axis=0, ignore_index=True)
+    df_raw_first = pd.concat([df_raw_first, df_raw_second], axis=0, ignore_index=True)
 
     print()
     print("-----------------------------------------------------------------")
     print("df_Output:")
-    print(df_raw)
+    print(df_raw_first)
 
-    df_raw.to_csv(file_path_output, index=False)
+    df_raw_first.to_csv(file_path_output, index=False)
