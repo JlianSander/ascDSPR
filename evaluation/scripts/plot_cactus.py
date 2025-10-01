@@ -17,19 +17,33 @@ from plot import *
     Conference on Principles of Knowledge Representation and Reasoning, KR 2025, 2025.
 """
 
+# names = {
+#     'reducto': r'\texttt{reducto}',
+#     'mu-toksia-glucose': r'$\mu$-\textsc{toksia} (\textsc{Glucose})',
+#     'asc_01': r'S\textsf{1}',
+#     'asc_02': r'S\textsf{2}',
+#     'asc_03': r'S\textsf{3}',
+#     'asc_04': r'S\textsf{4}',
+#     'asc_05': r'S\textsf{5}',
+#     'asc_06': r'S\textsf{6}',
+#     'asc_07': r'S\textsf{7}',
+#     'asc_08': r'S\textsf{8}',
+#     'asc_09': r'S\textsf{9}',
+#     'asc_10': r'S\textsf{10}',
+# }
+
 names = {
-    'reducto': r'\texttt{reducto}',
-    'mu-toksia-glucose': r'$\mu$-\textsc{toksia} (\textsc{Glucose})',
-    'asc_01': r'S\textsf{1}',
-    'asc_02': r'S\textsf{2}',
-    'asc_03': r'S\textsf{3}',
-    'asc_04': r'S\textsf{4}',
-    'asc_05': r'S\textsf{5}',
-    'asc_06': r'S\textsf{6}',
-    'asc_07': r'S\textsf{7}',
-    'asc_08': r'S\textsf{8}',
-    'asc_09': r'S\textsf{9}',
-    'asc_10': r'S\textsf{10}',
+    'mu-toksia-glucose': r'$\mu$-TOKSIA',
+    'asc_01': 'S1',
+    'asc_02': 'S2',
+    'asc_03': 'S3',
+    'asc_04': 'S4',
+    'asc_05': 'S5',
+    'asc_06': 'S6',
+    'asc_07': 'S7',
+    'asc_08': 'S8',
+    'asc_09': 'S9',
+    'asc_10': 'S10',
 }
 
 style_map = [
@@ -215,6 +229,11 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
         file_output = open(path_pgf, "w")
         plt.savefig(file_output, format='pgf')
         print(f"pgf graphic saved to: {path_pgf}")
+
+        path_pdf = output_directory + title_file + ".pdf"
+        file_output = open(path_pdf, "wb")
+        plt.savefig(file_output, format='pdf')
+        print(f"pdf graphic saved to: {path_pdf}")
 
     if(save_png):
         path_png = output_directory + title_file + ".png"
