@@ -54,9 +54,9 @@ TITLE_RUNTIME_SUM_CAPPED = "RT*"
 TITLE_VBS_COUNT = "#VBS"
 TITLE_VBS_COUNT_PCT = "\%"
 TITLE_SOLVER_VBS = 'VBS'
-TITLE_CAS_COMBI_DIFF = "diff"
+TITLE_CAS_COMBI_DIFF = "\delta"
 TITLE_CAS_COMBI_DIFF_PCT = " \%"
-TITLE_CAS_COMBI_SUM_RT = "sum RT"
+TITLE_CAS_COMBI_SUM_RT = "RT"
 TITLE_CAS_COMBI_TO = "#TO"
 TITLE_CAS_COMBI_PAR = "PAR2"
 
@@ -69,7 +69,7 @@ PRINT_OVERLAP_PCT_YES = False
 PRINT_OVERLAP_FORMATTED_YES = False
 PRINT_OVERLAP_INT_NO = False
 PRINT_OVERLAP_PCT_NO = False
-PRINT_OVERLAP_FORMATTED_NO = True
+PRINT_OVERLAP_FORMATTED_NO = False
 PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
@@ -78,13 +78,13 @@ PRINT_RT_COMP_MUTOKSIA = False
 PRINT_BL_ALL = False
 PRINT_BL_COMBI = False
 
-CALCULATE_APP = False
+CALCULATE_APP = True
 CALCULATE_OVERLAP = True
-CALCULATE_RT_INTERSEC = False
-CACLCULATE_RT_COMP_MUTOKSIA = False
-CALCULATE_RT_COMP = False
-CALCULATE_BL = False
-CALCULATE_BL_COMBI = False
+CALCULATE_RT_INTERSEC = True
+CACLCULATE_RT_COMP_MUTOKSIA = True
+CALCULATE_RT_COMP = True
+CALCULATE_BL = True
+CALCULATE_BL_COMBI = True
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     if(CALCULATE_RT_INTERSEC):
         #-------------------------------- RUNTIME INTERSECTION --------------------------------
         # filter out all rows of the solver 'asc_01'
-        df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO['solver_name'] != 'asc_01']
+        df_rawAnsweredNoASC01 = df_answeredNO[df_answeredNO[key_solvers] != 'asc_01']
         # analyze runtime of the intersection of instances of solved instances of solvers
         df_tabRuntime_intersect_yes = create_table_runtime_intersection(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, timeout, NUM_STD_LIMIT, False,
                             TITLE_SOLVER_VBS, TITLE_INSTANCES, TITLE_RUNTIME_MEAN, TITLE_RUNTIME_STD, TITLE_RUNTIME_SUM, TITLE_RUNTIME_MEAN_CAPPED, TITLE_RUNTIME_STD_CAPPED, TITLE_RUNTIME_SUM_CAPPED, TITLE_VBS_COUNT, DELTA_PERCENTAGE)
@@ -306,9 +306,9 @@ if __name__ == "__main__":
     if(CALCULATE_RT_COMP):
         #-------------------------------- RUNTIME COMPARISON --------------------------------
         df_tabRuntime_comparisonYes = create_table_runtime_comparison(df_answeredYES, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_STD, 
-                                                                      NUM_DIGITS_SUM, timeout, TITLE_RUNTIME_COLUMN_INSTANCES, TITLE_RUNTIME_COLUM_RT_MUTOKSIA, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
+                                                                      NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
         df_tabRuntime_comparisonNo = create_table_runtime_comparison(df_answeredNO, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 
-                                                                     NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_RUNTIME_COLUMN_INSTANCES, TITLE_RUNTIME_COLUM_RT_MUTOKSIA, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
+                                                                     NUM_DIGITS_STD, NUM_DIGITS_SUM, timeout, TITLE_SOLVER_VBS, DELTA_PERCENTAGE)
         
 
         if(PRINT_RT_COMP_YES):

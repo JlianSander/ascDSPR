@@ -121,9 +121,9 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     # count the number of contributions to the VBS
     s_vbsCount = count_vbsContribution_with_delta(df_contribution)
     s_vbsCount.fillna(0).astype('int')
-    num_vbs_total = df_contribution.shape[0]
-    s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}/{num_vbs_total}")
-    s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}\%")
+    # num_vbs_total = df_contribution.shape[0]
+    s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}") #.apply(lambda x: f"{x}/{num_vbs_total}")
+    # s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}\%")
     
     # create the table
     df_table = pd.DataFrame()
@@ -131,16 +131,15 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     key_muToksia = (key_mutoksia,).__str__()
     sum_muToksia = s_sum[key_muToksia]
     formatted_series_sum = s_sum.apply(lambda x: round(x))
-    df_table[title_runtime_sum] = formatted_series_sum
-    df_table[title_runtime_sum] = df_table[title_runtime_sum].astype('int')
+    df_table[title_runtime_sum] = formatted_series_sum.astype('int')
 
     s_balance = df_table[title_runtime_sum] - sum_muToksia
     formatted_series_balance = s_balance.apply(lambda x: round(x))
-    df_table[title_balance] = formatted_series_balance
+    df_table[title_balance] = formatted_series_balance.astype('int')
     
-    s_percentage = ((df_table[title_balance] / sum_muToksia) * 100)
-    formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
-    df_table[title_pct_change] = formatted_series_percentage
+    # s_percentage = ((df_table[title_balance] / sum_muToksia) * 100)
+    # formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
+    # df_table[title_pct_change] = formatted_series_percentage
 
     # ensure that for all instances and solvers it holds that runtime <= timeout
     df_clipped = df_runtimes.clip(upper=timeout)
@@ -156,15 +155,11 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     df_table[title_par] = formatted_series_par
 
     df_table[title_vbsCount] = df_table.index.map(s_vbsCount_formatted)
-    df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)
-
-    # cleaning table data frame
+    # df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)
 
     if(print_row_VBS):
-        df_table.loc[title_solver_VBS, title_vbsCount] = ""
-        df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
-        # df_table.loc[title_solver_VBS, title_num_to] = ""
-        # df_table.loc[title_solver_VBS, title_par] = ""
+        df_table.loc[title_solver_VBS, title_vbsCount] = "-"
+        # df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
     else:
         df_table = df_table.drop(title_solver_VBS)
 

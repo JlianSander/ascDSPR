@@ -54,6 +54,9 @@ def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix
     updated_latex_table = re.sub("_", '\_', latex_code)
     updated_latex_table = re.sub("#", '\#', updated_latex_table)
 
+    # remove signs ' and ) and (
+    updated_latex_table = re.sub("'", '', updated_latex_table)
+
     # replace names
     updated_latex_table = re.sub("mu-toksia-glucose", r"\\muToksia", updated_latex_table)
 
@@ -62,6 +65,9 @@ def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix
 
     # replace 'iccma' with correct formatting
     updated_latex_table = re.sub("iccma", label_iccma, updated_latex_table)
+
+    
+
 
     # Add coloring of every 2nd row
     c = count(0)

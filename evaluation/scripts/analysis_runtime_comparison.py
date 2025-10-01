@@ -40,7 +40,10 @@ def analyse_intersection(df_rawAnswered, key_answer, key_benchmarks, key_exit_wi
     df_intersection = df_intersection.loc[:, [key_solvers, key_runtime]] 
 
     # count instances in intersection
-    num_total_instances = df_intersection.groupby(key_solvers).size()[0]
+    if(df_intersection.empty):
+        num_total_instances = 0
+    else:
+        num_total_instances = df_intersection.groupby(key_solvers).size()[0]
 
     # calculate VBS for this intersection
     df_intersectionVBS = df_intersection.astype({key_runtime: 'float'})
