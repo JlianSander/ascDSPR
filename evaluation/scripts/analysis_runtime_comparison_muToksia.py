@@ -37,19 +37,19 @@ def __fill_table(df_output, df_runtimeSum, num_digits_pct, num_digits_sum,
     # retrieve values
     sum_solver1 = df_runtimeSum.loc[solver1]
     sum_muToksia = df_runtimeSum.loc[key_mutoksia]
-    sum_pct = (sum_solver1 / sum_muToksia) * 100
+    #sum_pct = (sum_solver1 / sum_muToksia) * 100
     vbsCount_solver1 = s_vbsCount.loc[solver1]
     
     vbsCount_sum = num_total_instances
-    vbsCount_pct = (vbsCount_solver1 / vbsCount_sum) * 100
+    #vbsCount_pct = (vbsCount_solver1 / vbsCount_sum) * 100
 
     # fill the cells of the table
     df_output[title_colmn_insts][solver1] = num_total_instances
     df_output[title_column_sum][solver1] = f"{sum_solver1:.{num_digits_sum}f}"
     df_output[title_colmn_rt_muToksia][solver1] = f"{sum_muToksia:.{num_digits_sum}f}"
-    df_output[title_column_sum_pct][solver1] = f"{sum_pct:.{num_digits_pct}f}\%"
+    #df_output[title_column_sum_pct][solver1] = f"{sum_pct:.{num_digits_pct}f}\%"
     df_output[title_colum_vbs][solver1] = vbsCount_solver1
-    df_output[title_column_vbsCount_pct][solver1] = f"{vbsCount_pct:.{num_digits_pct}f}\%" 
+    #df_output[title_column_vbsCount_pct][solver1] = f"{vbsCount_pct:.{num_digits_pct}f}\%" 
 
 
 #---------------------------------------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ def create_table_runtime_comparison_mutoksia(df_input, key_answer, key_benchmark
     solvers = [solver for solver in solvers if solver != key_mutoksia]
 
     #initialize output dataframe
-    df_output = pd.DataFrame(index=solvers, columns=[title_colmn_insts, title_colmn_rt_muToksia, title_column_sum, title_column_sum_pct, title_colum_vbs, title_column_vbsCount_pct]) 
+    df_output = pd.DataFrame(index=solvers, columns=[title_column_sum, title_colmn_rt_muToksia, title_colum_vbs, title_colmn_insts]) 
 
     # analyse the intersections of solved problem instances with each of the solvers
     for solver1 in solvers:
