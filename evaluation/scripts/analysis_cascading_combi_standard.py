@@ -106,12 +106,10 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     s_sum = df_runtimes.sum()
     key_muToksia = (key_mutoksia,).__str__()
     sum_muToksia = s_sum[key_muToksia]
-    formatted_series_sum = s_sum.apply(lambda x: round(x))
-    df_table[title_runtime_sum] = formatted_series_sum.astype('float64')
+    df_table[title_runtime_sum] = s_sum.astype('float64')
 
     s_balance = df_table[title_runtime_sum] - sum_muToksia
-    formatted_series_balance = s_balance.apply(lambda x: round(x))
-    df_table[title_balance] = formatted_series_balance.astype('float64')
+    df_table[title_balance] = s_balance.astype('float64')
 
     # ensure that for all instances and solvers it holds that runtime <= timeout
     df_clipped = df_runtimes.clip(upper=timeout)

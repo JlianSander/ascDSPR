@@ -394,7 +394,7 @@ if __name__ == "__main__":
 
     if(CALCULATE_BL):
         #-------------------------------- BALANCE --------------------------------
-        df_tab_balance_all = create_table_runtimes_combis(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, NUM_DIGITS_PAR,
+        df_tab_balance_all = create_table_runtimes_combis(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 1, NUM_DIGITS_PAR,
                                                         TITLE_CAS_COMBI_DIFF, TITLE_CAS_COMBI_DIFF_PCT, TITLE_CAS_COMBI_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, 
                                                         TITLE_CAS_COMBI_TO, TITLE_CAS_COMBI_PAR, DELTA_PERCENTAGE, timeout, NUM_PAR_X, True)
 
@@ -420,7 +420,7 @@ if __name__ == "__main__":
         list_combi.append(('asc_05','asc_06', 'asc_03', NAME_MUTOSKIA))
         list_combi.append(('asc_05','asc_06', 'asc_10', NAME_MUTOSKIA))
         list_combi.append(('asc_05','asc_06', 'asc_03', 'asc_10', NAME_MUTOSKIA))
-        df_table_balance_combi = create_table_runtimes_combis_new(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, NUM_DIGITS_PAR,
+        df_table_balance_combi = create_table_runtimes_combis_new(df_rawAnswered, key_answer, key_benchmarks, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, 1, NUM_DIGITS_PAR,
                                                         TITLE_CAS_COMBI_DIFF, TITLE_CAS_COMBI_DIFF_PCT, TITLE_CAS_COMBI_SUM_RT, TITLE_SOLVER_VBS, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, 
                                                         TITLE_CAS_COMBI_TO, TITLE_CAS_COMBI_PAR, DELTA_PERCENTAGE, timeout, NUM_PAR_X, False,
                                                                         single_solvers, list_combi)
