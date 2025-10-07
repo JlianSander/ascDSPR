@@ -119,4 +119,7 @@ def create_table_number_answers(df_rawAnswered, df_solutions, s_timeOuts, key_an
 
     df_answers_tmp.columns.name = title_solving_approaches
 
+    df_answers_tmp[title_total] = df_answers_tmp[title_total].astype('int64')
+    df_answers_tmp[title_timeouts] = df_answers_tmp[title_timeouts].astype('int64')
+
     return df_answers_tmp 
