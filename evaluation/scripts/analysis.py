@@ -202,12 +202,12 @@ if __name__ == "__main__":
             df_tabApplicability_no = df_tabApplicability_no.drop(TITLE_APPLICABILITY_COLUMN_FOUND_SOLUTION, axis=1)
             df_tabApplicability_no = df_tabApplicability_no.drop(TITLE_APPLICABILITY_FOUND_SOLUTION_PCT, axis=1)
 
-            latex_code = create_general_latex(df_tabApplicability_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabApplicability_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             latex_code = add_midrule_above_pattern(latex_code, "solution")
             latex_code = remove_last_occurence(latex_code, "\\rowcolor{gray!30}\n")
             __save_latex_file(output_directory, "Analysis_Applicability_Yes.tex", latex_code)
 
-            latex_code = create_general_latex(df_tabApplicability_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabApplicability_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             latex_code = add_midrule_above_pattern(latex_code, "solution")
             latex_code = remove_last_occurence(latex_code, "\\rowcolor{gray!30}\n")
             __save_latex_file(output_directory, "Analysis_Applicability_No.tex", latex_code)
@@ -218,7 +218,7 @@ if __name__ == "__main__":
         # create the tables for visualizing the overlap of the applicability of the different solvers
         df_tabOverlap_int_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT, TITLE_OVERLAP_ROW_NUM_INST)
         df_tabOverlap_pct_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT, TITLE_OVERLAP_ROW_NUM_INST)
-        df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED, TITLE_OVERLAP_ROW_NUM_INST)
+        df_tabOverlap_formatted_yes = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_YES, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, 0, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED, TITLE_OVERLAP_ROW_NUM_INST)
 
         if(PRINT_OVERLAP_INT_YES):
             print()
@@ -235,7 +235,7 @@ if __name__ == "__main__":
 
         df_tabOverlap_int_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_INT, TITLE_OVERLAP_ROW_NUM_INST)
         df_tabOverlap_pct_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_PCT, TITLE_OVERLAP_ROW_NUM_INST)
-        df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, NUM_DIGITS_PCT, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED, TITLE_OVERLAP_ROW_NUM_INST)
+        df_tabOverlap_formatted_no = create_table_overlap(df_rawAnswered, key_answer, NAME_ANSWER_NO, key_benchmarks, key_instance, NAME_MUTOSKIA, key_solvers, 0, SUFFIX_PERCENTAGE, TABLE_FORMAT_OVERLAP_FORMATTED, TITLE_OVERLAP_ROW_NUM_INST)
 
         if(PRINT_OVERLAP_INT_NO):
             print()
@@ -251,18 +251,18 @@ if __name__ == "__main__":
             print(df_tabOverlap_formatted_no)
 
         if(SAVE_LATEX):
-            latex_code = create_general_latex(df_tabOverlap_int_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabOverlap_int_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "-")
             __save_latex_file(output_directory, "Analysis_Overlap_Integer_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabOverlap_pct_yes, NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabOverlap_pct_yes, NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "-")
             __save_latex_file(output_directory, "Analysis_Overlap_Percentage_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabOverlap_formatted_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabOverlap_formatted_yes, 0, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "-")
             __save_latex_file(output_directory, "Analysis_Overlap_Formatted_Yes.tex", latex_code)
             
-            latex_code = create_general_latex(df_tabOverlap_int_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabOverlap_int_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "-")
             __save_latex_file(output_directory, "Analysis_Overlap_Integer_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabOverlap_pct_no, NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabOverlap_pct_no, NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "-")
             __save_latex_file(output_directory, "Analysis_Overlap_Percentage_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabOverlap_formatted_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabOverlap_formatted_no, 0, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "-")
             __save_latex_file(output_directory, "Analysis_Overlap_Formatted_No.tex", latex_code)
 
     if(CALCULATE_RT_INTERSEC):
@@ -286,9 +286,9 @@ if __name__ == "__main__":
             print(df_tabRuntime_intersectNoASC01_no)
 
         if(SAVE_LATEX):
-            latex_code = create_general_latex(df_tabRuntime_intersect_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_intersect_yes, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Intersection_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_intersectNoASC01_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_intersectNoASC01_no, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Intersection_No.tex", latex_code)
         
     if(CACLCULATE_RT_COMP_MUTOKSIA):
@@ -301,7 +301,7 @@ if __name__ == "__main__":
             print(df_tabRuntime_comparison_muToksia)
 
         if(SAVE_LATEX):
-            latex_code = create_general_latex(df_tabRuntime_comparison_muToksia, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparison_muToksia, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_MuToksia.tex", latex_code)
 
     if(CALCULATE_RT_COMP):
@@ -361,34 +361,34 @@ if __name__ == "__main__":
             print(df_tabRuntime_comparisonNo[6])
 
         if(SAVE_LATEX):
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[0], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[0], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Mean_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[1], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[1], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_MeanDiff_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[2], NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[2], NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Percentage_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[3], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[3], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Std_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Sum_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[5], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[5], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_SumDiff_Yes.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonYes[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonYes[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_VBSCount_Yes.tex", latex_code)
 
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[0], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[0], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Mean_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[1], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[1], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_MeanDiff_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[2], NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[2], NUM_DIGITS_PCT, "%", NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Percentage_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[3], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[3], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Std_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[4], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_Sum_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[5], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[5], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_SumDiff_No.tex", latex_code)
-            latex_code = create_general_latex(df_tabRuntime_comparisonNo[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tabRuntime_comparisonNo[6], NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Comparison_VBSCount_No.tex", latex_code)
 
 
@@ -404,7 +404,7 @@ if __name__ == "__main__":
             print(df_tab_balance_all)
 
         if(SAVE_LATEX):   
-            latex_code = create_general_latex(df_tab_balance_all, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_tab_balance_all, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             latex_code = add_midrule_above_pattern(latex_code, TITLE_SOLVER_VBS)
             latex_code = remove_last_occurence(latex_code, "\\rowcolor{gray!30}\n")
             __save_latex_file(output_directory, "Analysis_Runtime_Combi.tex", latex_code)
@@ -431,6 +431,6 @@ if __name__ == "__main__":
             print(df_table_balance_combi)
 
         if(SAVE_LATEX):
-            latex_code = create_general_latex(df_table_balance_combi, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA)
+            latex_code = create_general_latex(df_table_balance_combi, NUM_DIGITS, None, NAME_PREFIX_ASC_LATEX, COLOR_ROW, LABEL_ICCMA, "")
             __save_latex_file(output_directory, "Analysis_Runtime_Combi_new.tex", latex_code)
     

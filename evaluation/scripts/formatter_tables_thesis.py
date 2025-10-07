@@ -31,12 +31,8 @@ def get_alignment(df):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix, color_row, label_iccma): 
-    if num_digits == 0:
-        df = df.fillna(0).astype('int')
-    else:
-        df = df.fillna('')
-
+def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix, color_row, label_iccma, fill_na): 
+           
     # Function to format numbers with commas for thousands and digits
     def format_numbers(val):
         if isinstance(val, (float)):
@@ -57,8 +53,11 @@ def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix
     alignment = get_alignment(df)
     latex_code = df.to_latex(index=True, column_format=alignment) 
 
+    # after formatting number fill the NaN values
+    updated_latex_table = re.sub("nan", fill_na, latex_code)
+
     # replace invalid symbols
-    updated_latex_table = re.sub("_", '\_', latex_code)
+    updated_latex_table = re.sub("_", '\_', updated_latex_table)
     updated_latex_table = re.sub("#", '\#', updated_latex_table)
 
     # remove signs ' and ) and (

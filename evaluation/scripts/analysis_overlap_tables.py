@@ -71,10 +71,10 @@ def populate_tab_overlap_formatted(df_overlap, s_rowSumsAnswers, key_solverPair_
         #columns.append(item + suffix_percentage)  # Add the percentage columns
 
     # Initialize the DataFrame with NaN values
-    df_tabOverLap = pd.DataFrame(np.nan, index=unique_solvers, columns=columns).astype("string")
+    df_tabOverLap = pd.DataFrame(np.nan, index=unique_solvers, columns=columns).astype("float64")
 
     # add first row for number of instances
-    df_firstRow = pd.DataFrame(np.nan, index=[title_row_num_inst], columns=columns).astype("string")
+    df_firstRow = pd.DataFrame(np.nan, index=[title_row_num_inst], columns=columns).astype("float64")
     df_tabOverLap = pd.concat([df_firstRow, df_tabOverLap])
 
     # Populate the result dataframe
@@ -83,18 +83,12 @@ def populate_tab_overlap_formatted(df_overlap, s_rowSumsAnswers, key_solverPair_
         pair_count = row[key_solverPair_value]
 
         # Fill the values
-        df_tabOverLap.at[title_row_num_inst, solver2] = s_rowSumsAnswers[solver2].__str__()
-        df_tabOverLap.at[title_row_num_inst, solver1] = s_rowSumsAnswers[solver1].__str__()
-        df_tabOverLap.at[solver1, solver2] = pair_count.__str__()
-        #pct_slv1 = pair_count /s_rowSumsAnswers[solver2] * 100
-        #df_tabOverLap.at[solver1, solver2 + suffix_percentage] = f"{pct_slv1:.{num_digits_pct}f}\%"
-        df_tabOverLap.at[solver2, solver1] = pair_count.__str__()
-        #pct_slv2 = pair_count / s_rowSumsAnswers[solver1] * 100
-        #df_tabOverLap.at[solver2, solver1 + suffix_percentage] = f"{pct_slv2:.{num_digits_pct}f}\%" 
-        df_tabOverLap.at[solver1, solver1] = '-'
-        #df_tabOverLap.at[solver1, solver1 + suffix_percentage] = '-'
-        df_tabOverLap.at[solver2, solver2] = '-'
-        #df_tabOverLap.at[solver2, solver2 + suffix_percentage] = '-'
+        df_tabOverLap.at[title_row_num_inst, solver2] = s_rowSumsAnswers[solver2]
+        df_tabOverLap.at[title_row_num_inst, solver1] = s_rowSumsAnswers[solver1]
+        df_tabOverLap.at[solver1, solver2] = pair_count
+        df_tabOverLap.at[solver2, solver1] = pair_count
+        df_tabOverLap.at[solver1, solver1] = np.NaN
+        df_tabOverLap.at[solver2, solver2] = np.NaN
 
     return df_tabOverLap
 
