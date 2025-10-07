@@ -101,3 +101,24 @@ def rreplace(s, old, new, occurrence):
 
 def remove_last_occurence(latex_code, pattern):
     return rreplace(latex_code, pattern, '', 1)
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+def apply_thousand_seperator(df):
+    print(df.info())
+    # Apply the formatting function to the entire DataFrame
+    df_formatted = df.applymap(format_with_commas)
+
+    # Display the formatted DataFrame
+    return df_formatted
+
+# Function to format numbers with commas for thousands
+def format_with_commas(val):
+    if isinstance(val, (float)): #and val >= 1000:
+        return f"{val:,.1f}"  # Use ',.1f' to format numbers with one decimal and commas
+    if isinstance(val, (int)):
+        return f"{val:,.0f}"
+    return val  # Return the value as is if it's less than 1000
+
+
+#---------------------------------------------------------------------------------------------------------------------------
