@@ -24,12 +24,8 @@ def compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runt
     - Series containing for each instance, the runtime of the given combination of cascading solvers
     """
 
-
     df_runtimes = pd.DataFrame(columns=[key_solvers, key_benchmarks, key_instance, title_runtime])
-
     combi = title_combination
-
-    #counter_Prints = 0#DEBUG
 
     # iterate through benchmarks
     for benchmarkX in df[key_benchmarks].unique():
@@ -41,12 +37,7 @@ def compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runt
 
             # Filter out the rows of this instance in this benchmark
             df_rows_instanceX = df[(df[key_benchmarks] == benchmarkX) & (df[key_instance] == instanceX)]
-            # print("--- new instance ---")#DEBUG
-            # print_debug = False#DEBUG
-            # print_1 = "NaN"#DEBUG
-            # print_2 = "NaN"#DEBUG
-            # print_3 = "NaN"#DEBUG
-            # print_1 = df_runtimes.loc[instanceX].__str__()#DEBUG
+
             for solverX in cascading_solvers:
 
                 # if the problem was already solved by preceding solver, then the runtime of this does not need to be accounted
@@ -66,22 +57,9 @@ def compute_runtime_combi(df, key_answer, key_benchmarks, key_instance, key_runt
                     new_row = pd.DataFrame({key_solvers: [combi], key_benchmarks: [benchmarkX], key_instance: [instanceX], title_runtime: [rowX.loc[0, key_runtime]]})
                     df_runtimes = pd.concat([df_runtimes, new_row], ignore_index=True)
 
-                # print_2 = df_runtimes.loc[instanceX].__str__()#DEBUG
-
                 if pd.notna(rowX.loc[0, key_answer]):
                     # this solver solved the problem, therefore ignore all subsequent solvers
                     skip_successive_solvers = True
-
-            #     else:#DEBUG
-            #         print_debug = True#DEBUG
-
-            #     if(print_debug):#DEBUG
-            #         print(print_1)#DEBUG
-            #         print(print_2)#DEBUG
-            #         print(print_3)#DEBUG
-
-            # if(counter_Prints > 4):#DEBUG
-            #     return#DEBUG
 
     return df_runtimes
 
@@ -121,9 +99,7 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     # count the number of contributions to the VBS
     s_vbsCount = count_vbsContribution_with_delta(df_contribution)
     s_vbsCount.fillna(0).astype('int')
-    # num_vbs_total = df_contribution.shape[0]
-    s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}") #.apply(lambda x: f"{x}/{num_vbs_total}")
-    # s_vbsCount_pct = s_vbsCount.apply(lambda x: f"{(x/num_vbs_total * 100):.{num_digits_pct}f}\%")
+    s_vbsCount_formatted = s_vbsCount.apply(lambda x: f"{x}")
     
     # create the table
     df_table = pd.DataFrame()
@@ -131,15 +107,11 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     key_muToksia = (key_mutoksia,).__str__()
     sum_muToksia = s_sum[key_muToksia]
     formatted_series_sum = s_sum.apply(lambda x: round(x))
-    df_table[title_runtime_sum] = formatted_series_sum.astype('int')
+    df_table[title_runtime_sum] = formatted_series_sum.astype('float64')
 
     s_balance = df_table[title_runtime_sum] - sum_muToksia
     formatted_series_balance = s_balance.apply(lambda x: round(x))
-    df_table[title_balance] = formatted_series_balance.astype('int')
-    
-    # s_percentage = ((df_table[title_balance] / sum_muToksia) * 100)
-    # formatted_series_percentage = s_percentage.apply(lambda x: f"{round(x)}\%")
-    # df_table[title_pct_change] = formatted_series_percentage
+    df_table[title_balance] = formatted_series_balance.astype('float64')
 
     # ensure that for all instances and solvers it holds that runtime <= timeout
     df_clipped = df_runtimes.clip(upper=timeout)
@@ -155,11 +127,9 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     df_table[title_par] = formatted_series_par
 
     df_table[title_vbsCount] = df_table.index.map(s_vbsCount_formatted)
-    # df_table[title_vbsCount_pct] = df_table.index.map(s_vbsCount_pct)
 
     if(print_row_VBS):
         df_table.loc[title_solver_VBS, title_vbsCount] = "-"
-        # df_table.loc[title_solver_VBS, title_vbsCount_pct] = ""
     else:
         df_table = df_table.drop(title_solver_VBS)
 

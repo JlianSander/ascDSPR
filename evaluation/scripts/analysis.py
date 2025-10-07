@@ -74,17 +74,17 @@ PRINT_RT_INTERSEC_YES = False
 PRINT_RT_INTERSEC_NO = False
 PRINT_RT_COMP_YES = False
 PRINT_RT_COMP_NO = False
-PRINT_RT_COMP_MUTOKSIA = True
+PRINT_RT_COMP_MUTOKSIA = False
 PRINT_BL_ALL = False
 PRINT_BL_COMBI = False
 
 CALCULATE_APP = False
 CALCULATE_OVERLAP = False
 CALCULATE_RT_INTERSEC = False
-CACLCULATE_RT_COMP_MUTOKSIA = True
+CACLCULATE_RT_COMP_MUTOKSIA = False
 CALCULATE_RT_COMP = False
-CALCULATE_BL = False
-CALCULATE_BL_COMBI = False
+CALCULATE_BL = True
+CALCULATE_BL_COMBI = True
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -294,7 +294,6 @@ if __name__ == "__main__":
     if(CACLCULATE_RT_COMP_MUTOKSIA):
         df_tabRuntime_comparison_muToksia = create_table_runtime_comparison_mutoksia(df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, NAME_MUTOSKIA, key_runtime, key_solvers, NUM_DIGITS_PCT, 1, timeout, 
                                                                                      TITLE_RUNTIME_COLUMN_INSTANCES, TITLE_RUNTIME_COLUM_RT_MUTOKSIA, TITLE_SOLVER_VBS, TITLE_RUNTIME_SUM, TITLE_RUNTIME_SUM_PCT, TITLE_VBS_COUNT, TITLE_VBS_COUNT_PCT, DELTA_PERCENTAGE)
-        df_tabRuntime_comparison_muToksia = apply_thousand_seperator(df_tabRuntime_comparison_muToksia)
         
         if(PRINT_RT_COMP_MUTOKSIA):
             print()

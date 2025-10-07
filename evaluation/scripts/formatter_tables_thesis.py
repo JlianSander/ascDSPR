@@ -32,15 +32,22 @@ def get_alignment(df):
 #---------------------------------------------------------------------------------------------------------------------------
 
 def create_general_latex(df : pd.DataFrame, num_digits, suffix, asc_label_prefix, color_row, label_iccma): 
-        
-    # round all float values to have the given number of digits
-    df = df.apply(lambda col: col.apply(lambda val: f"{val:.{num_digits}f}" if not pd.isna(val) else val) if col.dtype == 'float64' else col)
     if num_digits == 0:
         df = df.fillna(0).astype('int')
     else:
         df = df.fillna('')
-        
 
+    # Function to format numbers with commas for thousands and digits
+    def format_numbers(val):
+        if isinstance(val, (float)):
+            return f"{val:,.{num_digits}f}"
+        elif isinstance(val, (int)):
+            return f"{val:,.0f}" 
+        return val
+
+    # Apply the formatting function to the entire DataFrame
+    df = df.applymap(format_numbers)
+    
     # add the given suffix to all values of the data frame
     if suffix is not None:
         df = df.applymap(lambda x: x.__str__() + "\%")
@@ -101,24 +108,5 @@ def rreplace(s, old, new, occurrence):
 
 def remove_last_occurence(latex_code, pattern):
     return rreplace(latex_code, pattern, '', 1)
-
-#---------------------------------------------------------------------------------------------------------------------------
-
-def apply_thousand_seperator(df):
-    print(df.info())
-    # Apply the formatting function to the entire DataFrame
-    df_formatted = df.applymap(format_with_commas)
-
-    # Display the formatted DataFrame
-    return df_formatted
-
-# Function to format numbers with commas for thousands
-def format_with_commas(val):
-    if isinstance(val, (float)): #and val >= 1000:
-        return f"{val:,.1f}"  # Use ',.1f' to format numbers with one decimal and commas
-    if isinstance(val, (int)):
-        return f"{val:,.0f}"
-    return val  # Return the value as is if it's less than 1000
-
 
 #---------------------------------------------------------------------------------------------------------------------------
