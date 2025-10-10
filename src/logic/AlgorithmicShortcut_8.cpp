@@ -10,6 +10,12 @@ acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query
         return acceptance_result::unknown;
     }
 
+    // check if query_argument is attacking itself and has no other attacker
+    if (check_only_self_attack(framework, query_argument))
+    {
+        return acceptance_result::rejected;
+    }
+
     // check if each attacker of q has at least one defender
     if (!check_each_attacker_has_defender(framework, query_argument))
     {
@@ -36,6 +42,21 @@ acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query
     {
         return acceptance_result::unknown;
     }
+    }
+
+    //===========================================================================================================================================================
+    //===========================================================================================================================================================
+
+    bool AlgorithmicShortcut_8::check_only_self_attack(AF &framework, uint32_t query_argument)
+    {
+        vector<uint32_t> attackers = framework.attackers[query_argument];
+
+        // if unattacked then no self-attack possible
+        if(attackers.size() == 0) return false;
+        // if more than one attacker than at least one has to be no self-attack
+        if(attackers.size() > 1) return false;
+        // check if only attack is a self-attack
+        return attackers[0] == query_argument;
     }
     
     //===========================================================================================================================================================
