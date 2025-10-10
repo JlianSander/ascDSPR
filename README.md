@@ -1,7 +1,5 @@
 
-# ascDSPR- algorithmic shortcuts for skeptical reasoning under the preferred semantics
-
-**ascDSPR** 
+# ascDSPR- algorithmic shortcuts for skeptical reasoning under preferred semantics
 
 ## Build process
 
