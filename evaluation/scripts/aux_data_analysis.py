@@ -38,6 +38,68 @@ def read_csv_to_dataframe(file_path):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
+def analyze_muToksia(df_rawAnswered, key_answer, key_runtime, key_solvers):
+    # only rows of MuToksia
+    df_muToksia = df_rawAnswered[df_rawAnswered[key_solvers] == NAME_MUTOSKIA]
+    
+
+    df_muToksiaYes = filter_by_answer(df_muToksia, key_answer, NAME_ANSWER_YES)
+    s_mu_runtimeYes = df_muToksiaYes[key_runtime]
+    muRuntimeMeanYes = s_mu_runtimeYes.mean()
+    muRuntimeStdYes = s_mu_runtimeYes.std()
+    muRuntimeMaxYes = s_mu_runtimeYes.max()
+    muRuntimeMinYes = s_mu_runtimeYes.min()
+    muRuntimeMedianYes = s_mu_runtimeYes.median()
+    print("Runtime MuToksia Yes Mean: " + muRuntimeMeanYes.__str__())
+    print("Runtime MuToksia Yes Std: " + muRuntimeStdYes.__str__())
+    print("Runtime MuToksia Yes Min/Max: " + muRuntimeMinYes.__str__() + "/" + muRuntimeMaxYes.__str__())
+    print("Runtime MuToksia Yes Median: " + muRuntimeMedianYes.__str__())
+    print()
+
+    df_muToksiaNo = filter_by_answer(df_muToksia, key_answer, NAME_ANSWER_NO)
+    s_mu_runtimeNo = df_muToksiaNo[key_runtime]
+    muRuntimeMeanNo = s_mu_runtimeNo.mean()
+    muRuntimeStdNo = s_mu_runtimeNo.std()
+    muRuntimeMaxNo = s_mu_runtimeNo.max()
+    muRuntimeMinNo = s_mu_runtimeNo.min()
+    muRuntimeMedianNo = s_mu_runtimeNo.median()
+    print("Runtime MuToksia No Mean: " + muRuntimeMeanNo.__str__())
+    print("Runtime MuToksia No Std: " + muRuntimeStdNo.__str__())
+    print("Runtime MuToksia No Min/Max: " + muRuntimeMinNo.__str__() + "/" + muRuntimeMaxNo.__str__())
+    print("Runtime MuToksia No Median: " + muRuntimeMedianNo.__str__())
+    print()
+
+    ratio_mean_mutoksia = muRuntimeMeanYes / muRuntimeMeanNo
+    print("Runtime MuToksia Ratio Mean_Yes/Mean_No: " + ratio_mean_mutoksia.__str__())
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+def analyze_S10_muToksia(df_rawAnswered, df_solutions, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout):
+    # only rows of S10
+    df_S10 = df_rawAnswered[df_rawAnswered[key_solvers] == "asc_10"]
+    print(df_S10)
+
+    df_solutions_yes = df_solutions[df_solutions[key_answer] == NAME_ANSWER_YES]
+    df_instances = df_solutions_yes.loc[:, [key_benchmarks, key_instance]] 
+    print(df_instances)
+
+    # Filter 'df' based on the values in 's_instances'
+    df_filtered = pd.merge(df_S10, df_instances, on=[key_benchmarks, key_instance], how='inner')
+    df_S10_clean = sanitize_dataframe(df_filtered, key_exit_with_error, key_runtime, timeout)
+    df_S10_clean = df_S10_clean.loc[:, [key_benchmarks, key_instance, key_runtime, key_answer]] 
+
+    # Display the filtered DataFrame
+    print_full(df_S10_clean)
+
+    # Count the number of rows where runtime is timeout or higher
+    count_timeouts = (df_S10_clean[key_runtime] >= timeout).sum()
+    count_unsolved = (df_S10_clean[key_answer] != NAME_ANSWER_YES).sum()
+
+    print(f"Number of rows with runtime >= timeout: {count_timeouts}")
+    print(f"Number of rows with answer == 'NaN': {count_unsolved}")
+
+#---------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     # Check if file path is provided as command-line argument
@@ -93,38 +155,8 @@ if __name__ == "__main__":
     df_solutionsYes = filter_by_answer(df_solutions, key_answer, NAME_ANSWER_YES)
     df_solutionsNo = filter_by_answer(df_solutions, key_answer, NAME_ANSWER_NO)
 
+    # analyze_muToksia(df_rawAnswered, key_answer, key_runtime, key_solvers)
 
+    analyze_S10_muToksia(df_rawAnswered, df_solutions, key_answer, key_benchmarks, key_exit_with_error, key_instance, key_runtime, key_solvers, timeout)
 
-    # only rows of MuToksia
-    df_muToksia = df_rawAnswered[df_rawAnswered[key_solvers] == NAME_MUTOSKIA]
-    
-
-    df_muToksiaYes = filter_by_answer(df_muToksia, key_answer, NAME_ANSWER_YES)
-    s_mu_runtimeYes = df_muToksiaYes[key_runtime]
-    muRuntimeMeanYes = s_mu_runtimeYes.mean()
-    muRuntimeStdYes = s_mu_runtimeYes.std()
-    muRuntimeMaxYes = s_mu_runtimeYes.max()
-    muRuntimeMinYes = s_mu_runtimeYes.min()
-    muRuntimeMedianYes = s_mu_runtimeYes.median()
-    print("Runtime MuToksia Yes Mean: " + muRuntimeMeanYes.__str__())
-    print("Runtime MuToksia Yes Std: " + muRuntimeStdYes.__str__())
-    print("Runtime MuToksia Yes Min/Max: " + muRuntimeMinYes.__str__() + "/" + muRuntimeMaxYes.__str__())
-    print("Runtime MuToksia Yes Median: " + muRuntimeMedianYes.__str__())
-    print()
-
-    df_muToksiaNo = filter_by_answer(df_muToksia, key_answer, NAME_ANSWER_NO)
-    s_mu_runtimeNo = df_muToksiaNo[key_runtime]
-    muRuntimeMeanNo = s_mu_runtimeNo.mean()
-    muRuntimeStdNo = s_mu_runtimeNo.std()
-    muRuntimeMaxNo = s_mu_runtimeNo.max()
-    muRuntimeMinNo = s_mu_runtimeNo.min()
-    muRuntimeMedianNo = s_mu_runtimeNo.median()
-    print("Runtime MuToksia No Mean: " + muRuntimeMeanNo.__str__())
-    print("Runtime MuToksia No Std: " + muRuntimeStdNo.__str__())
-    print("Runtime MuToksia No Min/Max: " + muRuntimeMinNo.__str__() + "/" + muRuntimeMaxNo.__str__())
-    print("Runtime MuToksia No Median: " + muRuntimeMedianNo.__str__())
-    print()
-
-    ratio_mean_mutoksia = muRuntimeMeanYes / muRuntimeMeanNo
-    print("Runtime MuToksia Ratio Mean_Yes/Mean_No: " + ratio_mean_mutoksia.__str__())
     
