@@ -13,4 +13,3 @@ mv kissat-rel-4.0.3 kissat
 cd kissat
 ./configure && make
 cd ../..
-make
