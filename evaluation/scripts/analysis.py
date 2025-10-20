@@ -7,6 +7,7 @@ from analysis_util import *
 from analysis_applicability import *
 from analysis_overlap import *
 from analysis_runtime import *
+from analysis_runtime_naiv import *
 from analysis_runtime_intersection import *
 from analysis_runtime_comparison import *
 from analysis_runtime_comparison_muToksia import *
@@ -85,6 +86,7 @@ CACLCULATE_RT_COMP_MUTOKSIA = True
 CALCULATE_RT_COMP = True
 CALCULATE_BL = True
 CALCULATE_BL_COMBI = True
+CALCULATE_RT_NAIV = True
 
 SAVE_LATEX = True
 ## ------------- DEBUG ------------- 
@@ -172,6 +174,12 @@ if __name__ == "__main__":
 
     df_solutionsYes = filter_by_answer(df_solutions, key_answer, NAME_ANSWER_YES)
     df_solutionsNo = filter_by_answer(df_solutions, key_answer, NAME_ANSWER_NO)
+
+    if(CALCULATE_RT_NAIV):
+        s_rt_naiv = create_table_rt_naiv(df_rawAnswered, key_solvers, key_runtime)
+        print()
+        print("----------------- runtime naiv -----------------")    
+        print(s_rt_naiv)
 
     if(CALCULATE_APP):
         #-------------------------------- APPLICABILITY --------------------------------
