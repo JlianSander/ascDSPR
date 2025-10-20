@@ -1,4 +1,4 @@
-/* #include "../include/Solver.h"
+#include "../include/Solver.h"
 
 Solver::Solver(){
 	_framework = AF();
@@ -113,4 +113,4 @@ int32_t Solver::solve(bool credulous_mode) {
 	default:
 		return -1;
 	}
-} */
+}
