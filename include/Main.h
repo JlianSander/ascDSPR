@@ -45,6 +45,9 @@ extern "C" {
 #elif defined(ASC_10)
 	#include "AlgorithmicShortcut_10.h"
 	typedef AlgorithmicShortcut_10 ALGO_SHORT_T;
+#elif defined(ASC_PARALLEL_ALL)
+	#include "AlgorithmicShortcut_ParallelAll.h"
+	typedef AlgorithmicShortcut_ParallelAll ALGO_SHORT_T;
 #else
 	//#error "No SAT Solver defined"
 #endif
@@ -53,7 +56,7 @@ extern "C" {
 /// Name of the program
 /// </summary>
 constexpr auto PROGRAM_NAME = "ascDSPR";
-constexpr auto VERSIONNUMBER = "1.0";
+constexpr auto VERSIONNUMBER = "1.1";
 
 /// <summary>
 /// Flags used for internal processing.

@@ -1,6 +1,5 @@
 #ifdef ASC_8
     #include "../../include/logic/AlgorithmicShortcut_8.h"
-#include "AlgorithmicShortcut_8.h"
 
 acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query_argument)
 {

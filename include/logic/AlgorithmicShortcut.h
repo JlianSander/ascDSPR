@@ -6,8 +6,8 @@
 
 class AlgorithmicShortcut {
 public:
-	virtual ~AlgorithmicShortcut() {}
-    virtual acceptance_result try_solve(AF &framework, uint32_t query_argument) = 0;
+	~AlgorithmicShortcut() {}
+    acceptance_result try_solve(AF &framework, uint32_t query_argument) { return acceptance_result::unknown; }
 };
 
 #endif

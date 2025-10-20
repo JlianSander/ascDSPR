@@ -44,6 +44,12 @@ In case you use the default SAT-Solver the build command looks like this:
 make ASC=4
 ```
 
+If you want to compute all algorithmic shortcuts in parallel use the following build command:
+
+```
+make ASC=PARALLEL_ALL
+```
+
 ## Features
 Supported problems: [DS-PR]
 

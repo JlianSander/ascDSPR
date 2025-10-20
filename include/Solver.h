@@ -1,4 +1,4 @@
-#ifndef SOLVER_H
+/* #ifndef SOLVER_H
 #define SOLVER_H
 
 #include <vector>
@@ -51,3 +51,4 @@ extern "C" {
 
 
 #endif
+ */
