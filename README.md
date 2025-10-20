@@ -1,6 +1,13 @@
 
 # ascDSPR- algorithmic shortcuts for skeptical reasoning under preferred semantics
 
+With this project we evaluated different incomplete algorithms to solve the reasoning problem DS-PR in abstract argumentation. These incomplete algorithms are denoted as 'algorithmic shortcuts'. We summarised those shortcuts which had been used in past <a href="https://argumentationcompetition.org/">ICCMA competitions</a> (6 in total) and proposed 4 new shortcuts. To examine their effects on the runtime efficiency of argumentation solvers, we compared their runtimes to the runtime of the argumentation solver <a href="https://bitbucket.org/andreasniskanen/mu-toksia/src/master/">Mu-Toksia</a> (Version ICCMA'23).
+
+For further information see <a href="https://www.fernuni-hagen.de/aig/lehre/abschlussarbeiten/index.shtml">To-Be-Announced</a>.
+
+This study was conducted as part of a Bachelor's Thesis at the Artificial Intelligence Group at "FernUniversität in Hagen" in October,2025. 
+
+
 ## Build process
 
 ### Default SAT-Solver:
