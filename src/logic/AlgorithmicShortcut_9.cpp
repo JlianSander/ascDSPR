@@ -1,4 +1,4 @@
-#ifdef ASC_9
+
     #include "../../include/logic/AlgorithmicShortcut_9.h"
 
     acceptance_result AlgorithmicShortcut_9::try_solve(AF &framework, uint32_t query_argument)
@@ -32,4 +32,3 @@
         }
     }
 
-#endif

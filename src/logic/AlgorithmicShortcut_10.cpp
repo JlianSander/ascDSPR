@@ -1,4 +1,4 @@
-#ifdef ASC_10
+
     #include "../../include/logic/AlgorithmicShortcut_10.h"
 
     acceptance_result AlgorithmicShortcut_10::try_solve(AF &framework, uint32_t query_argument)
@@ -84,4 +84,3 @@
         return set_self_defending_arguments;
     }
 
-#endif

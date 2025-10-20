@@ -1,8 +1,8 @@
-#ifdef ASC_8
+
     #include "../../include/logic/AlgorithmicShortcut_8.h"
 
-acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query_argument)
-{
+    acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query_argument)
+    {
     // check if there is at least one attacker of q
     if (framework.attackers[query_argument].size() == 0)
     {
@@ -110,4 +110,3 @@ acceptance_result AlgorithmicShortcut_8::try_solve(AF &framework, uint32_t query
         solver.add_clause(clause_all_z);
     }
 
-    #endif
