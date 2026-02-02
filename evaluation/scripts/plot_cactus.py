@@ -20,16 +20,16 @@ from plot import *
 # names = {
 #     'reducto': r'\texttt{reducto}',
 #     'mu-toksia-glucose': r'$\mu$-\textsc{toksia} (\textsc{Glucose})',
-#     'asc_01': r'S\textsf{1}',
-#     'asc_02': r'S\textsf{2}',
-#     'asc_03': r'S\textsf{3}',
-#     'asc_04': r'S\textsf{4}',
-#     'asc_05': r'S\textsf{5}',
-#     'asc_06': r'S\textsf{6}',
-#     'asc_07': r'S\textsf{7}',
-#     'asc_08': r'S\textsf{8}',
-#     'asc_09': r'S\textsf{9}',
-#     'asc_10': r'S\textsf{10}',
+#     'asc_01': r'\textsf{S1}',
+#     'asc_02': r'\textsf{S2}',
+#     'asc_03': r'\textsf{S3}',
+#     'asc_04': r'\textsf{S4}',
+#     'asc_05': r'\textsf{S5}',
+#     'asc_06': r'\textsf{S6}',
+#     'asc_07': r'\textsf{S7}',
+#     'asc_08': r'\textsf{S8}',
+#     'asc_09': r'\textsf{S9}',
+#     'asc_10': r'\textsf{S10}',
 # }
 
 names = {
@@ -47,6 +47,28 @@ names = {
 }
 
 style_map = [
+    # Simple Shortcuts
+    {'color': 'navy',        'linestyle': 'solid',  'marker': 'o'},
+    {'color': 'royalblue',   'linestyle': 'dashed', 'marker': '^'},
+    {'color': 'dodgerblue',  'linestyle': 'dashed', 'marker': 'v'},
+    {'color': 'steelblue',   'linestyle': 'solid',  'marker': 's'},
+
+    # Complex Shortcuts
+    {'color': 'darkgreen',      'linestyle': 'solid',  'marker': 'D'},
+    {'color': 'mediumseagreen', 'linestyle': 'solid',  'marker': 'p'},
+
+    # New Complex Shortcuts
+    {'color': 'darkorange', 'linestyle': 'solid',  'marker': 'h'},
+    {'color': 'orange',     'linestyle': 'solid',  'marker': 'H'},
+    {'color': 'gold',       'linestyle': 'dashed', 'marker': 'X'},
+    {'color': 'peru',       'linestyle': 'dashed', 'marker': '8'},
+
+    # mutoksia
+    {'color': "#9467bd",    'linestyle': 'dotted',     'marker': '+'}
+]
+
+"""
+style_map = [
     {'marker': '*', 'linestyle': '-'},
     {'marker': 'P', 'linestyle': '--'},
     {'marker': '^', 'linestyle': '-.'},
@@ -58,7 +80,7 @@ style_map = [
     {'marker': '.', 'linestyle': '-'},
     {'marker': '1', 'linestyle': '--'},
     {'marker': '>', 'linestyle': '-.'}
-]
+]"""
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
@@ -200,25 +222,26 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
 
         ax.plot(group[key_runtime], group.index, 
                 marker=style_map[i]['marker'], 
-                markersize=4, 
+                markersize=5, 
                 markerfacecolor='white', 
+                color=style_map[i]['color'], 
                 markeredgewidth=0.75, 
-                linewidth=0.75, 
+                linewidth=0.8, 
                 linestyle=style_map[i]['linestyle'], 
-                alpha=0.7, 
+                alpha=1, 
                 label=get_name(name))
 
     # LABELS + TITLES
-    ax.set_xlabel(title_label_x,fontsize=16)
-    ax.set_ylabel(title_label_y,fontsize=16)
-    legend = ax.legend(loc='lower right', fontsize=13, markerscale=1.75, handlelength=2, handletextpad=0.65,borderpad=0.75,borderaxespad=0.35,fancybox=True)
+    ax.set_xlabel(title_label_x,fontsize=20)
+    ax.set_ylabel(title_label_y,fontsize=20)
+    legend = ax.legend(loc='lower right', fontsize=18, markerscale=2.5, handlelength=2, handletextpad=0.65,borderpad=0.75,borderaxespad=0.35,fancybox=False)
 
     # AUX LINES
     if(draw_timeout_limit):
         ax.axvline(x=timeout, color='r', linestyle='--', label=None)
-    ax.set_ylim(800, None)
+    ax.set_ylim(850, None)
 
-    ax.tick_params(axis='both', which='major',labelsize=13)
+    ax.tick_params(axis='both', which='major',labelsize=18)
     ax.grid(True, color='gray', ls=':', lw=1, zorder=1,alpha=0.5)
     
     plt.tight_layout()

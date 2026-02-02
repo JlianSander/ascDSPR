@@ -22,16 +22,16 @@ NAME_ANSWER_NO = 'NO'
 names = {
     'reducto': r'\texttt{reducto}',
     'mu-toksia-glucose': r'$\mu$-\textsc{toksia} (\textsc{Glucose})',
-    'asc_01': r'S\textsf{1}',
-    'asc_02': r'S\textsf{2}',
-    'asc_03': r'S\textsf{3}',
-    'asc_04': r'S\textsf{4}',
-    'asc_05': r'S\textsf{5}',
-    'asc_06': r'S\textsf{6}',
-    'asc_07': r'S\textsf{7}',
-    'asc_08': r'S\textsf{8}',
-    'asc_09': r'S\textsf{9}',
-    'asc_10': r'S\textsf{10}',
+    'asc_01': r'\textsf{S1}',
+    'asc_02': r'\textsf{S2}',
+    'asc_03': r'\textsf{S3}',
+    'asc_04': r'\textsf{S4}',
+    'asc_05': r'\textsf{S5}',
+    'asc_06': r'\textsf{S6}',
+    'asc_07': r'\textsf{S7}',
+    'asc_08': r'\textsf{S8}',
+    'asc_09': r'\textsf{S9}',
+    'asc_10': r'\textsf{S10}',
 }
 
 style_map = [
@@ -110,4 +110,4 @@ if __name__ == "__main__":
                      'asc_10', 'scatter_muToksia_asc10', 'runtime[s] ')
     
     save_plot_cactus(output_directory, SAVE_PLOT_PGF, SAVE_PLOT_PNG, df_rawAnswered, key_answer, key_benchmarks, key_exit_with_error, key_instance, 
-                     NAME_MUTOSKIA, key_runtime, key_solvers, timeout, 'cactus_all', "runtime~$(s)$", "instances~solved", True)
+                     NAME_MUTOSKIA, key_runtime, key_solvers, timeout, 'cactus_all', "runtime $(s)$", "instances solved", True)
