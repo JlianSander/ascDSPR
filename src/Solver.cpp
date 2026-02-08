@@ -95,10 +95,11 @@ int32_t Solver::solve(bool credulous_mode) {
 	}
 	else {
 		switch (_semantics) {
-		case preferred:
+		case preferred: {
 			ALGO_SHORT_T shortcut;
 			result = shortcut.try_solve(_framework, _query_argument);
 			break;
+		}
 		default:
 			cerr << _semantics << ": Unsupported semantics\n";
 			return -1;
