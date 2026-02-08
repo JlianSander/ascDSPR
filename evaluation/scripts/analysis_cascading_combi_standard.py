@@ -131,6 +131,7 @@ def format_table_runtime_combis(df_runtimes, key_mutoksia, num_digits_pct, num_d
     else:
         df_table = df_table.drop(title_solver_VBS)
 
+    df_table = df_table.sort_values(by=title_par)
     return df_table
 
 def create_table_runtimes_combis(df, key_answer, key_benchmarks, key_instance, key_mutoksia, key_runtime, key_solvers, 

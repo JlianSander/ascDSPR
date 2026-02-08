@@ -64,7 +64,7 @@ style_map = [
     {'color': 'peru',       'linestyle': 'dashed', 'marker': '8'},
 
     # mutoksia
-    {'color': "#9467bd",    'linestyle': 'dotted',     'marker': '+'}
+    {'color': 'red',        'linestyle': 'dotted', 'marker': '+'}
 ]
 
 """
@@ -240,6 +240,7 @@ def save_plot_cactus(output_directory, save_pgf, save_png, df_rawAnswered, key_a
     if(draw_timeout_limit):
         ax.axvline(x=timeout, color='r', linestyle='--', label=None)
     ax.set_ylim(850, None)
+    #ax.set_xscale("log")
 
     ax.tick_params(axis='both', which='major',labelsize=18)
     ax.grid(True, color='gray', ls=':', lw=1, zorder=1,alpha=0.5)
