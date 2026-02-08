@@ -157,9 +157,11 @@ int static execute(int argc, char **argv)
 	ALGO_SHORT_T shortcut;
 	acceptance_result result = shortcut.try_solve(framework, query_argument);
 	// print result
-	if(result == acceptance_result::accepted || result == acceptance_result::rejected)
-	cout << (result == acceptance_result::accepted ? "YES" : "NO") << endl;
-
+	if(result == acceptance_result::accepted || result == acceptance_result::rejected) {
+		cout << (result == acceptance_result::accepted ? "YES" : "NO") << endl;
+	} else {
+		cout << "UNKNOWN" << endl;
+	}
 	return 0;
 }
 
