@@ -1,0 +1,68 @@
+archive: null
+archive_output: null
+benchmark:
+- 1
+- 2
+copy_raws: false
+exclude_task: null
+grouping:
+- tag
+- task
+- benchmark_id
+- solver_id
+name: ASC_ICCMA25_3
+plot: null
+printing: default
+raw_results_path: /home/lars/probo2/src/results/ASC_ICCMA25_3/raw.csv
+repetitions: 1
+result_format: csv
+save_output: true
+save_to: /home/lars/ASC_ICCMA25_3
+score: all
+significance:
+  non_parametric_post_hoc: null
+  non_parametric_test: null
+  p_adjust: null
+  parametric_post_hoc: null
+  parametric_test: null
+  plot: null
+  table_export: null
+solver:
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+- 10
+- 11
+- 12
+- '20'
+- '14'
+- '18'
+- '16'
+- '22'
+- '21'
+- '19'
+- '13'
+- '15'
+- '17'
+solver_options: null
+statistics: all
+status_file_path: /home/lars/probo2/src/results/ASC_ICCMA25_3/status.json
+table_export:
+- txt
+task:
+- ES-ST
+- EC-ST
+- DS-PR
+time_measurement: perf_counter
+timeout: 1200
+validation:
+  mode: null
+  plot: null
+  table_export: null
+yaml_file_name: example_config.yaml
