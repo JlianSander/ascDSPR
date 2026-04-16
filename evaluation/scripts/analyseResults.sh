@@ -54,6 +54,10 @@ for folderSolver in "$dir_1"/*/; do
                         ((num_instances_no++))
                         echo "$solverName,$probName,$dataSetName,$FILE_BASENAME,NO" >> $output_details_file
                     fi
+                    if [ "$result_1" = "UNKNOWN" ]; then
+                        ((num_instances_empty++))
+                        echo "$solverName,$probName,$dataSetName,$FILE_BASENAME,NA" >> $output_details_file
+                    fi
                 fi
             done
 

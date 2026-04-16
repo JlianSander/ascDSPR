@@ -87,8 +87,8 @@ def populate_tab_overlap_formatted(df_overlap, s_rowSumsAnswers, key_solverPair_
         df_tabOverLap.at[title_row_num_inst, solver1] = s_rowSumsAnswers[solver1]
         df_tabOverLap.at[solver1, solver2] = pair_count
         df_tabOverLap.at[solver2, solver1] = pair_count
-        df_tabOverLap.at[solver1, solver1] = np.NaN
-        df_tabOverLap.at[solver2, solver2] = np.NaN
+        df_tabOverLap.at[solver1, solver1] = np.nan
+        df_tabOverLap.at[solver2, solver2] = np.nan
 
     return df_tabOverLap
 
